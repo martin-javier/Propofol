@@ -20,3 +20,25 @@ summary(daily)
 summary(patient)
 summary(ICU)
 summary(mergedAndCleaned)
+
+
+library(dplyr)
+mergedAndCleaned %>%
+  group_by(CombinedID) %>%
+  summarize(day_count = n_distinct(Study_Day)) %>%
+  filter(day_count != 11)
+# Das heißt jeder Patient hat 11 Rows und 11 Study Days, auch die die in <11 Tagen gestorben sind
+
+
+# Patienten total
+length(unique(mergedAndCleaned$CombinedID))
+nrow(mergedAndCleaned) / 11
+# bestätigt dass jeder Patient 11 Zeilen hat (siehe oben)
+
+# Anz Patienten überlebt
+nrow(mergedAndCleaned[mergedAndCleaned$PatientDied == 0, ]) / 11
+# gestorbene
+nrow(mergedAndCleaned[mergedAndCleaned$PatientDied == 1, ]) / 11
+
+# Patienten die nach min 30 Tagen noch gestorben sind
+nrow(mergedAndCleaned[mergedAndCleaned$PatientDied == 1 & mergedAndCleaned$surv_icu0to60 >= 30,]) / 11
