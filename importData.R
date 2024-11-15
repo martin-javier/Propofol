@@ -42,3 +42,11 @@ nrow(mergedAndCleaned[mergedAndCleaned$PatientDied == 1, ]) / 11
 
 # Patienten die nach min 30 Tagen noch gestorben sind
 nrow(mergedAndCleaned[mergedAndCleaned$PatientDied == 1 & mergedAndCleaned$surv_icu0to60 >= 30,]) / 11
+
+# Größe der Subgruppen: älter 65 Jahre, weibliche und männliche Patienten
+nrow(mergedAndCleaned[mergedAndCleaned$Age >= 65, ]) / 11
+nrow(mergedAndCleaned[mergedAndCleaned$Gender == "Female", ]) / 11
+nrow(mergedAndCleaned[mergedAndCleaned$Gender == "Male", ]) / 11
+
+# Anz Patienten, mit Aufenthalt min. 7 Tage in ICU
+nrow(mergedAndCleaned[mergedAndCleaned$surv_icu0to60 >= 7, ]) / 11
