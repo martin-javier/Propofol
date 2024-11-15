@@ -50,3 +50,7 @@ nrow(mergedAndCleaned[mergedAndCleaned$Gender == "Male", ]) / 11
 
 # Anz Patienten, mit Aufenthalt min. 7 Tage in ICU
 nrow(mergedAndCleaned[mergedAndCleaned$surv_icu0to60 >= 7, ]) / 11
+# Vorgaben von Prof Hartl: Aufenthalt min.7 days, Alter >= 18 & BMI > 13
+nrow(mergedAndCleaned[mergedAndCleaned$surv_icu0to60 >= 7 & mergedAndCleaned$Age >= 18
+                      & mergedAndCleaned$BMI > 13, ]) / 11
+# => Es gibt keine Patienten mit BMI <= 13 oder Alter < 18
