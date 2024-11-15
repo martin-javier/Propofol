@@ -2,7 +2,7 @@ library(pammtools)
 library(tidyverse)
 library(mgcv)
 
-data <- readRDS("C:\\LMU\\5 Semester\\Statistisches Praktikum\\Daten\\mergedAndCleanedData.Rds")
+data <- readRDS("data\\mergedAndCleanedData.Rds")
 
 data_EK <- data_EK <- data %>%
   filter(Age >= 18, BMI > 13 , DaysInICU >= 7, Study_Day <= 7)
