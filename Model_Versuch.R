@@ -198,3 +198,88 @@ summary(model_female)
           # 
           # R-sq.(adj) =  0.098   Deviance explained = 11.6%
           # UBRE = -0.37725  Scale est. = 1         n = 33390
+
+
+
+
+
+# Propofol-Kalorien (z. B. Summe der Kalorien zwischen Tag 0 und Tag 7)
+data_EK_b <- data_EK %>%
+  group_by(CombinedID) %>%
+  mutate(TotalCalories = sum(Calories, na.rm = TRUE)) %>%
+  ungroup()
+
+# PED-Format für Modell B erstellen (Summe der Kalorien über die ersten 7 Tage nach Aufnahme)
+ped_b <- as_ped(
+  data = data_EK_b,
+  formula = Surv(tstart, tend, PatientDied) ~ Age + BMI + ApacheIIScore + 
+    DaysMechVent + OralIntake + PN + Propofol2_4 + TotalCalories +  
+    Gender + Year + AdmCatID + DiagID2,
+  id = "row_id"
+)
+
+# Modell erstellen (Poisson-Verteilung für Ereignismodelle)
+model_b <- gam(
+  ped_status ~ s(Age, bs = "ps", k = 5) + s(BMI, bs = "ps", k = 5) + s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(DaysMechVent, bs = "ps", k = 5) + s(OralIntake, bs = "ps", k = 5) + 
+    s(PN, bs = "ps", k = 5) + s(TotalCalories, bs = "ps", k = 5) +  # Kalorienaufnahme mit k=5
+    factor(Gender) + factor(Year) + factor(AdmCatID) + factor(DiagID2),
+  data = ped_b,  # PED-Daten für Modell B
+  family = poisson(),  # Poisson-Verteilung für Ereignismodelle
+  offset = offset  # Berücksichtigt das Offset
+)
+
+# Zusammenfassung des Modells
+summary(model_b)
+
+            # Family: poisson 
+            # Link function: log 
+            # 
+            # Formula:
+            #   ped_status ~ s(Age, bs = "ps", k = 5) + s(BMI, bs = "ps", k = 5) + 
+            #   s(ApacheIIScore, bs = "ps", k = 5) + s(DaysMechVent, bs = "ps", 
+            #                                          k = 5) + s(OralIntake, bs = "ps", k = 5) + s(PN, bs = "ps", 
+            #                                                                                       k = 5) + s(TotalCalories, bs = "ps", k = 5) + factor(Gender) + 
+            #   factor(Year) + factor(AdmCatID) + factor(DiagID2)
+            # 
+            # Parametric coefficients:
+            #   Estimate Std. Error z value Pr(>|z|)    
+            # (Intercept)                         -1.343810   0.027617 -48.659  < 2e-16 ***
+            #   factor(Gender)Male                   0.028278   0.013891   2.036 0.041772 *  
+            #   factor(Year)2008                    -0.079454   0.024521  -3.240 0.001194 ** 
+            #   factor(Year)2009                    -0.105623   0.024653  -4.284 1.83e-05 ***
+            #   factor(Year)2011                    -0.136345   0.023102  -5.902 3.59e-09 ***
+            #   factor(Year)2013                    -0.087808   0.023177  -3.789 0.000151 ***
+            #   factor(Year)2014                    -0.058107   0.023477  -2.475 0.013322 *  
+            #   factor(AdmCatID)Surgical/Elective   -0.303024   0.026246 -11.546  < 2e-16 ***
+            #   factor(AdmCatID)Surgical/Emeregency -0.222749   0.020143 -11.058  < 2e-16 ***
+            #   factor(DiagID2)Cardio-Vascular       0.002896   0.025794   0.112 0.910594    
+            # factor(DiagID2)Respiratory          -0.130381   0.024745  -5.269 1.37e-07 ***
+            #   factor(DiagID2)Gastrointestinal      0.053938   0.028012   1.926 0.054161 .  
+            # factor(DiagID2)Neurologic           -0.085210   0.028113  -3.031 0.002437 ** 
+            #   factor(DiagID2)Sepsis               -0.005413   0.027672  -0.196 0.844903    
+            # factor(DiagID2)Orthopedic/Trauma    -0.409207   0.033744 -12.127  < 2e-16 ***
+            #   factor(DiagID2)Metabolic            -0.338875   0.069048  -4.908 9.21e-07 ***
+            #   factor(DiagID2)Renal                 0.200442   0.066403   3.019 0.002540 ** 
+            #   ---
+            #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+            # 
+            # Approximate significance of smooth terms:
+            #   edf Ref.df  Chi.sq  p-value    
+            # s(Age)           3.820  3.977 1571.63  < 2e-16 ***
+            #   s(BMI)           3.840  3.976   93.91  < 2e-16 ***
+            #   s(ApacheIIScore) 3.846  3.983  658.31  < 2e-16 ***
+            #   s(DaysMechVent)  3.998  4.000 2531.15  < 2e-16 ***
+            #   s(OralIntake)    1.000  1.000   11.44 0.000718 ***
+            #   s(PN)            1.000  1.000   17.51 2.93e-05 ***
+            #   s(TotalCalories) 3.577  3.857   16.92 0.001047 ** 
+            #   ---
+            #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+            # 
+            # R-sq.(adj) =  0.114   Deviance explained = 13.7%
+            # UBRE = -0.39675  Scale est. = 1         n = 87318
+
+# plot(model_b) oder plot(model_b, select = 43)
+# Der positive Anstieg bedeutet, dass der Effekt von TotalCalories mit zunehmender 
+# Kalorienzufuhr steigt und damit das Risiko des Todes steigt. Das bedeutet, dass 
+# mehr Kalorien durch Propofol zugeführt werden, desto höher wird das Risiko für den Tod.
