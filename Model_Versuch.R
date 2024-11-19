@@ -15,6 +15,7 @@ data_EK <- data %>%
 data_EK <- data_EK %>%
   mutate(row_id = row_number())
 
+# transforms data to piece-wise exponential data
 ped <- as_ped(
   data = data_EK,
   formula = Surv(Study_Day, PatientDied) ~ Age,
@@ -33,15 +34,6 @@ data_EK <- data_EK %>%
          tend = Study_Day) %>%
   ungroup()
 
-model_age <- gam(
-    ped_status ~ s(Age, bs = "ps"),
-    data = ped_EK,
-    family = poisson(),
-    offset = offset
-  )
-  # Freiheitsgrade k hängen von der uniquen anzahl der Werte in tend ab tend = {1-7} also kann k max = 7 sein
-
-# Komplexes Cox Modell mit Pamms
 
 ped_EK <- as_ped(
   data = data_EK,
@@ -54,6 +46,17 @@ ped_EK <- as_ped(
 # Dokumente #4 und #5) zwischen Tag 0 und Tag 7 nach Aufnahme Intensivstation
 # Geht auch maybe mit Surv(Study_Day, PatientDied) gibt aber warning  über tend
 ped_EK %>% select(row_id, tstart, tend, interval)
+
+# Fits a generalized additive model (GAM) to data (gam() is from mgcv package)
+model_age <- gam(
+  ped_status ~ s(Age, bs = "ps"),
+  data = ped_EK,
+  family = poisson(),
+  offset = offset
+)
+# Freiheitsgrade k hängen von der uniquen anzahl der Werte in tend ab tend = {1-7} also kann k max = 7 sein
+
+# Komplexes Cox Modell mit Pamms
 
 
 model_confounders <- gam(
@@ -68,6 +71,7 @@ model_confounders <- gam(
 
 summary(model_confounders)
 
+# Output (since running gam for confpunder model takes 2-3 mins):
             # Family: poisson 
             # Link function: log 
             # 
@@ -117,7 +121,7 @@ summary(model_confounders)
 
 
 
-#Subgruppenanalyse
+# Subgruppenanalyse
 data_female <- data_EK %>%
   filter(Gender == "Female")
 
