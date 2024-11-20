@@ -398,4 +398,4 @@ summary(model_b)
             #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
             # 
             # R-sq.(adj) =  0.114   Deviance explained = 13.7%
-UBRE = -0.39713  Scale est. = 1         n = 87318
+            #  UBRE = -0.39713  Scale est. = 1         n = 87318
