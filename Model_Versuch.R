@@ -84,92 +84,6 @@ model_female <- gam(
   family = poisson(),
   offset = offset
 )
-library(pammtools)
-library(tidyverse)
-library(mgcv)
-library(survival)
-library(gratia)  # For GAM visualization
-library(ggplot2) # For additional plot customization
-
-# Load the data
-data <- readRDS("data\\mergedAndCleanedData.Rds")
-
-# Filter data based on inclusion criteria
-data_EK <- data %>%
-  filter(Age >= 18, BMI > 13 , DaysInICU >= 7, Study_Day <= 7)
-
-# Add row_id
-data_EK <- data_EK %>%
-  mutate(row_id = row_number())
-
-# Create binary variable for Protein Intake <30%
-data_EK <- data_EK %>%
-  mutate(ProteinIntakeBelow30 = ifelse(proteinAdjustedPercentage < 30, 1, 0))
-
-# Transform data to piece-wise exponential format
-ped <- as_ped(
-  data = data_EK,
-  formula = Surv(Study_Day, PatientDied) ~ Age,
-  id = "row_id"
-)
-
-# Create tstart and tend for piece-wise exponential modeling
-data_EK <- data_EK %>%
-  group_by(CombinedID) %>%
-  mutate(tstart = Study_Day - 1,   # Time interval definition
-         tend = Study_Day) %>%
-  ungroup()
-
-# Create PED data
-ped_EK <- as_ped(
-  data = data_EK,
-  formula = Surv(tstart, tend, PatientDied) ~ Age + BMI + ApacheIIScore + 
-    DaysMechVent + OralIntake + PN + Gender + Year + AdmCatID + DiagID2 + 
-    ProteinIntakeBelow30,
-  id = "row_id"
-)
-
-# Model 1: Age-only model
-model_age <- gam(
-  ped_status ~ s(Age, bs = "ps") + factor(ProteinIntakeBelow30),
-  data = ped_EK,
-  family = poisson(),
-  offset = offset
-)
-
-# Model 2: Full confounder model
-model_confounders <- gam(
-  ped_status ~ s(Age, bs = "ps") + s(BMI, bs = "ps") + s(ApacheIIScore, bs = "ps") + 
-    s(DaysMechVent, bs = "ps") + s(OralIntake, bs = "ps") + 
-    s(PN, bs = "ps") + factor(Gender) + factor(Year) + 
-    factor(AdmCatID) + factor(DiagID2) + factor(ProteinIntakeBelow30),
-  data = ped_EK,
-  family = poisson(),
-  offset = offset
-)
-
-# Subgroup Analysis: Female patients
-data_female <- data_EK %>%
-  filter(Gender == "Female") %>%
-  mutate(row_id = row_number())
-
-ped_female <- as_ped(
-  data = data_female,
-  formula = Surv(tstart, tend, PatientDied) ~ Age + BMI + ApacheIIScore + 
-    DaysMechVent + OralIntake + PN + Year + AdmCatID + DiagID2 + 
-    ProteinIntakeBelow30,
-  id = "row_id"
-)
-
-model_female <- gam(
-  ped_status ~ s(Age, bs = "ps", k = 5) + s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + s(DaysMechVent, bs = "ps", k = 5) + 
-    s(OralIntake, bs = "ps", k = 5) + s(PN, bs = "ps", k = 5) + 
-    factor(Year) + factor(AdmCatID) + factor(DiagID2) + factor(ProteinIntakeBelow30),
-  data = ped_female,
-  family = poisson(),
-  offset = offset
-)
 
 # Model 3: Including Propofol Calories
 data_EK_b <- data_EK %>%
@@ -195,12 +109,6 @@ model_b <- gam(
   family = poisson(),
   offset = offset
 )
-
-# Summarize all models
-summary(model_age)
-summary(model_confounders)
-summary(model_female)
-summary(model_b)
 
 
 # Model 3: Including Propofol Calories
