@@ -1,0 +1,210 @@
+---
+title: "F.P.P"
+author: "Raseen Ramish"
+date: "2024-11-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Packages:
+
+```{r}
+library(data.table)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+library(wesanderson)
+library("viridis")
+library(survival)
+```
+
+#### Datensatz:
+```{r}
+mergedAndCleanedData <- readRDS("F:/5.semester/FPP/Propofol/data/mergedAndCleanedData.Rds")
+patient <- readRDS("F:/5.semester/FPP/Propofol/data/patient.Rds")
+daily <- readRDS("F:/5.semester/FPP/Propofol/data/daily.Rds")
+ICU <- readRDS("F:/5.semester/FPP/Propofol/data/ICU.Rds")
+CleanedData <- readRDS("F:/5.semester/FPP/Propofol/data/CleanedData.Rds")
+daily_all <- readRDS("F:/5.semester/FPP/Propofol/data/daily_all.Rds")
+```
+
+#### Datensatz in data.table format:
+```{r}
+mergedAndCleanedData.tbl <- copy(as.data.table(mergedAndCleanedData))
+patient.tbl <- copy(as.data.table(patient))
+ICU.tbl <- copy(as.data.table(ICU))
+CleanedData.tbl <- copy(as.data.table(CleanedData)) # Hom's Cleaned DATA
+daily_all.tbl <- copy(as.data.table(daily_all))
+
+
+```
+
+
+#### Struktur von Patient Datasatz:
+```{r}
+str(patient.tbl)
+```
+
+#### Struktur von daily_all Datasatz:
+
+```{r}
+str(daily_all.tbl)
+```
+
+
+#### Gemeinsame Variablenamens :
+
+```{r}
+names(daily_all.tbl)[ (names(daily_all.tbl) %in% names(patient.tbl))]
+```
+
+#### alle Variable die "2_4" enthalten, sind nicht relevant und die werden gelöcht.
+
+```{r}
+patient.tbl[, grep("2_4", names(patient.tbl), value = TRUE) := NULL]
+```
+
+
+#### Gleichen wir die Type von Variabletype in beiden Datensatz
+```{r}
+daily_all.tbl[, `:=`(Year = as.factor(Year),
+                     CombinedicuID = as.factor(CombinedicuID),
+                     Propofol = as.factor(Propofol)) ]
+```
+
+#### Von Datensatz daily_all  sind nur die Patienten für die Analyse nützlich, die 
+mehr als sieben Tagen Propofol genomen haben.
+
+Index von Patienten, die über sieben Tagen Propofol genomen haben.
+
+
+```{r}
+indexPropofol <- daily_all.tbl[ PropofolCal > 0 , sum(length(Study_Day)), by =  CombinedID][V1 > 6, ]
+indexPropofol
+```
+#### Patienten, Die sieben Tage lang Propfol genomen haben.
+
+```{r}
+cleanedDaily <- daily_all.tbl[CombinedID %in% indexPropofol[, CombinedID], ]
+cleanedDaily
+```
+#### Patienten aus Patient.Rds, die sieben Tage lang Propofol genomen haben.
+
+```{r}
+
+newCleanedData <- patient.tbl[cleanedDaily, on = "CombinedID"]
+newCleanedData[, Morning_BS := NULL][]
+```
+
+#### newCleanedData mit propofol calorie
+
+
+```{r}
+str(newCleanedData)
+```
+
+## Grafical Analysis von der wichtigsten Variablen:
+
+#### Die Patienten sind wichtig die über 60 jahre Alt sind:
+```{r}
+newCleanedData[Age > 60, .(Age, Gender)] %>%  
+  ggplot(aes(Age, fill = factor(Gender))) + 
+  geom_bar(position = "fill") +
+  theme_bw()
+```
+
+#### die Bewertung der Schwere der Krankheitszustand:
+
+```{r}
+newCleanedData[Age > 65, .(ApacheIIScore)] %>% 
+  ggplot(aes(ApacheIIScore)) + 
+  geom_bar(fill = "lightblue") +
+  theme_bw()
+```
+
+#### welche Diagnose war Häufig unter der Patienten:
+
+```{r}
+newCleanedData[Age > 65, .(DiagID2, Age)] %>% 
+  ggplot(aes(DiagID2)) + 
+  geom_bar(fill = "lightblue") +
+  theme_bw()
+```
+
+#### Wie viele Propofol hat jede Pateint bekommen.
+
+```{r}
+newCleanedData[Age > 65 & BMI > 13  , .(CombinedID, totla.propofol = sum(PropofolCal / 2), Gender = unique(Gender), Age = unique(Age)), by = CombinedID]
+```
+
+
+#### Anzahl Männer, die über 65 Alt sind, und die wurden propofol verabreicht.
+
+```{r}
+MännerAnteil <- newCleanedData[Age > 65 & BMI > 13 & Gender == "Male" & PropofolCal > 0 & max(Study_Day) > 1 , 
+                .(total.propofol = sum(PropofolCal / 2),
+                            Gender = unique(Gender),
+                            Age = unique(Age), 
+                  PatientDied = unique(PatientDied)), by = CombinedID]
+MännerAnteil
+```
+#### Anzahl Frauen, die über 65 Alt sind, und die wurden propofol verabreicht.
+
+```{r}
+FrauenAnteil <- newCleanedData[Age > 65 & BMI > 13 & Gender == "Female" & PropofolCal > 0 & max(Study_Day) > 1 , 
+                .(total.propofol = sum(PropofolCal / 2),
+                            Gender = unique(Gender),
+                            Age = unique(Age),
+                  PatientDied = unique(PatientDied)), by = CombinedID]
+FrauenAnteil
+```
+
+#### Anzahl verstorben vs nicht verstorben unter Frauen:
+
+```{r}
+FrauenAnteil[, {
+  count = .N
+  totlLength = length(unique(FrauenAnteil$CombinedID))
+  proportion = count / totlLength
+}, by = PatientDied] %>% ggplot(aes(x = 1, y = V1, fill = as.factor(V1))) +
+  geom_bar(stat = "identity", width = 0.5) 
+
+```
+
+#### Anzahl verstorben vs nicht verstorben unter Männer:
+
+```{r}
+MännerAnteil[, {
+  count = .N
+  totlLength = length(unique(MännerAnteil$CombinedID))
+  proportion = count / totlLength
+}, by = PatientDied] %>% ggplot(aes(x = 1, y = V1, fill = as.factor(V1))) + geom_bar(stat = "identity", width = 0.5)
+```
+
+
+
+
+s
+############################ nicht mehr relevant. 
+
+#### cox Proportional Hazard Model:
+
+```{r}
+attach(data)
+coxMod <- coxph(Surv(Surv0To60, PatientDied) ~ Age + BMI + ApacheIIScore + PropofolCal)
+summary(coxMod )
+```
+
+#### Kaplan Meier Model:
+
+```{r}
+attach(data)
+kmModel <- survfit(Surv(Surv0To60, PatientDied) ~ Propofol)
+kmModel
+plot(kmModel, conf.int = F, xlab = "Time (smoth)", ylab = "%Alive = S(t)", main = "KM")
+```
+
