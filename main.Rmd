@@ -1,0 +1,30 @@
+---
+title: "Propofol Main"
+author: "Martin Kandlinger"
+date: "2024-11-26"
+output: html_document
+---
+
+Set working directory
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require(rstudioapi)) install.packages("rstudioapi")
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+Soure all code files
+
+```{r}
+# source(source_all.R) => kommt noch
+source("code/install_packages.R") # hier bitte nur packages rein, die wir am Ende auch brauchen werden
+# sonst laden wir am Ende unnötige packages obwohl sie nicht genutzt werden
+```
+
+Import and maipulate dataset
+
+```{r}
+source("code/importAndCleanData.R")
+model_data <- import_and_clean()
+```
+
