@@ -28,7 +28,6 @@ mergedAndCleanedData <- readRDS("F:/5.semester/FPP/Propofol/data/mergedAndCleane
 patient <- readRDS("F:/5.semester/FPP/Propofol/data/patient.Rds")
 daily <- readRDS("F:/5.semester/FPP/Propofol/data/daily.Rds")
 ICU <- readRDS("F:/5.semester/FPP/Propofol/data/ICU.Rds")
-CleanedData <- readRDS("F:/5.semester/FPP/Propofol/data/CleanedData.Rds")
 daily_all <- readRDS("F:/5.semester/FPP/Propofol/data/daily_all.Rds")
 ```
 
@@ -37,7 +36,6 @@ daily_all <- readRDS("F:/5.semester/FPP/Propofol/data/daily_all.Rds")
 mergedAndCleanedData.tbl <- copy(as.data.table(mergedAndCleanedData))
 patient.tbl <- copy(as.data.table(patient))
 ICU.tbl <- copy(as.data.table(ICU))
-CleanedData.tbl <- copy(as.data.table(CleanedData)) # Hom's Cleaned DATA
 daily_all.tbl <- copy(as.data.table(daily_all))
 
 
@@ -76,92 +74,152 @@ daily_all.tbl[, `:=`(Year = as.factor(Year),
                      Propofol = as.factor(Propofol)) ]
 ```
 
+#### Merged Datensatz von Ptient und daily_all
+
+```{r}
+mergedPatientAndDaily <-  patient.tbl[daily_all.tbl, on = c("CombinedID", "Year"), nomatch = 0]
+mergedPatientAndDaily
+
+```
+
+
 #### Von Datensatz daily_all  sind nur die Patienten für die Analyse nützlich, die 
-mehr als sieben Tagen Propofol genomen haben.
-
-Index von Patienten, die über sieben Tagen Propofol genomen haben.
+über 18 Jahre ALt sind und einen Aufenthaltsdauer von mindestens siebe Tagan in ICU haben. darüber hinaus die haben in ersten sieben Tagen ihren Aufenthalt in ICU Propofol genomen.
 
 
 ```{r}
-indexPropofol <- daily_all.tbl[ PropofolCal > 0 , sum(length(Study_Day)), by =  CombinedID][V1 > 6, ]
-indexPropofol
-```
-#### Patienten, Die sieben Tage lang Propfol genomen haben.
-
-```{r}
-cleanedDaily <- daily_all.tbl[CombinedID %in% indexPropofol[, CombinedID], ]
-cleanedDaily
-```
-#### Patienten aus Patient.Rds, die sieben Tage lang Propofol genomen haben.
-
-```{r}
-
-newCleanedData <- patient.tbl[cleanedDaily, on = "CombinedID"]
-newCleanedData[, Morning_BS := NULL][]
+cleanedMergedPatientAndDaily <- mergedPatientAndDaily[Age > 18 & BMI > 13 & DaysInICU >= 7 & Study_Day <= 7, ][, c("i.CombinedicuID", "Morning_BS") := NULL ]
+cleanedMergedPatientAndDaily
 ```
 
-#### newCleanedData mit propofol calorie
 
 
-```{r}
-str(newCleanedData)
-```
 
 ## Grafical Analysis von der wichtigsten Variablen:
 
+```{r}
+allgemineTheme <-theme_bw()+
+  theme(plot.margin = unit(c(t = 0.25,r= 0.3, b = 0.25, l = 0.25), "in"),
+        axis.text = element_text(size = 15),
+        axis.title.x =  element_text(size = 15),
+        axis.title.y =  element_text(size = 15),
+        legend.text = element_text(size=13),
+        legend.title = element_text(size = 13))+
+  theme(axis.title.x = element_text(margin = margin(t = 0.25, unit = "in")),
+        axis.title.y = element_text(margin = margin(r = 0.25, unit = "in")))
+```
+
 #### Die Patienten sind wichtig die über 60 jahre Alt sind:
 ```{r}
-newCleanedData[Age > 60, .(Age, Gender)] %>%  
+cleanedMergedPatientAndDaily[Age > 65, .(Age, Gender)] %>%  
   ggplot(aes(Age, fill = factor(Gender))) + 
-  geom_bar(position = "fill") +
-  theme_bw()
+  geom_bar(position = "fill") + 
+  allgemineTheme +
+  labs(x = "Alter",
+       y = "Häufigkeit") +
+  scale_fill_viridis_d( name = "Gender",
+                        begin = 0.1, end = 0.9,
+                        guide = guide_legend(reverse = FALSE)
+                        ,option = "turbo")
 ```
 
 #### die Bewertung der Schwere der Krankheitszustand:
 
 ```{r}
-newCleanedData[Age > 65, .(ApacheIIScore)] %>% 
+cleanedMergedPatientAndDaily[Age > 65, .(ApacheIIScore)] %>% 
   ggplot(aes(ApacheIIScore)) + 
-  geom_bar(fill = "lightblue") +
-  theme_bw()
+  geom_bar(fill = "Blue") +
+  allgemineTheme +
+  labs(x = "ApacheIIScore",
+       y = "Häufigkeit") +
+  scale_fill_viridis_d( 
+                        begin = 0.1, end = 0.9,
+                        guide = guide_legend(reverse = TRUE)
+                        ,option = "turbo") +
+  geom_vline(xintercept = 22,
+             color = "red", linetype = "dashed", linewidth = 1) 
+  
+
 ```
 
 #### welche Diagnose war Häufig unter der Patienten:
 
 ```{r}
-newCleanedData[Age > 65, .(DiagID2, Age)] %>% 
-  ggplot(aes(DiagID2)) + 
-  geom_bar(fill = "lightblue") +
-  theme_bw()
+cleanedMergedPatientAndDaily[Age > 18, .(DiagID2, Age)] %>% 
+  ggplot(aes(DiagID2, fill = factor(DiagID2))) + 
+  geom_bar() +
+  allgemineTheme +
+  labs(x = "Diagnose",
+       y = "Häufigkeit") +
+  scale_fill_viridis_d(begin = 0.1, end = 0.9,
+                        guide = guide_legend(reverse = TRUE),
+                        option = "turbo") + 
+  theme(legend.position = "none") +
+  coord_flip()
 ```
 
 #### Wie viele Propofol hat jede Pateint bekommen.
 
 ```{r}
-newCleanedData[Age > 65 & BMI > 13  , .(CombinedID, totla.propofol = sum(PropofolCal / 2), Gender = unique(Gender), Age = unique(Age)), by = CombinedID]
+cleanedMergedPatientAndDaily[Age > 18 & BMI > 13 & PropofolCal > 0, .(totla.propofol = sum(PropofolCal), Gender = unique(Gender), Age = unique(Age)), by = CombinedID]
 ```
 
 
-#### Anzahl Männer, die über 65 Alt sind, und die wurden propofol verabreicht.
+#### Anzahl Männer, die über 18 Alt sind, und die wurden propofol verabreicht.
 
 ```{r}
-MännerAnteil <- newCleanedData[Age > 65 & BMI > 13 & Gender == "Male" & PropofolCal > 0 & max(Study_Day) > 1 , 
-                .(total.propofol = sum(PropofolCal / 2),
+MännerAnteil <- cleanedMergedPatientAndDaily[Age > 18 & BMI > 13 & Gender == "Male" & PropofolCal > 0, 
+                .(total.propofol = sum(PropofolCal),
                             Gender = unique(Gender),
                             Age = unique(Age), 
-                  PatientDied = unique(PatientDied)), by = CombinedID]
+                  PatientDied = unique(PatientDied), 
+                  DiagID2 = unique(DiagID2)), by = CombinedID]
 MännerAnteil
 ```
-#### Anzahl Frauen, die über 65 Alt sind, und die wurden propofol verabreicht.
+#### Häufigkeit der Krankheit unter Männer:
 
 ```{r}
-FrauenAnteil <- newCleanedData[Age > 65 & BMI > 13 & Gender == "Female" & PropofolCal > 0 & max(Study_Day) > 1 , 
-                .(total.propofol = sum(PropofolCal / 2),
+MännerAnteil[, .(DiagID2, Age)] %>% 
+  ggplot(aes(DiagID2, fill = factor(DiagID2))) + 
+  geom_bar() +
+  allgemineTheme +
+  labs(x = "Diagnose",
+       y = "Häufigkeit") +
+  scale_fill_viridis_d(begin = 0.1, end = 0.9,
+                        guide = guide_legend(reverse = TRUE),
+                        option = "turbo") + 
+  theme(legend.position = "none") +
+  coord_flip()
+```
+
+
+
+#### Anzahl Frauen, die über 18 Alt sind, und die wurden propofol verabreicht.
+
+```{r}
+FrauenAnteil <- cleanedMergedPatientAndDaily[Age > 18 & BMI > 13 & Gender == "Female" & PropofolCal > 0, 
+                .(total.propofol = sum(PropofolCal ),
                             Gender = unique(Gender),
                             Age = unique(Age),
-                  PatientDied = unique(PatientDied)), by = CombinedID]
+                  PatientDied = unique(PatientDied),
+                  DiagID2 = unique(DiagID2)), by = CombinedID]
 FrauenAnteil
 ```
+#### Häufigkeit der Krankheit unter Frauen:
+
+```{r}
+FrauenAnteil[, .(DiagID2, Age)] %>% 
+  ggplot(aes(DiagID2, fill = factor(DiagID2))) + 
+  geom_bar() +
+  allgemineTheme +
+  labs(x = "Diagnose",
+       y = "Häufigkeit") +
+  scale_fill_viridis_d(begin = 0.1, end = 0.9,
+                        option = "turbo") + 
+  theme(legend.position = "none") +
+  coord_flip()
+```
+
 
 #### Anzahl verstorben vs nicht verstorben unter Frauen:
 
@@ -170,21 +228,35 @@ FrauenAnteil[, {
   count = .N
   totlLength = length(unique(FrauenAnteil$CombinedID))
   proportion = count / totlLength
-}, by = PatientDied] %>% ggplot(aes(x = 1, y = V1, fill = as.factor(V1))) +
-  geom_bar(stat = "identity", width = 0.5) 
+}, by = PatientDied] %>% ggplot(aes(x = 1, y = V1, fill = factor(V1, labels = c("Verstorben", "Leben")))) +
+  geom_bar(stat = "identity") +
+  allgemineTheme +
+  labs(x = "",
+       y = "") +
+  scale_fill_viridis_d(name = "Anteil\n verstorbene VS lebende Frauen",
+    begin = 0.9, end = 0.1,
+                        option = "turbo")
 
 ```
 
 #### Anzahl verstorben vs nicht verstorben unter Männer:
 
+
 ```{r}
 MännerAnteil[, {
   count = .N
-  totlLength = length(unique(MännerAnteil$CombinedID))
+  totlLength = length(unique(FrauenAnteil$CombinedID))
   proportion = count / totlLength
-}, by = PatientDied] %>% ggplot(aes(x = 1, y = V1, fill = as.factor(V1))) + geom_bar(stat = "identity", width = 0.5)
-```
+}, by = PatientDied] %>% ggplot(aes(x = 1, y = V1, fill = factor(V1, labels = c("Verstorben", "Leben")))) +
+  geom_bar(stat = "identity") +
+  allgemineTheme +
+  labs(x = "",
+       y = "") +
+  scale_fill_viridis_d(name = "Anteil\n verstorbene VS lebende Männer",
+    begin = 0.9, end = 0.1,
+                        option = "turbo")
 
+```
 
 
 
