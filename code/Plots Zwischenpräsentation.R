@@ -190,3 +190,24 @@ ggplot(data_EK, aes(x = Age, y = ApacheIIScore)) +
     labels = seq(20, 100, by = 10)) +
   theme.main + 
   theme.adjusted
+
+# Plot Propofol-Nutzung
+# Daten vorbereiten: Propofol-Werte summieren
+propofol_usage <- data_EK %>%
+  mutate(Propofol = as.numeric(as.character(Propofol))) %>% # Faktor in numerisch umwandeln
+  group_by(CombinedID) %>%
+  summarise(
+    total_propofol = sum(Propofol, na.rm = TRUE) # Summe von Propofol
+  ) %>%
+  ungroup()
+
+# Balkendiagramm erstellen
+ggplot(propofol_usage, aes(x = factor(total_propofol))) +
+  geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) + # Balken mit Hellblau und schwarzem Rand
+  labs(
+    title = "Propofol-Nutzung pro Patient",
+    x = "Anzahl der Propofol-Tage",
+    y = "Anzahl der Patienten"
+  ) +
+  theme.main + 
+  theme.adjusted
