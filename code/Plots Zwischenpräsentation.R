@@ -5,15 +5,16 @@ library(ggthemes)
 # data_EK erstellen in Model_Versuch.R
 
 theme.main <- theme_stata(scheme = "s1color")
-theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 15),
-                        axis.title.x = element_text(margin = margin(t = 15), size = 22), 
-                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 12, angle = 0),
-                        axis.title.y = element_text(margin = margin(r = 15), size = 20),
+theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
+                        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+                        axis.title.y = element_text(margin = margin(r = 20), size = 22),
                         title = element_text(color = "black"),
-                        plot.title = element_text(size = 26, color = "black", face = "bold", hjust = 0), 
+                        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0), 
                         plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
                         panel.grid.major = element_line(color = "black", linewidth = 0.1), 
-                        panel.grid.minor = element_line(color = "gray", linewidth  = 0.1))
+                        panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
+                        plot.background = element_rect(fill = "beige", color = NA))
 
 # Daten auf eindeutige Patienten filtern
     # Filtern der Daten, sodass für jede eindeutige CombinedID nur die erste Zeile beibehalten wird.
@@ -31,18 +32,28 @@ age_counts <- unique_patients %>%
 # Barplot mit Count-Anzeige
 ggplot(age_counts, aes(x = AgeGroup, y = n)) +
   geom_bar(stat = "identity", fill = "skyblue", color = "black", alpha = 0.7) +
-  geom_text(aes(label = n), vjust = -0.5, size = 4) +  # Anzahl der Patienten über den Balken
-  labs(title = "Verteilung der Altersgruppen (einmal pro Patient)", x = "Altersgruppe", y = "Anzahl Patienten") +
+  geom_text(aes(label = n), vjust = -0.5, size = 5) +  # Anzahl der Patienten über den Balken
+  labs(title = "Verteilung der Altersgruppen", x = "Altersgruppe", y = "Anzahl Patienten") +
   theme.main + 
-  theme.adjusted
+  theme.adjusted + 
+  theme(axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 18, angle = 0))
 
 
 # Boxplot für ApacheIIScore
-ggplot(unique_patients, aes(x = "", y = ApacheIIScore)) +
-  geom_boxplot(fill = "skyblue", color = "black", alpha = 0.7) +
-  labs(title = "Verteilung des ApacheIIScore", 
-       x = "", 
-       y = "ApacheIIScore") +
+ggplot(data_EK, aes(x = "", y = ApacheIIScore)) +
+  # Boxplot zeichnen
+  geom_boxplot(fill = "darkgrey", color = "black", coef = 1.5, alpha = 0.7, outlier.size = 3, outlier.shape = 16, lwd = 0.8) +
+  
+  # Mittelwert als roten Punkt anzeigen
+  stat_summary(fun = mean, geom = "point", shape = 16, size = 7, color = "#FF6666") +
+  
+  # Median als Text anzeigen
+  stat_summary(fun = median, geom = "text", aes(label = ..y..), vjust = -1.2, size = 5.2, color = "black") +
+  labs(
+    title = "Verteilung des ApacheIIScore",        # Haupttitel
+    x = "",                                       # Leere X-Achse
+    y = "ApacheIIScore")+
+  scale_y_continuous(breaks = seq(0, max(data_EK$ApacheIIScore, na.rm = TRUE), by = 10)) +
   theme.main + 
   theme.adjusted
 
@@ -88,7 +99,7 @@ ggplot(outcome_counts, aes(x = Outcome, y = Count, fill = Outcome)) +
   geom_bar(stat = "identity", color = "black", alpha = 0.7) +
   labs(title = "Anteil von Verstorbenen vs. Entlassenen", x = "Outcome", y = "Anzahl Patienten") +
   scale_fill_manual(
-    values = c("Entlassen" = "lightgreen", "Verstorben" = "red")) +
+    values = c("Entlassen" = "chocolate1", "Verstorben" = "red")) +
   guides(fill = guide_legend(override.aes = list(shape = 15, size = 8))) +
   theme.main + 
   theme.adjusted + 
@@ -138,18 +149,29 @@ surv_object_tod <- Surv(time = unique_patients_kaplan$surv_icu0to60, event = uni
 # Kaplan-Meier-Modell für Tod anpassen
 km_fit_tod <- survfit(surv_object_tod ~ 1)
 
-# Kaplan-Meier-Kurve für Tod plotten
 ggsurvplot(
   km_fit_tod,
   data = unique_patients_kaplan,
-  conf.int = TRUE,
-  xlab = "Tage",
-  ylab = "Überlebenswahrscheinlichkeit (Tod in der ICU)",
-  title = "Kaplan-Meier-Kurve: Tod in der ICU",
-  risk.table = TRUE,
-  palette = "black",
-  ggtheme = theme.main + 
-    theme.adjusted
+  conf.int = TRUE,                              # Konfidenzintervall anzeigen
+  pval = TRUE,                                  # P-Wert anzeigen
+  xlab = "Tage",                                # X-Achsentitel
+  ylab = "Überlebenswahrscheinlichkeit (Tod in der ICU)", # Y-Achsentitel
+  title = "Kaplan-Meier-Kurve: Tod in der ICU", # Titel
+  risk.table = FALSE,                            # Risikotabelle anzeigen
+  conf.int.style = "step",                      # Konfidenzintervall als Schrittlinie
+  palette = c("#56B4E9"),            # Farbschema für Kurven und Konfidenzintervalle
+  ggtheme = theme_minimal() +                   # Minimalistisches Theme mit Anpassungen
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 16), # Zentrierter, fetter Titel
+      axis.title = element_text(size = 14),                            # Größere Achsentitel
+      axis.text = element_text(size = 12),                             # Größere Achsenbeschriftung
+      panel.grid.major = element_line(color = "darkgrey"),               # Hellgraue Gitterlinien
+      panel.grid.minor = element_blank(),                              # Keine kleinen Gitterlinien
+      plot.background = element_rect(fill = "white", color = NA)       # Beiger Hintergrund
+    ),
+  legend.labs = c("Tod in der ICU"),          # Legende anpassen
+  legend.title = "Status",                    # Legendentitel
+  tables.theme = theme.main + theme.adjusted 
 )
 
 
