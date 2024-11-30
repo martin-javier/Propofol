@@ -41,6 +41,15 @@ import_and_clean <- function(){
   # Dadurch geht halt etwas Wissen verloren also wie viel hat ein Patient an Tag X bekommen
   # jetzt nurnoch Patient hat Tag 1-7 Summe X an PrpofolCal eingenommen
   
+  # correct wrongly labeled surv_icu_status for 12 patients
+  data <- data %>%
+    mutate(surv_icu_status = case_when(
+      PatientDischarged == 0 & PatientDied == 0 ~ 0,   # PatientHospital
+      PatientDischarged == 1 & PatientDied == 0 ~ 1,   # PatientDischarged
+      PatientDischarged == 0 & PatientDied == 1 ~ 2    # PatientDied
+    ))
+  
+  
   data <- data %>%
     mutate(surv_icu_status_exp = case_when(
       surv_icu_status == "0" ~ "PatientHospital",

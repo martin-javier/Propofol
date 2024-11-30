@@ -108,7 +108,23 @@ ggplot(outcome_counts, aes(x = Outcome, y = Count, fill = Outcome)) +
         legend.background = element_rect(fill = "white", color = "black", linewidth = 0.5),
         legend.position = "bottom") 
 
+# Mit model_data:
+ggplot(model_data, aes(x = surv_icu_status_exp)) +
+  geom_bar(fill = "#56B4E9", color = "black") +
+  geom_text(stat = "count", 
+            aes(label = paste0(round(..count../sum(..count..) * 100, 1), "%")),
+            vjust = 1.2, color = "black") +
+  scale_x_discrete(labels =c("PatientDied" = "Verstorbene",
+                             "PatientDischarged" = "Entlassene",
+                             "PatientHospital" = "Im Krankenhaus")) +
+  labs(title = "Verteilung Patienten", x = NULL, y = "Anzahl Patienten") +
+  theme.main + theme.adjusted
 
+# absolute Zahlen stimmen mit outcome_counts überein
+# Prozente im plot manuell nachgeprüft, stimmen
+# nrow(model_data[model_data$surv_icu_status_exp == "PatientDied",]) / nrow(model_data)
+# nrow(model_data[model_data$surv_icu_status_exp == "PatientDischarged",]) / nrow(model_data)
+# nrow(model_data[model_data$surv_icu_status_exp == "PatientHospital",]) / nrow(model_data)
 
 
 # Kaplan-Meier-Modell erstellen FEHLT
@@ -211,3 +227,13 @@ ggplot(propofol_usage, aes(x = factor(total_propofol))) +
   ) +
   theme.main + 
   theme.adjusted
+
+# Vergleich mit model_data aus main.Rmd:
+ggplot(model_data, aes(x = factor(Days_Propofol))) +
+  geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
+  labs(
+    title = "Propofol-Nutzung pro Patient",
+    x = "Anzahl der Propofol-Tage",
+    y = "Anzahl der Patienten"
+  ) + theme.main + theme.adjusted
+# Nice ist 1zu1 gleich
