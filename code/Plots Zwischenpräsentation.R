@@ -16,14 +16,8 @@ theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margi
                         panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
                         plot.background = element_rect(fill = "beige", color = NA))
 
-# Daten auf eindeutige Patienten filtern
-    # Filtern der Daten, sodass für jede eindeutige CombinedID nur die erste Zeile beibehalten wird.
-    # .keep_all = TRUE sorgt dafür, dass alle Spalten im Ergebnis erhalten bleiben.
-unique_patients <- data_EK %>% 
-  distinct(CombinedID, .keep_all = TRUE)
-
 # Altersgruppen mit Counts erstellen
-age_counts <- unique_patients %>%
+age_counts <- model_data %>%
   mutate(AgeGroup = cut(Age, 
                         breaks = c(17, 30, 40, 50, 60, 70, 80, 90, 102), 
                         labels = c("18-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-102"))) %>% 
@@ -107,18 +101,20 @@ ggplot(model_data, aes(x = Sex, fill = Sex)) +
 
 # Verstorbene vs. Entlassene vs. im Krankenhaus ####
 ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
-  geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
-  geom_text(stat = "count", 
-            aes(label = paste0(round(..count../sum(..count..) * 100, 1), "%")),
-            vjust = 1.5, color = "black") +
-  scale_x_discrete(labels =c("PatientDied" = "Verstorbene",
-                             "PatientDischarged" = "Entlassene",
-                             "PatientHospital" = "Im Krankenhaus")) +
-  labs(title = "Verteilung Patienten", x = NULL, y = "Anzahl Patienten") +
-  scale_fill_manual(values = c("PatientDied" = "tomato", "PatientDischarged" = "skyblue",
-                               "PatientHospital" = "green")) +
-  theme.main + theme.adjusted
-## Farbcode!! ####
+  geom_bar(color = "black", alpha = 0.8) +
+  scale_x_discrete(labels = c("PatientDied" = "Verstorbene",
+                              "PatientDischarged" = "Entlassene",
+                              "PatientHospital" = "Im Krankenhaus")) +
+  labs(title = "Verteilung Patienten", 
+       x = NULL, 
+       y = "Anzahl Patienten") +
+  scale_fill_manual(values = c("PatientDied" = "#0072B2", 
+                               "PatientDischarged" = "#E69F00",
+                               "PatientHospital" = "#CC79A7")) +
+  theme.main + 
+  theme.adjusted + 
+  theme(legend.position = "none")
+
 
 # absolute Zahlen stimmen mit outcome_counts überein
 # Prozente im plot manuell nachgeprüft, stimmen
@@ -232,3 +228,38 @@ ggplot(model_data, aes(x = LeadAdmDiag)) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(title = "Verteilung Erstdiagnose", x = NULL, y = "Anzahl Patienten") +
   theme.main + theme.adjusted
+
+# BMI Plot
+ggplot(model_data, aes(x = cut(BMI, 
+                               breaks = c(-Inf, 18.5, 25, 30, 35, Inf),
+                               labels = c("Untergewicht", "Normalgewicht", "Übergewicht", 
+                                          "Adipositas I", "Adipositas II+")),
+                       fill = cut(BMI, 
+                                  breaks = c(-Inf, 18.5, 25, 30, 35, Inf),
+                                  labels = c("Untergewicht", "Normalgewicht", "Übergewicht", 
+                                             "Adipositas I", "Adipositas II+")))) +
+  geom_bar(color = "black", alpha = 0.8) +
+  geom_text(stat = "count", 
+            aes(label = ..count..), 
+            vjust = -0.5, color = "black") +
+  labs(
+    title = "Verteilung der Patienten nach BMI-Kategorien",
+    x = "BMI-Kategorie",
+    y = "Anzahl Patienten"
+  ) +
+  scale_fill_brewer(palette = "Set3") + # Farbpalette geeignet für Sehschwächen
+  scale_x_discrete(labels = c(
+    "Untergewicht" = "Untergewicht\n(BMI < 18.5)",
+    "Normalgewicht" = "Normalgewicht\n(BMI 18.5–24.9)",
+    "Übergewicht" = "Übergewicht\n(BMI 25–29.9)",
+    "Adipositas I" = "Adipositas I\n(BMI 30–34.9)",
+    "Adipositas II+" = "Adipositas II+\n(BMI ≥ 35)"
+  )) +
+  theme(
+    legend.position = "none", # Entfernt die Legende
+    axis.text.x = element_text(size = 10, hjust = 0.5, vjust = 0.5)) + # Verbessert die Lesbarkeit der x-Achse 
+  theme.main + 
+  theme.adjusted + 
+  theme(legend.position = "none")
+  
+
