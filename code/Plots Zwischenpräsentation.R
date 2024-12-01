@@ -203,6 +203,7 @@ ggplot(model_data, aes(x = Age, y = ApacheIIScore)) +
   theme.main + 
   theme.adjusted
 
+
 # Plot Propofol-Tage ####
 ggplot(model_data, aes(x = factor(Days_Propofol))) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
@@ -211,3 +212,18 @@ ggplot(model_data, aes(x = factor(Days_Propofol))) +
     x = "Anzahl der Propofol-Tage",
     y = "Anzahl der Patienten"
   ) + theme.main + theme.adjusted
+
+# Verteilung Admission Categories ####
+ggplot(model_data, aes(x = AdmCat)) +
+  geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
+  scale_x_discrete(labels =c("Medical" = "Medizinisch",
+                             "Surgical/Emeregency" = "Notfalloperation",
+                             "Surgical/Elective" = "Geplante Operation")) +
+  labs(title = "Verteilung Admissionsgründe", x = NULL, y = "Anzahl Patienten") +
+  theme.main + theme.adjusted
+
+# Verteilung Leading admission Diagnosis ####
+ggplot(model_data, aes(x = LeadAdmDiag)) +
+  geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
+  labs(title = "Verteilung Erstdiagnose", x = NULL, y = "Anzahl Patienten") +
+  theme.main + theme.adjusted
