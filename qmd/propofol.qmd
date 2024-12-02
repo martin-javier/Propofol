@@ -1,0 +1,289 @@
+---
+title: |
+  <div class="title-large">Einfluss von Propofol</div>
+  <div class="title-small">auf Verweildauer und Sterblichkeit auf der Intensivstation</div>
+subtitle: "Prof. Dr. Wolfgang Hartl"
+author: "Cong Hung Eißrig, Martin Kandlinger, Ramish Raseen, Iman Saffari, Lukas Stank"
+institute: "Dr. Andreas Bender, Dr. Mona Niethammer"
+date: "2024-12-05"
+format:
+  revealjs:
+    css: customstyle.css
+    math: katex
+    embed-resources: true
+    slide-number: c
+    logo: "icons/LMU_Logo.svg"
+editor: visual
+---
+
+## Agenda
+
+::: incremental
+1.  **Einleitung**
+
+2.  **Datenüberblick**
+
+3.  **Methodik**
+
+4.  **Ergebnisse**
+
+5.  **Fazit**
+:::
+
+## Datenüberblick {.smaller}
+
+
+::: incremental
+-   ***Datengröße***:
+    -   Ursprünglich: ca. 182.000 Beobachtungen und 51 Variablen =\> 17.000 Patienten mit jeweils 11 Beobachtungstagen.
+    -   Aktuell: ca. 12.000 Beobachtungen und 27 Variablen (12.000 Patienten).
+-   ***Patienten von Interesse***:
+    -   Alter von mindestens 18 Jahren.
+    -   BMI über 13 kg/m².
+    -   Aufenthaltsdauer auf der Intensivstation von mindestens 7 Tagen.
+    -   Nur Propofol-Einnahme innerhalb der ersten 7 Tage nach Aufnahme wird analysiert.
+    
+:::
+
+## Verwendete Confounder {.smaller}
+
+::: incremental
+-   **Alter**
+-   **BMI**
+-   **APACHE-II-Score**
+-   **Zufälliger Effekt für Intensivstation**
+-   **Geschlecht**
+-   **Jahr der Behandlung (kategorial)**
+-   **admission category (kategorial)**
+-   **leading admission diagnosis (kategorial)**
+-   **Anzahl der Tage (0-7) mit mechanischer Beatmung**
+-   **Tage mit oral intake (Nahrungsaufnahme)**
+-   **Tage mit parenteral nutrition**
+-   **Tage mit protein intake**
+
+:::
+
+## Confounders
+
+![Verteilung der Confounders](plots/confounders.png)
+
+## Methodik {.smaller}
+
+::: incremental
+-   ***Datenvorverarbeitung***:
+
+    1.  Zusammenführung der Datensätze.
+    2.  Umgang mit fehlenden Werten.
+    3.  Berechnung wichtiger Metriken:
+        -   Kumulative Propofol-Dosis.
+        -   Tage mit Propofol-Einnahme.
+
+- ***Statistische Modelle***:
+
+  ***Cox-Proportional-Hazards-Modell***
+
+    Verwendung für:
+    - Tod und Entlassung als konkurrierende Risiken.
+    - Anpassungen für Störvariablen
+    - Alter, BMI, Apache II-Score usw.
+
+:::
+
+
+## Cox Modell {.smaller}
+
+::: incremental
+
+***Hazard Function***
+
+Das Cox-Modell definiert die Hazard-Funktion $h(t|X)$, welche das unmittelbare Risiko           eines Ereignisses zum Zeitpunkt $t$ für eine Person mit Kovariaten $X$ darstellt:
+
+$$
+h(t|X) = h_0(t) \cdot \exp(\beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p)
+$$
+
+- *Dabei gilt*:
+
+  - $h(t|X)$: Hazard-Funktion für eine Person mit Kovariaten $X$.
+  - $h_0(t)$: Basis-Hazard-Funktion, das Risiko, wenn alle Kovariaten null sind.
+  - $\beta_i$: Koeffizienten für die $i$-te Kovariate.
+  - $X_i$: Wert der $i$-ten Kovariate für eine Person.
+
+:::
+
+---
+
+## Merkmale des Cox-Modells {.smaller}
+
+::: incremental
+
+1. **Proportional-Hazards-Annahme**:
+   - Das Verhältnis der Hazards für zwei Individuen ist konstant über die Zeit und hängt nur von den Kovariaten ab:
+   $$
+   \frac{h(t|X_1)}{h(t|X_2)} = \exp\big(\beta_1(X_{1,1} - X_{2,1}) + \cdots + \beta_p(X_{1,p} - X_{2,p})\big)
+   $$
+
+2. **Semi-parametrische Natur**:
+   - Die Basis-Hazard-Funktion $h_0(t)$ bleibt unbestimmt, was das Modell flexibel und robust macht.
+   - Nur die relativen Effekte (über $\beta$) werden geschätzt, nicht $h_0(t)$.
+
+:::
+
+## Merkmale des Cox-Modells {.smaller}
+
+::: incremental
+
+3. **Zensierung**:
+   - Unterstützt rechts-zensierte Daten, bei denen der genaue Zeitpunkt eines Ereignisses unbekannt ist, aber nach einer bestimmten Beobachtungszeit liegt.
+
+4. **Interpretation**:
+   - **Hazard Ratio (HR)**:
+     $$
+     HR = \exp(\beta)
+     $$
+     - Repräsentiert das relative Risiko eines Ereignisses bei einer Einheitserhöhung der Kovariate $X_i$.
+     - $HR > 1$: Erhöhtes Risiko.
+     - $HR < 1$: Verringertes Risiko.
+
+::: 
+
+
+## Ergebnisse {.smaller}
+
+:::{.columns}
+::: {.column width="50%"}
+- **Hazard Ratios**:
+  - ***Signifikante Kovariaten***:
+    - ***Tage mit Propofol***: Erhöht die Wahrscheinlichkeit der Entlassung \(HR > 1\).
+    - ***Tage mit mechanischer Beatmung***: Reduziert die Wahrscheinlichkeit der Entlassung \(HR < 1\).
+    - ***Parenterale Ernährung***: Verlangsamt die Entlassung \(HR < 1\).
+  - ***Nicht signifikant***:
+    - ***Alter*** und ***APACHE-II-Score*** zeigen keinen Einfluss \(HR $\approx$ 1\).
+
+:::
+
+::: {.column width="50%"}
+![](models/HR.png)
+:::
+:::
+
+
+## Ergebnisse II {.smaller}
+
+:::{.columns}
+::: {.column width="50%"}
+- **Interpretation der Martingale-Residual-Plots**:
+  - **Alter, BMI, APACHE-II-Score**: Lineare Beziehung akzeptabel.
+  - **Tage mit Propofol**: Keine Transformation erforderlich.
+  - **Mechanische Beatmung**: Hinweise auf nicht-lineare Effekte.
+  - **Parenterale Ernährung**: Mögliche nicht-lineare Trends.
+:::
+
+::: {.column width="50%"}
+![](plots/Martingale_Residuals.png)
+:::
+:::
+
+## Überlebensanalyse
+
+## Subgruppenanalyse: Alter
+
+**Ergebnisse**
+
+
+## Subgruppenanalyse: Alter {.smaller}
+
+::: incremental
+- **Subgruppen**:
+  - Patienten \( $\leq$ 65 \) Jahre und \( > 65 \) Jahre.
+  
+- **Ergebnisse**:
+  - **Jüngere Patienten \( $\leq$ 65 \)**:
+    - Signifikante Kovariaten: Tage mit Propofol \(HR > 1\), mechanische Beatmung \(HR < 1\).
+    - Höhere Entlassungswahrscheinlichkeit als ältere Patienten.
+
+  - **Ältere Patienten \( > 65 \)**:
+    - Keine signifikanten Kovariaten für Entlassungswahrscheinlichkeit.
+    - Mechanische Beatmung hat stärkeren negativen Effekt.
+  
+- **Interpretation**:
+  - Alter beeinflusst die Entlassung indirekt durch Interaktionen mit anderen Kovariaten.
+  
+:::
+
+## Subgruppenanalyse: Geschlecht
+
+**Ergebnisse**
+
+
+## Subgruppenanalyse: Geschlecht {.smaller}
+
+::: incremental
+- **Subgruppe**: Weibliche Patienten.
+
+- **Ergebnisse**:
+  - Signifikante Kovariaten:
+    - Tage mit Propofol \(HR > 1\): Erhöht die Wahrscheinlichkeit der Entlassung.
+    - Tage mit parenteraler Ernährung \(HR < 1\): Verlangsamt die Entlassung.
+  - Mechanische Beatmung \(HR < 1\) hat vergleichbare Effekte wie in der Gesamtgruppe.
+
+- **Interpretation**:
+  - Weibliche Patienten zeigen ähnliche Muster wie die Gesamtgruppe.
+  - Kein signifikanter Geschlechtsunterschied festgestellt.
+  
+:::
+
+## Modell-Diagnostik {.smaller}
+
+::: incremental
+- **Proportional-Hazards-Annahme**:
+  - **Schoenfeld-Residuen**:
+    - Kein Hinweis auf Verletzung der Annahme für signifikante Kovariaten.
+    - Plots zeigen flache Trends \(p > 0.05\).
+
+- **Linearität**:
+  - **Martingale-Residuen**:
+    - Kovariaten wie Alter und BMI zeigen keine deutliche Nichtlinearität.
+    - Transformationen nicht erforderlich.
+
+- **Modellgüte**:
+  - **Concordance Index**: 0.714.
+    - Gute Vorhersagefähigkeit des Modells.
+  - **Log-Rank-Test**: \( p < 2e-16 \) – Modell signifikant.
+  
+:::
+
+##  Penalized Regression
+
+
+## Diskussion {.smaller}
+
+::: incremental
+- **Stärken des Modells**:
+  - Verwendung des Cox-Modells zur Schätzung relativer Risiken.
+  - Integration wichtiger klinischer Kovariaten (z. B. Propofol, mechanische Beatmung).
+
+- **Schwächen**:
+  - 3223 Beobachtungen aufgrund von fehlenden Werten ausgeschlossen.
+  - Effekte von Zeit-abhängigen Kovariaten nicht vollständig modelliert.
+
+- **Klinische Relevanz**:
+  - Identifiziert Propofol-Dauer als positiven Faktor für Entlassung.
+  - Mechanische Beatmung zeigt signifikant negative Effekte auf die Entlassungswahrscheinlichkeit.
+
+- **Zukünftige Arbeiten**:
+  - Erweitern der Analyse auf zusätzliche Subgruppen (z. B. Diagnose-spezifisch).
+  - Verwendung von zeitabhängigen Kovariaten in erweiterten Modellen.
+  
+:::
+
+
+## Literatur {.smaller .scrollable}
+
+-   \[1\] Bender, Ralf, Thomas Augustin, and Maria Blettner. "Generating survival times to simulate Cox proportional hazards models." Statistics in medicine 24.11 (2005): 1713-1723.
+
+-   \[2\] Kauermann, Göran. "Penalized spline smoothing in multivariable survival models with varying coefficients." Computational statistics & data analysis 49.1 (2005): 169-186.
+
+-   \[3\] Kotani, Yuki, et al. "Propofol and survival: an updated meta-analysis of randomized clinical trials." Critical care 27.1 (2023): 139.
+
+-   \[4\] Vanlersberghe, C., and Frederic Camu. "Propofol." Modern Anesthetics (2008): 227-252.

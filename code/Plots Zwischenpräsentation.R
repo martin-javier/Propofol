@@ -2,6 +2,7 @@ library(ggplot2)
 library(survival)
 library(survminer)
 library(ggthemes)
+
 # data_EK erstellen in Model_Versuch.R
 
 theme.main <- theme_stata(scheme = "s1color")
@@ -38,6 +39,7 @@ ggplot(age_counts, aes(x = AgeGroup, y = n)) +
   theme.main + 
   theme.adjusted + 
   theme(axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 18, angle = 0))
+  ## TO DO: Make the x-achse labels obliquely
 
 # mit model_data (ein Balken zeigt Anz. Patienten in 2er Gruppen -> 18&19 Jährige ein Balken, usw.):
 ggplot(model_data, aes(x = Age)) +
