@@ -40,8 +40,6 @@ ggplot(model_data, aes(x = Age)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10)) +
   theme.main + theme.adjusted
 
-## geeigneter BMI Plot ####
-
 
 # ApacheIIScore ####
 # Boxplot
@@ -229,7 +227,7 @@ ggplot(model_data, aes(x = LeadAdmDiag)) +
   labs(title = "Verteilung Erstdiagnose", x = NULL, y = "Anzahl Patienten") +
   theme.main + theme.adjusted
 
-# BMI Plot
+# BMI Plot ####
 ggplot(model_data, aes(x = cut(BMI, 
                                breaks = c(-Inf, 18.5, 25, 30, 35, Inf),
                                labels = c("Untergewicht", "Normalgewicht", "Übergewicht", 
