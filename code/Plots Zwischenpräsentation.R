@@ -261,5 +261,25 @@ ggplot(model_data, aes(x = cut(BMI,
   theme.main + 
   theme.adjusted + 
   theme(legend.position = "none")
+  # Brief descreption of Violin Graph:
+
+# A violin plot is a hybrid of a box plot and a kernel density plot, which shows peaks in the data. 
+# It is used to visualize the distribution of numerical data. 
+#Unlike a box plot that can only show summary statistics, 
+#violin plots depict summary statistics and the density of each variable.
+
+mergedAndCleanedData %>% select(Age, Gender) %>%
+  ggplot(aes(x = Gender, y = Age, fill = Gender)) + 
+  geom_violin(trim = FALSE, alpha = 0.5) + 
+  geom_boxplot(varwidth = TRUE, width = 0.2)+
+  theme.adjusted +
+  theme.main +
+  theme(legend.position = "none")
   
 
+# die Verteilung von Alter:
+
+mergedAndCleanedData %>% select(Age) %>% ggplot(aes(Age)) +
+  geom_histogram(aes(y = ..density..), fill = "#74C1E9", colour = 1, binwidth = 1) +
+  geom_density(color = "orange", lwd = 1.2, linetype = 1, ) + 
+  ggtitle("Bin size = 1") + theme.adjusted + theme.main
