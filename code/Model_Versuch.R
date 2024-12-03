@@ -6,7 +6,7 @@ library(gratia)  # For GAM visualization
 library(ggplot2) # For additional plot customization
 
 # Load the data
-data <- readRDS("data\\mergedAndCleanedData.Rds")
+data <- readRDS("data/mergedAndCleanedData.Rds")
 
 # Filter data based on inclusion criteria
 data_EK <- data %>%
