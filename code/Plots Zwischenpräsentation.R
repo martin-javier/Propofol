@@ -268,8 +268,8 @@ ggplot(model_data, aes(x = cut(BMI,
 #Unlike a box plot that can only show summary statistics, 
 #violin plots depict summary statistics and the density of each variable.
 
-mergedAndCleanedData %>% select(Age, Gender) %>%
-  ggplot(aes(x = Gender, y = Age, fill = Gender)) + 
+model_data %>% select(Age, Sex) %>%
+  ggplot(aes(x = Sex, y = Age, fill = Sex)) + 
   geom_violin(trim = FALSE, alpha = 0.5) + 
   geom_boxplot(varwidth = TRUE, width = 0.2)+
   theme.adjusted +
@@ -279,7 +279,7 @@ mergedAndCleanedData %>% select(Age, Gender) %>%
 
 # die Verteilung von Alter:
 
-mergedAndCleanedData %>% select(Age) %>% ggplot(aes(Age)) +
+model_data %>% select(Age) %>% ggplot(aes(Age)) +
   geom_histogram(aes(y = ..density..), fill = "#74C1E9", colour = 1, binwidth = 1) +
   geom_density(color = "orange", lwd = 1.2, linetype = 1, ) + 
   ggtitle("Bin size = 1") + theme.adjusted + theme.main
