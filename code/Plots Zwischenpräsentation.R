@@ -144,7 +144,7 @@ ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
               # surv_object <- Surv(time = data_EK$Surv0To60, event = data_EK$surv_icu_status)
 
 # Daten auf eindeutige Patienten filtern (erstes Ereignis pro Patient)
-unique_patients_kaplan <- data_EK %>%
+unique_patients_kaplan <- model_data %>%
   group_by(CombinedID) %>%
   summarise(
     surv_icu0to60 = min(surv_icu0to60, na.rm = TRUE),  # Zeit bis zum ersten Ereignis
@@ -154,12 +154,15 @@ unique_patients_kaplan <- data_EK %>%
 
 # Tod als Ereignis definieren: 2 = Tod, andere Status (0 = zensiert, 1 = Entlassung) werden als zensiert behandelt
 unique_patients_kaplan$status_tod <- ifelse(unique_patients_kaplan$surv_icu_status == 2, 1, 0)
+unique_patients_kaplan$status_discharge <- ifelse(unique_patients_kaplan$surv_icu_status == 1, 1, 0)
 
 # Surv-Objekt für Tod in der ICU erstellen
 surv_object_tod <- Surv(time = unique_patients_kaplan$surv_icu0to60, event = unique_patients_kaplan$status_tod)
+surv_object_discarged <- Surv(time = unique_patients_kaplan$surv_icu0to60, event = unique_patients_kaplan$status_discharge)
 
 # Kaplan-Meier-Modell für Tod anpassen
 km_fit_tod <- survfit(surv_object_tod ~ 1)
+km_fit_discharge <- survfit(surv_object_discarged ~ 1)
 
 # ggsurvplot ####
 ggsurvplot(
@@ -172,7 +175,7 @@ ggsurvplot(
   title = "Kaplan-Meier-Kurve: Tod in der ICU", # Titel
   risk.table = FALSE,                            # Risikotabelle anzeigen
   conf.int.style = "step",                      # Konfidenzintervall als Schrittlinie
-  palette = c("#56B4E9"),            # Farbschema für Kurven und Konfidenzintervalle
+  palette = c("tomato"),            # Farbschema für Kurven und Konfidenzintervalle
   ggtheme = theme_minimal() +                   # Minimalistisches Theme mit Anpassungen
     theme(
       plot.title = element_text(face = "bold", hjust = 0.5, size = 16), # Zentrierter, fetter Titel
@@ -186,6 +189,92 @@ ggsurvplot(
   legend.title = "Status",                    # Legendentitel
   tables.theme = theme.main + theme.adjusted 
 )
+
+# ggsurvplot für Entlassung
+ggsurvplot(
+  km_fit_discharge,
+  data = unique_patients_kaplan,
+  conf.int = TRUE,                              # Konfidenzintervall anzeigen
+  pval = TRUE,                                  # P-Wert anzeigen
+  xlab = "Tage",                                # X-Achsentitel
+  ylab = "Entlassungswahrscheinlichkeit", # Y-Achsentitel
+  title = "Kaplan-Meier-Kurve: Entlassung aus der ICU", # Titel
+  risk.table = FALSE,                           # Risikotabelle ausschalten
+  conf.int.style = "step",                      # Konfidenzintervall als Schrittlinie
+  palette = c("steelblue"),                     # Farbschema
+  ggtheme = theme_minimal() +                   # Minimalistisches Theme mit Anpassungen
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 16), # Zentrierter, fetter Titel
+      axis.title = element_text(size = 14),                            # Größere Achsentitel
+      axis.text = element_text(size = 12),                             # Größere Achsenbeschriftung
+      panel.grid.major = element_line(color = "darkgrey"),             # Hellgraue Gitterlinien
+      panel.grid.minor = element_blank(),                              # Keine kleinen Gitterlinien
+      plot.background = element_rect(fill = "white", color = NA)       # Weißer Hintergrund
+    ),
+  legend.labs = c("Entlassung aus der ICU"),    # Legende anpassen
+  legend.title = "Status"                       # Legendentitel
+)
+
+library(broom)
+library(ggplot2)
+
+# Überlebensdaten aus dem Kaplan-Meier-Modell extrahieren
+km_data <- broom::tidy(km_fit_discharge)
+
+# Manuell Startpunkt hinzufügen
+km_data_clean <- km_data %>%
+  bind_rows(data.frame(time = 0, estimate = 1, conf.low = 1, conf.high = 1)) %>%
+  arrange(time)  # Sortieren, damit 0 am Anfang steht
+
+# Kaplan-Meier-Plot mit ggplot2 erstellen
+ggplot(km_data_clean, aes(x = time, y = estimate)) +
+  geom_step(color = "steelblue", size = 1.2, linetype = "solid") +   # Schrittlinie
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),                # Konfidenzintervall
+              fill = "lightblue", alpha = 0.4) +
+  scale_x_continuous(
+    breaks = seq(0, 60, by = 10),                                    # Achsen-Breaks alle 10 Tage
+    limits = c(0, 60)                                                # Bereich der x-Achse
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 1, by = 0.1),                                    # Achsen-Breaks alle 0.1
+    limits = c(0, 1)                                                 # Bereich der y-Achse
+  ) +
+  labs(
+    title = "Kaplan-Meier-Kurve: Entlassung aus der ICU",
+    x = "Tage",
+    y = "Verbleib in der ICU"
+  ) +
+  theme.main + 
+  theme.adjusted
+
+# Überlebensdaten für Tod in der ICU extrahieren
+km_data_tod <- broom::tidy(km_fit_tod)
+
+# Manuell Startpunkt hinzufügen
+km_data_tod_clean <- km_data_tod %>%
+  bind_rows(data.frame(time = 0, estimate = 1, conf.low = 1, conf.high = 1)) %>%
+  arrange(time)  # Sortieren, damit 0 am Anfang steht
+
+# Kaplan-Meier-Plot für Tod in der ICU erstellen
+ggplot(km_data_tod_clean, aes(x = time, y = estimate)) +
+  geom_step(color = "red", size = 1.2, linetype = "solid") +      # Schrittlinie
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),                # Konfidenzintervall
+              fill = "mistyrose", alpha = 0.4) +
+  scale_x_continuous(
+    breaks = seq(0, 60, by = 10),                                    # Achsen-Breaks alle 10 Tage
+    limits = c(0, 60)                                                # Bereich der x-Achse
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 1, by = 0.1),                                    # Achsen-Breaks alle 0.1
+    limits = c(0, 1)                                                 # Bereich der y-Achse
+  ) +
+  labs(
+    title = "Kaplan-Meier-Kurve: Tod in der ICU",
+    x = "Tage",
+    y = "Überlebenswahrscheinlichkeit"
+  ) +
+  theme.main +
+  theme.adjusted
 
 
 # Beziehung zwischen Alter und ApacheIIScore ####
