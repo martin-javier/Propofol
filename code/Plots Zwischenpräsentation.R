@@ -2,6 +2,7 @@ library(ggplot2)
 library(survival)
 library(survminer)
 library(ggthemes)
+library(cmprsk)
 
 # data_EK erstellen in Model_Versuch.R
 
@@ -35,11 +36,18 @@ ggplot(age_counts, aes(x = AgeGroup, y = n)) +
   theme(axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 18, angle = 0))
   ## TO DO: Make the x-achse labels obliquely
 
-# mit model_data (ein Balken zeigt Anz. Patienten in 2er Gruppen -> 18&19 Jährige ein Balken, usw.):
+# Histogramm
 ggplot(model_data, aes(x = Age)) +
   geom_histogram(binwidth = 4, fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(title = "Verteilung Alter", x = "Alter", y = "Anzahl Patienten") +
   scale_x_continuous(breaks = seq(20, 100, by = 10)) +
+  theme.main + theme.adjusted
+
+# Histogramm mit Dichte
+model_data %>% select(Age) %>% ggplot(aes(Age)) +
+  geom_histogram(aes(y = ..density..), fill = "#74C1E9", colour = 1, binwidth = 1, alpha = 0.8) +
+  labs(title = "Verteilung Alter (Binwidth = 1)", x = "Alter", y = "Dichte") +
+  geom_density(color = "orange", lwd = 1.2, linetype = 1, ) + 
   theme.main + theme.adjusted
 
 
@@ -75,22 +83,6 @@ ggplot(model_data, aes(x = "", y = ApacheIIScore)) +
 #   theme.adjusted
 
 # Balkendiagramm für Gender ####
-ggplot(unique_patients, aes(x = Gender, fill = Gender)) +
-  geom_bar(color = "black", alpha = 0.7) +
-  labs(title = "Geschlechterverteilung", 
-       x = "Geschlecht", 
-       y = "Anzahl Patienten") +
-  scale_fill_manual(
-    values = c("Female" = "tomato", "Male" = "skyblue")) +
-  guides(fill = guide_legend(override.aes = list(shape = 15, size = 8))) +
-  theme.main + 
-  theme.adjusted +
-  theme(legend.text = element_text(size = 20), 
-        legend.title = element_text(size = 25, face = "bold"), 
-        legend.background = element_rect(fill = "white", color = "black", linewidth = 0.5),
-        legend.position = "bottom")
-
-# überarbeitet (fand legende und x-Achsenlabel unnötig)
 ggplot(model_data, aes(x = Sex, fill = Sex)) +
   geom_bar(color = "black", alpha = 0.7) +
   labs(title = "Geschlechterverteilung", x = NULL, y = "Anzahl Patienten") +
@@ -104,7 +96,7 @@ ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
   geom_bar(color = "black", alpha = 0.8) +
   scale_x_discrete(labels = c("PatientDied" = "Verstorbene",
                               "PatientDischarged" = "Entlassene",
-                              "PatientHospital" = "Im Krankenhaus")) +
+                              "PatientHospital" = "Rechtszensiert")) +
   labs(title = "Verteilung Patienten", 
        x = NULL, 
        y = "Anzahl Patienten") +
@@ -116,11 +108,6 @@ ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
   theme(legend.position = "none")
 
 
-# absolute Zahlen stimmen mit outcome_counts überein
-# Prozente im plot manuell nachgeprüft, stimmen
-# nrow(model_data[model_data$surv_icu_status_exp == "PatientDied",]) / nrow(model_data)
-# nrow(model_data[model_data$surv_icu_status_exp == "PatientDischarged",]) / nrow(model_data)
-# nrow(model_data[model_data$surv_icu_status_exp == "PatientHospital",]) / nrow(model_data)
 
 
 # Kaplan-Meier-Modell erstellen FEHLT
@@ -350,25 +337,212 @@ ggplot(model_data, aes(x = cut(BMI,
   theme.main + 
   theme.adjusted + 
   theme(legend.position = "none")
-  # Brief descreption of Violin Graph:
 
+# Violin Plot Alter ####
+# Brief description of Violin Graph:
 # A violin plot is a hybrid of a box plot and a kernel density plot, which shows peaks in the data. 
 # It is used to visualize the distribution of numerical data. 
 #Unlike a box plot that can only show summary statistics, 
 #violin plots depict summary statistics and the density of each variable.
 
-model_data %>% select(Age, Sex) %>%
-  ggplot(aes(x = Sex, y = Age, fill = Sex)) + 
-  geom_violin(trim = FALSE, alpha = 0.5) + 
-  geom_boxplot(varwidth = TRUE, width = 0.2)+
-  theme.adjusted +
+counts <- model_data %>%
+  group_by(Sex) %>%
+  summarize(Count = n())
+means <- model_data %>%
+  group_by(Sex) %>%
+  summarize(Mean = mean(Age))
+
+# Violinplot mit individueller Annotation pro Geschlecht
+model_data %>% 
+  select(Age, Sex) %>%
+  ggplot(aes(x = Sex, y = Age, fill = Sex)) +
+  geom_violin(trim = FALSE, alpha = 0.5, adjust = 0.7, scale = "count", color = "black") + 
+  geom_boxplot(
+    varwidth = TRUE, 
+    width = 0.2, 
+    outlier.shape = 16,  # Punkte als Kreise
+    outlier.size = 2,    # Größe der Punkte
+    outlier.color = "black" # Farbe der Punkte
+  ) +
+  # Annotation für Female
+  annotate(
+    "text", 
+    x = 1.13, y = min(model_data$Age) - 5,  # Position unter dem Female-Plot
+    label = paste0("n = ", counts$Count[counts$Sex == "Female"]),
+    hjust = 0, vjust = 0.5,
+    size = 5, color = "black"
+  ) +
+  # Annotation für Male
+  annotate(
+    "text", 
+    x = 2.13, y = min(model_data$Age) - 5,  # Position unter dem Male-Plot
+    label = paste0("n = ", counts$Count[counts$Sex == "Male"]),
+    hjust = 0, vjust = 0.5,
+    size = 5, color = "black"
+  ) +
+  # Mittelwert als Punkt
+  stat_summary(fun = mean, geom = "point", shape = 16, size = 3, color = "black") +
+  # Mittelwert als Textbeschriftung
+  # stat_summary(
+  #   fun = mean, 
+  #   geom = "text", 
+  #   aes(label = paste0("Mean: ", round(..y.., 1))),  # Beschriftung des Mittelwerts
+  #   vjust = 0, size = 4, color = "black", hjust = -1
+  # ) +
+  scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +  # Farben manuell anpassen
+  scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +  # X-Achsen-Beschriftung anpassen
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+  labs(
+    title = "Verteilung des Alters nach Geschlecht",
+    x = "Geschlecht",
+    y = "Alter"
+  ) +
   theme.main +
+  theme.adjusted +
   theme(legend.position = "none")
-  
+        
 
-# die Verteilung von Alter:
+# Boxplot BMI ####
+# Definiere die Normalgewichtsbereiche (in BMI) für Männer und Frauen
+normal_weight_men <- c(20, 25)    # Normalgewicht für Männer (BMI 20-25)
+normal_weight_women <- c(19, 24) # Normalgewicht für Frauen (BMI 19-24)
 
-model_data %>% select(Age) %>% ggplot(aes(Age)) +
-  geom_histogram(aes(y = ..density..), fill = "#74C1E9", colour = 1, binwidth = 1) +
-  geom_density(color = "orange", lwd = 1.2, linetype = 1, ) + 
-  ggtitle("Bin size = 1") + theme.adjusted + theme.main
+# Boxplot erstellen mit Normalgewichts-Intervallen
+model_data %>% 
+  select(BMI, Sex) %>%
+  ggplot(aes(x = Sex, y = BMI, fill = Sex)) +
+  geom_boxplot(
+    varwidth = TRUE, 
+    width = 0.4, 
+    outlier.shape = 16, 
+    outlier.size = 2, 
+    outlier.color = "black"
+  ) +
+  # Normalgewicht-Linien für Frauen
+  geom_segment(
+    aes(x = 0.845, xend = 1.162, y = normal_weight_women[1], yend = normal_weight_women[1]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  geom_segment(
+    aes(x = 0.845, xend = 1.162, y = normal_weight_women[2], yend = normal_weight_women[2]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  # Normalgewicht-Linien für Männer
+  geom_segment(
+    aes(x = 1.8, xend = 2.2, y = normal_weight_men[1], yend = normal_weight_men[1]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  geom_segment(
+    aes(x = 1.8, xend = 2.2, y = normal_weight_men[2], yend = normal_weight_men[2]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  # Mittelwert als Punkt hinzufügen
+  stat_summary(
+    fun = mean, 
+    geom = "point", 
+    shape = 16, 
+    size = 3, 
+    color = "black"
+  ) +
+  # Notiz für Normalgewicht Frauen
+  annotate(
+    "text", 
+    x = 0.97, 
+    y = normal_weight_women[2] - 1.5,  # Oberhalb des Normalgewicht-Intervalls
+    label = "Normalgewicht: 19-24", 
+    hjust = -1.25, size = 4, color = "black"
+  ) +
+  # Notiz für Normalgewicht Männer
+  annotate(
+    "text", 
+    x = 2, 
+    y = normal_weight_men[2] - 2,  # Oberhalb des Normalgewicht-Intervalls
+    label = "Normalgewicht: 20-25", 
+    hjust = -1.25, size = 4, color = "black"
+  ) +
+  # Achsen- und Designanpassungen
+  scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +
+  scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +
+  scale_y_continuous(breaks = seq(10, 110, by = 5)) +
+  labs(
+    title = "BMI-Verteilung nach Geschlecht",
+    x = "Geschlecht",
+    y = "BMI"
+  ) +
+  theme.main +
+  theme.adjusted +
+  theme(legend.position = "none")
+
+# # Mittelwert als Text hinzufügen
+# stat_summary(
+#   fun = mean, 
+#   geom = "text", 
+#   aes(label = paste0("Mean: ", round(..y.., 1))), 
+#   vjust = -0.8, 
+#   hjust = 0.5, 
+#   size = 4, 
+#   color = "black"
+# ) +
+
+
+# Kaplan-Meier Plot ####
+# Kaplan-Meier Überlebenswahrscheinlichkeit
+km_data_death <- model_data %>%
+  mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent))
+km_death <- survfit(Surv(daysToEvent, PatientDied) ~ 1, data = km_data_death)
+km_death_plot <- ggsurvplot(km_death, conf.int = FALSE, legend = "none",
+           xlab = "Tage", ylab = "Überlebenswahrscheinlichkeit",
+           title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
+           censor = FALSE, ggtheme = (theme.main + theme.adjusted))
+km_death_plot$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
+  geom_line(size = 1.2, color = "#0072B2")
+
+# Kaplan Meier für nicht-entlassung Wahrscheinlichkeit
+km_data_disch <- model_data %>%
+  mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent))
+km_disch <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disch)
+km_disch_plot <- ggsurvplot(km_disch, conf.int = FALSE, legend = "none",
+           xlab = "Tage", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
+           title = "Kaplan-Meier Kurve Nicht-Entlassungen",
+           censor = FALSE, ggtheme = (theme.main + theme.adjusted))
+km_disch_plot$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
+  geom_line(size = 1.2, color = "#E69F00")
+
+
+# Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
+# Create competing risks data | Event type: 1 = Discharged, 2 = Died
+km_data_discharge <- model_data %>%
+  mutate(event = case_when(
+    PatientDischarged == 1 ~ 1,  # Discharge
+    PatientDied == 1 ~ 2,       # Death
+    TRUE ~ 0                    # Censored
+  ))
+# use cuminc form cmprsk package
+fit_cr <- cuminc(
+  ftime = km_data_discharge$daysToEvent,
+  fstatus = km_data_discharge$event,
+  cencode = 0 # for censored data
+)
+# Plot cumulative function for death and discharge
+ggcompetingrisks(
+  fit_cr, curvetype = "cuminc", conf.int = FALSE,
+  title = "Vergleich kumulierte Sterbe- und Entlassungswahrscheinlichkeit",
+  xlab = "Tage",  ylab = "Kumulierte Wahrscheinlichkeit für Event",
+  ggtheme = (theme.main + theme.adjusted +
+               theme(legend.text = element_text(face = "bold", size = 18)))) +
+  geom_line(size = 1) +
+  scale_color_manual(
+    values = c("#E69F00", "#0072B2"),
+    labels = c("Entlassen", "Verstorben")
+  ) + 
+  scale_y_continuous(
+    limits = c(0, 1),
+    labels = scales::percent
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)
+  ) +
+  guides(color = guide_legend(title = NULL)) + facet_null()
+
