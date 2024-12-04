@@ -108,162 +108,6 @@ ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
   theme(legend.position = "none")
 
 
-
-
-# Kaplan-Meier-Modell erstellen FEHLT
-
-              # surv_icu_status == 2:
-              #   Tod in der ICU innerhalb von 60 Tagen.
-              # 
-              # Wenn ein Todeszeitpunkt (surv_icu0to60) gegeben ist und dieser < 60 Tage beträgt, wird das Ereignis als Tod innerhalb der ICU klassifiziert.
-              # 
-              # surv_icu_status == 1:
-              #   Entlassung aus der ICU vor dem Tod (konkurrierendes Risiko).
-              # 
-              # Wenn ein Entlassungszeitpunkt (discharge_icu) angegeben ist und dieser vor einem eventuellen Tod liegt, wird das Ereignis als Entlassung klassifiziert.
-              # Wenn kein Todeszeitpunkt bekannt ist, wird die Entlassung trotzdem als Ereignis gezählt.
-              # 
-              # surv_icu_status == 0:
-              #   Zensiert (kein Tod oder Entlassung innerhalb des Beobachtungszeitraums von 60 Tagen).
-              # 
-              # Patienten, die bis zum Ende der Beobachtungszeit nicht entlassen oder gestorben sind, werden als zensiert betrachtet.
-              # Administrative Zensierung: Alle Patienten mit Ereigniszeit (surv_icu0to60) > 60 Tage werden ebenfalls als zensiert klassifiziert.
-              # surv_object <- Surv(time = data_EK$Surv0To60, event = data_EK$surv_icu_status)
-
-# Daten auf eindeutige Patienten filtern (erstes Ereignis pro Patient)
-unique_patients_kaplan <- model_data %>%
-  group_by(CombinedID) %>%
-  summarise(
-    surv_icu0to60 = min(surv_icu0to60, na.rm = TRUE),  # Zeit bis zum ersten Ereignis
-    surv_icu_status = first(surv_icu_status)          # Status für das erste Ereignis
-  ) %>%
-  ungroup()
-
-# Tod als Ereignis definieren: 2 = Tod, andere Status (0 = zensiert, 1 = Entlassung) werden als zensiert behandelt
-unique_patients_kaplan$status_tod <- ifelse(unique_patients_kaplan$surv_icu_status == 2, 1, 0)
-unique_patients_kaplan$status_discharge <- ifelse(unique_patients_kaplan$surv_icu_status == 1, 1, 0)
-
-# Surv-Objekt für Tod in der ICU erstellen
-surv_object_tod <- Surv(time = unique_patients_kaplan$surv_icu0to60, event = unique_patients_kaplan$status_tod)
-surv_object_discarged <- Surv(time = unique_patients_kaplan$surv_icu0to60, event = unique_patients_kaplan$status_discharge)
-
-# Kaplan-Meier-Modell für Tod anpassen
-km_fit_tod <- survfit(surv_object_tod ~ 1)
-km_fit_discharge <- survfit(surv_object_discarged ~ 1)
-
-# ggsurvplot ####
-ggsurvplot(
-  km_fit_tod,
-  data = unique_patients_kaplan,
-  conf.int = TRUE,                              # Konfidenzintervall anzeigen
-  pval = TRUE,                                  # P-Wert anzeigen
-  xlab = "Tage",                                # X-Achsentitel
-  ylab = "Überlebenswahrscheinlichkeit (Tod in der ICU)", # Y-Achsentitel
-  title = "Kaplan-Meier-Kurve: Tod in der ICU", # Titel
-  risk.table = FALSE,                            # Risikotabelle anzeigen
-  conf.int.style = "step",                      # Konfidenzintervall als Schrittlinie
-  palette = c("tomato"),            # Farbschema für Kurven und Konfidenzintervalle
-  ggtheme = theme_minimal() +                   # Minimalistisches Theme mit Anpassungen
-    theme(
-      plot.title = element_text(face = "bold", hjust = 0.5, size = 16), # Zentrierter, fetter Titel
-      axis.title = element_text(size = 14),                            # Größere Achsentitel
-      axis.text = element_text(size = 12),                             # Größere Achsenbeschriftung
-      panel.grid.major = element_line(color = "darkgrey"),               # Hellgraue Gitterlinien
-      panel.grid.minor = element_blank(),                              # Keine kleinen Gitterlinien
-      plot.background = element_rect(fill = "white", color = NA)       # Beiger Hintergrund
-    ),
-  legend.labs = c("Tod in der ICU"),          # Legende anpassen
-  legend.title = "Status",                    # Legendentitel
-  tables.theme = theme.main + theme.adjusted 
-)
-
-# ggsurvplot für Entlassung
-ggsurvplot(
-  km_fit_discharge,
-  data = unique_patients_kaplan,
-  conf.int = TRUE,                              # Konfidenzintervall anzeigen
-  pval = TRUE,                                  # P-Wert anzeigen
-  xlab = "Tage",                                # X-Achsentitel
-  ylab = "Entlassungswahrscheinlichkeit", # Y-Achsentitel
-  title = "Kaplan-Meier-Kurve: Entlassung aus der ICU", # Titel
-  risk.table = FALSE,                           # Risikotabelle ausschalten
-  conf.int.style = "step",                      # Konfidenzintervall als Schrittlinie
-  palette = c("steelblue"),                     # Farbschema
-  ggtheme = theme_minimal() +                   # Minimalistisches Theme mit Anpassungen
-    theme(
-      plot.title = element_text(face = "bold", hjust = 0.5, size = 16), # Zentrierter, fetter Titel
-      axis.title = element_text(size = 14),                            # Größere Achsentitel
-      axis.text = element_text(size = 12),                             # Größere Achsenbeschriftung
-      panel.grid.major = element_line(color = "darkgrey"),             # Hellgraue Gitterlinien
-      panel.grid.minor = element_blank(),                              # Keine kleinen Gitterlinien
-      plot.background = element_rect(fill = "white", color = NA)       # Weißer Hintergrund
-    ),
-  legend.labs = c("Entlassung aus der ICU"),    # Legende anpassen
-  legend.title = "Status"                       # Legendentitel
-)
-
-library(broom)
-library(ggplot2)
-
-# Überlebensdaten aus dem Kaplan-Meier-Modell extrahieren
-km_data <- broom::tidy(km_fit_discharge)
-
-# Manuell Startpunkt hinzufügen
-km_data_clean <- km_data %>%
-  bind_rows(data.frame(time = 0, estimate = 1, conf.low = 1, conf.high = 1)) %>%
-  arrange(time)  # Sortieren, damit 0 am Anfang steht
-
-# Kaplan-Meier-Plot mit ggplot2 erstellen
-ggplot(km_data_clean, aes(x = time, y = estimate)) +
-  geom_step(color = "steelblue", size = 1.2, linetype = "solid") +   # Schrittlinie
-  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),                # Konfidenzintervall
-              fill = "lightblue", alpha = 0.4) +
-  scale_x_continuous(
-    breaks = seq(0, 60, by = 10),                                    # Achsen-Breaks alle 10 Tage
-    limits = c(0, 60)                                                # Bereich der x-Achse
-  ) +
-  scale_y_continuous(
-    breaks = seq(0, 1, by = 0.1),                                    # Achsen-Breaks alle 0.1
-    limits = c(0, 1)                                                 # Bereich der y-Achse
-  ) +
-  labs(
-    title = "Kaplan-Meier-Kurve: Entlassung aus der ICU",
-    x = "Tage",
-    y = "Verbleib in der ICU"
-  ) +
-  theme.main + 
-  theme.adjusted
-
-# Überlebensdaten für Tod in der ICU extrahieren
-km_data_tod <- broom::tidy(km_fit_tod)
-
-# Manuell Startpunkt hinzufügen
-km_data_tod_clean <- km_data_tod %>%
-  bind_rows(data.frame(time = 0, estimate = 1, conf.low = 1, conf.high = 1)) %>%
-  arrange(time)  # Sortieren, damit 0 am Anfang steht
-
-# Kaplan-Meier-Plot für Tod in der ICU erstellen
-ggplot(km_data_tod_clean, aes(x = time, y = estimate)) +
-  geom_step(color = "red", size = 1.2, linetype = "solid") +      # Schrittlinie
-  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),                # Konfidenzintervall
-              fill = "mistyrose", alpha = 0.4) +
-  scale_x_continuous(
-    breaks = seq(0, 60, by = 10),                                    # Achsen-Breaks alle 10 Tage
-    limits = c(0, 60)                                                # Bereich der x-Achse
-  ) +
-  scale_y_continuous(
-    breaks = seq(0, 1, by = 0.1),                                    # Achsen-Breaks alle 0.1
-    limits = c(0, 1)                                                 # Bereich der y-Achse
-  ) +
-  labs(
-    title = "Kaplan-Meier-Kurve: Tod in der ICU",
-    x = "Tage",
-    y = "Überlebenswahrscheinlichkeit"
-  ) +
-  theme.main +
-  theme.adjusted
-
-
 # Beziehung zwischen Alter und ApacheIIScore ####
 # Scatterplot: Zeigt die Beziehung zwischen Alter und ApacheIIScore.
 ggplot(model_data, aes(x = Age, y = ApacheIIScore)) +
@@ -499,9 +343,9 @@ km_death_plot$plot +
   geom_line(size = 1.2, color = "#0072B2")
 
 # Kaplan Meier für nicht-entlassung Wahrscheinlichkeit
-km_data_disch <- model_data %>%
+km_data_disc <- model_data %>%
   mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent))
-km_disch <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disch)
+km_disch <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
 km_disch_plot <- ggsurvplot(km_disch, conf.int = FALSE, legend = "none",
            xlab = "Tage", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
            title = "Kaplan-Meier Kurve Nicht-Entlassungen",
@@ -513,7 +357,7 @@ km_disch_plot$plot +
 
 # Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
 # Create competing risks data | Event type: 1 = Discharged, 2 = Died
-km_data_discharge <- model_data %>%
+km_data_discarge <- model_data %>%
   mutate(event = case_when(
     PatientDischarged == 1 ~ 1,  # Discharge
     PatientDied == 1 ~ 2,       # Death
@@ -521,8 +365,8 @@ km_data_discharge <- model_data %>%
   ))
 # use cuminc form cmprsk package
 fit_cr <- cuminc(
-  ftime = km_data_discharge$daysToEvent,
-  fstatus = km_data_discharge$event,
+  ftime = km_data_discarge$daysToEvent,
+  fstatus = km_data_discarge$event,
   cencode = 0 # for censored data
 )
 # Plot cumulative function for death and discharge
@@ -542,7 +386,7 @@ ggcompetingrisks(
     labels = scales::percent
   ) +
   scale_x_continuous(
-    breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)
+    breaks = seq(0, max(km_data_discarge$daysToEvent), by = 10)
   ) +
   guides(color = guide_legend(title = NULL)) + facet_null()
 

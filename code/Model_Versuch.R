@@ -1,3 +1,55 @@
+# Modell Zwischenppt ####
+
+## Response Patient Died
+# prepare data
+model_data_death <- model_data %>%
+  mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent))
+
+cox_died_propDays <- coxph(
+  Surv(daysToEvent, PatientDied) ~ Age + BMI + ApacheIIScore + Sex + Year + AdmCat +
+    LeadAdmDiag + DaysMechVent + Days_OralIntake + Days_ParNut + Days_ProtIntakeBelow30 +
+    Days_Propofol,
+  data = model_data_death
+)
+summary(cox_died_propDays)
+plot(survfit(cox_died_propDays))
+
+cox_died_propCals <- coxph(
+  Surv(daysToEvent, PatientDied) ~ Age + BMI + ApacheIIScore + Sex + Year + AdmCat +
+    LeadAdmDiag + DaysMechVent + Days_OralIntake + Days_ParNut + Days_ProtIntakeBelow30 +
+    totalPropofolCal,
+  data = model_data_death
+)
+summary(cox_died_propCals)
+plot(survfit(cox_died_propCals))
+
+## Response Patient Discharged
+# prep data
+model_data_disc <- model_data %>%
+  mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent))
+
+cox_disc_propDays <- coxph(
+  Surv(daysToEvent, PatientDischarged) ~ Age + BMI + ApacheIIScore + Sex + Year + AdmCat +
+    LeadAdmDiag + DaysMechVent + Days_OralIntake + Days_ParNut + Days_ProtIntakeBelow30 +
+    Days_Propofol,
+  data = model_data_disc
+)
+summary(cox_disc_propDays)
+plot(survfit(cox_disc_propDays))
+
+cox_disc_propCals <- coxph(
+  Surv(daysToEvent, PatientDischarged) ~ Age + BMI + ApacheIIScore + Sex + Year + AdmCat +
+    LeadAdmDiag + DaysMechVent + Days_OralIntake + Days_ParNut + Days_ProtIntakeBelow30 +
+    totalPropofolCal,
+  data = model_data_disc
+)
+summary(cox_disc_propCals)
+plot(survfit(cox_disc_propCals))
+
+
+
+
+
 library(pammtools)
 library(tidyverse)
 library(mgcv)
