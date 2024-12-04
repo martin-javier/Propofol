@@ -357,14 +357,143 @@ ggplot(model_data, aes(x = cut(BMI,
 #Unlike a box plot that can only show summary statistics, 
 #violin plots depict summary statistics and the density of each variable.
 
-model_data %>% select(Age, Sex) %>%
-  ggplot(aes(x = Sex, y = Age, fill = Sex)) + 
-  geom_violin(trim = FALSE, alpha = 0.5) + 
-  geom_boxplot(varwidth = TRUE, width = 0.2)+
-  theme.adjusted +
+counts <- model_data %>%
+  group_by(Sex) %>%
+  summarize(Count = n())
+means <- model_data %>%
+  group_by(Sex) %>%
+  summarize(Mean = mean(Age))
+
+# Violinplot mit individueller Annotation pro Geschlecht
+model_data %>% 
+  select(Age, Sex) %>%
+  ggplot(aes(x = Sex, y = Age, fill = Sex)) +
+  geom_violin(trim = FALSE, alpha = 0.5, adjust = 0.7, scale = "count", color = "black") + 
+  geom_boxplot(
+    varwidth = TRUE, 
+    width = 0.2, 
+    outlier.shape = 16,  # Punkte als Kreise
+    outlier.size = 2,    # Größe der Punkte
+    outlier.color = "black" # Farbe der Punkte
+  ) +
+  # Annotation für Female
+  annotate(
+    "text", 
+    x = 1.13, y = min(model_data$Age) - 5,  # Position unter dem Female-Plot
+    label = paste0("n = ", counts$Count[counts$Sex == "Female"]),
+    hjust = 0, vjust = 1,
+    size = 5, color = "black"
+  ) +
+  # Annotation für Male
+  annotate(
+    "text", 
+    x = 2.13, y = min(model_data$Age) - 5,  # Position unter dem Male-Plot
+    label = paste0("n = ", counts$Count[counts$Sex == "Male"]),
+    hjust = 0, vjust = 1,
+    size = 5, color = "black"
+  ) +
+  # Mittelwert als Punkt
+  stat_summary(fun = mean, geom = "point", shape = 16, size = 3, color = "black") +
+  # Mittelwert als Textbeschriftung
+  # stat_summary(
+  #   fun = mean, 
+  #   geom = "text", 
+  #   aes(label = paste0("Mean: ", round(..y.., 1))),  # Beschriftung des Mittelwerts
+  #   vjust = 0, size = 4, color = "black", hjust = -1
+  # ) +
+  scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +  # Farben manuell anpassen
+  scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +  # X-Achsen-Beschriftung anpassen
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+  labs(
+    title = "Verteilung des Alters nach Geschlecht",
+    x = "Geschlecht",
+    y = "Alter"
+  ) +
   theme.main +
+  theme.adjusted +
   theme(legend.position = "none")
-  
+        
+
+# Definiere die Normalgewichtsbereiche (in BMI) für Männer und Frauen
+normal_weight_men <- c(20, 25)    # Normalgewicht für Männer (BMI 20-25)
+normal_weight_women <- c(19, 24) # Normalgewicht für Frauen (BMI 19-24)
+
+# Boxplot erstellen mit Normalgewichts-Intervallen
+model_data %>% 
+  select(BMI, Sex) %>%
+  ggplot(aes(x = Sex, y = BMI, fill = Sex)) +
+  geom_boxplot(
+    varwidth = TRUE, 
+    width = 0.4, 
+    outlier.shape = 16, 
+    outlier.size = 2, 
+    outlier.color = "black"
+  ) +
+  # Normalgewicht-Linien für Frauen
+  geom_segment(
+    aes(x = 0.845, xend = 1.162, y = normal_weight_women[1], yend = normal_weight_women[1]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  geom_segment(
+    aes(x = 0.845, xend = 1.162, y = normal_weight_women[2], yend = normal_weight_women[2]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  # Normalgewicht-Linien für Männer
+  geom_segment(
+    aes(x = 1.8, xend = 2.2, y = normal_weight_men[1], yend = normal_weight_men[1]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  geom_segment(
+    aes(x = 1.8, xend = 2.2, y = normal_weight_men[2], yend = normal_weight_men[2]),
+    color = "black", linetype = "dashed", size = 1
+  ) +
+  # Mittelwert als Punkt hinzufügen
+  stat_summary(
+    fun = mean, 
+    geom = "point", 
+    shape = 16, 
+    size = 3, 
+    color = "black"
+  ) +
+  # Notiz für Normalgewicht Frauen
+  annotate(
+    "text", 
+    x = 0.97, 
+    y = normal_weight_women[2] - 1.5,  # Oberhalb des Normalgewicht-Intervalls
+    label = "Normalgewicht: 19-24", 
+    hjust = -1, size = 4, color = "black"
+  ) +
+  # Notiz für Normalgewicht Männer
+  annotate(
+    "text", 
+    x = 2, 
+    y = normal_weight_men[2] - 2,  # Oberhalb des Normalgewicht-Intervalls
+    label = "Normalgewicht: 20-25", 
+    hjust = -1, size = 4, color = "black"
+  ) +
+  # Achsen- und Designanpassungen
+  scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +
+  scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +
+  scale_y_continuous(breaks = seq(10, 110, by = 5)) +
+  labs(
+    title = "BMI-Verteilung nach Geschlecht",
+    x = "Geschlecht",
+    y = "BMI"
+  ) +
+  theme.main +
+  theme.adjusted +
+  theme(legend.position = "none")
+
+# # Mittelwert als Text hinzufügen
+# stat_summary(
+#   fun = mean, 
+#   geom = "text", 
+#   aes(label = paste0("Mean: ", round(..y.., 1))), 
+#   vjust = -0.8, 
+#   hjust = 0.5, 
+#   size = 4, 
+#   color = "black"
+# ) +
 
 # die Verteilung von Alter:
 
