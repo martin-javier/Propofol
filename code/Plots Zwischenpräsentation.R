@@ -357,7 +357,7 @@ km_disch_plot$plot +
 
 # Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
 # Create competing risks data | Event type: 1 = Discharged, 2 = Died
-km_data_discarge <- model_data %>%
+km_data_discharge <- model_data %>%
   mutate(event = case_when(
     PatientDischarged == 1 ~ 1,  # Discharge
     PatientDied == 1 ~ 2,       # Death
@@ -365,8 +365,8 @@ km_data_discarge <- model_data %>%
   ))
 # use cuminc form cmprsk package
 fit_cr <- cuminc(
-  ftime = km_data_discarge$daysToEvent,
-  fstatus = km_data_discarge$event,
+  ftime = km_data_discharge$daysToEvent,
+  fstatus = km_data_discharge$event,
   cencode = 0 # for censored data
 )
 # Plot cumulative function for death and discharge
@@ -386,7 +386,7 @@ ggcompetingrisks(
     labels = scales::percent
   ) +
   scale_x_continuous(
-    breaks = seq(0, max(km_data_discarge$daysToEvent), by = 10)
+    breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)
   ) +
   guides(color = guide_legend(title = NULL)) + facet_null()
 
