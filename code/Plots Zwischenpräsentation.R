@@ -495,7 +495,8 @@ km_death_plot <- ggsurvplot(km_death, conf.int = FALSE, legend = "none",
            title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
 km_death_plot$plot +
-  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10))
+  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
+  geom_line(size = 1.2, color = "#0072B2")
 
 # Kaplan Meier für nicht-entlassung Wahrscheinlichkeit
 km_data_disch <- model_data %>%
@@ -506,7 +507,8 @@ km_disch_plot <- ggsurvplot(km_disch, conf.int = FALSE, legend = "none",
            title = "Kaplan-Meier Kurve Nicht-Entlassungen",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
 km_disch_plot$plot +
-  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10))
+  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
+  geom_line(size = 1.2, color = "#E69F00")
 
 
 # Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
@@ -526,13 +528,13 @@ fit_cr <- cuminc(
 # Plot cumulative function for death and discharge
 ggcompetingrisks(
   fit_cr, curvetype = "cuminc", conf.int = FALSE,
-  title = "Vergelich kumulierte Sterbe- und Entlassungswahrscheinlichkeit",
+  title = "Vergleich kumulierte Sterbe- und Entlassungswahrscheinlichkeit",
   xlab = "Tage",  ylab = "Kumulierte Wahrscheinlichkeit für Event",
   ggtheme = (theme.main + theme.adjusted +
-               theme(legend.text = element_text(face = "bold")))) +
+               theme(legend.text = element_text(face = "bold", size = 18)))) +
   geom_line(size = 1) +
   scale_color_manual(
-    values = c("blue", "red"),
+    values = c("#E69F00", "#0072B2"),
     labels = c("Entlassen", "Verstorben")
   ) + 
   scale_y_continuous(
