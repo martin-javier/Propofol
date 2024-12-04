@@ -485,20 +485,28 @@ model_data %>%
 # ) +
 
 
-# Kaplan-Meier Überlebenswahrscheinlichkeit ####
+# Kaplan-Meier Plot ####
+# Kaplan-Meier Überlebenswahrscheinlichkeit
 km_data_death <- model_data %>%
   mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent))
 km_death <- survfit(Surv(daysToEvent, PatientDied) ~ 1, data = km_data_death)
-ggsurvplot(km_death, conf.int = FALSE, legend = "none",
+km_death_plot <- ggsurvplot(km_death, conf.int = FALSE, legend = "none",
            xlab = "Tage", ylab = "Überlebenswahrscheinlichkeit",
            title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
-           ggtheme = (theme.main + theme.adjusted))
+           censor = FALSE, ggtheme = (theme.main + theme.adjusted))
+km_death_plot$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10))
 
-km_disch <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = model_data)
-ggsurvplot(km_disch, conf.int = FALSE, legend = "none",
+# Kaplan Meier für nicht-entlassung Wahrscheinlichkeit
+km_data_disch <- model_data %>%
+  mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent))
+km_disch <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disch)
+km_disch_plot <- ggsurvplot(km_disch, conf.int = FALSE, legend = "none",
            xlab = "Tage", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
            title = "Kaplan-Meier Kurve Nicht-Entlassungen",
-           ggtheme = (theme.main + theme.adjusted))
+           censor = FALSE, ggtheme = (theme.main + theme.adjusted))
+km_disch_plot$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10))
 
 
 # Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
