@@ -282,18 +282,18 @@ model_data %>%
   ) +
   # Mittelwert als Punkt hinzufügen
   stat_summary(
-    fun = mean, 
-    geom = "point", 
-    shape = 16, 
-    size = 3, 
+    fun = mean,
+    geom = "point",
+    shape = 16,
+    size = 3,
     color = "black"
   ) +
   # Notiz für Normalgewicht Frauen
   annotate(
-    "text", 
-    x = 0.7, 
+    "text",
+    x = 0.7,
     y = normal_weight_women[2] - 1.8,  # Oberhalb des Normalgewicht-Intervalls
-    label = "Normalgewicht: 18.5-24.9", 
+    label = "Normalgewicht: 18.5-24.9",
     hjust = -1.25, size = 6, color = "black"
   ) +
   # Notiz für Normalgewicht Männer
@@ -319,14 +319,74 @@ model_data %>%
 
 # # Mittelwert als Text hinzufügen
 # stat_summary(
-#   fun = mean, 
-#   geom = "text", 
-#   aes(label = paste0("Mean: ", round(..y.., 1))), 
-#   vjust = -0.8, 
-#   hjust = 0.5, 
-#   size = 4, 
+#   fun = mean,
+#   geom = "text",
+#   aes(label = paste0("Mean: ", round(..y.., 1))),
+#   vjust = -0.8,
+#   hjust = 0.5,
+#   size = 4,
 #   color = "black"
 # ) +
+
+# perfekte Ausrichtung von Normalgewicht für Martin:
+# model_data %>% 
+#   select(BMI, Sex) %>%
+#   ggplot(aes(x = Sex, y = BMI, fill = Sex)) +
+#   geom_boxplot(
+#     varwidth = TRUE,
+#     width = 0.4,
+#     outlier.shape = 16,
+#     outlier.size = 2,
+#     outlier.color = "black"
+#   ) +
+#   # Normalgewicht-Linien für Frauen
+#   geom_segment(
+#     aes(x = 0.845, xend = 1.162, y = normal_weight_women[1], yend = normal_weight_women[1]),
+#     color = "black", linetype = "dashed", size = 1
+#   ) +
+#   geom_segment(
+#     aes(x = 0.845, xend = 1.162, y = normal_weight_women[2], yend = normal_weight_women[2]),
+#     color = "black", linetype = "dashed", size = 1
+#   ) +
+#   # Normalgewicht-Linien für Männer
+#   geom_segment(
+#     aes(x = 1.8, xend = 2.2, y = normal_weight_men[1], yend = normal_weight_men[1]),
+#     color = "black", linetype = "dashed", size = 1
+#   ) +
+#   geom_segment(
+#     aes(x = 1.8, xend = 2.2, y = normal_weight_men[2], yend = normal_weight_men[2]),
+#     color = "black", linetype = "dashed", size = 1
+#   ) +
+#   # Mittelwert als Punkt hinzufügen
+#   stat_summary(
+#     fun = mean,
+#     geom = "point",
+#     shape = 16,
+#     size = 3,
+#     color = "black"
+#   ) +
+#   # Notiz für Normalgewicht Frauen
+#   annotate(
+#     "text",
+#     x = 0.725,
+#     y = normal_weight_women[2] - 2.9,  # Oberhalb des Normalgewicht-Intervalls
+#     label = "Normalgewicht: 18.5 - 24.9",
+#     hjust = -1.25, size = 6, color = "black"
+#   ) +
+#   # Notiz für Normalgewicht Männer
+#   annotate(
+#     "text",
+#     x = 1.77,
+#     y = normal_weight_men[2] - 2.9,  # Oberhalb des Normalgewicht-Intervalls
+#     label = "Normalgewicht: 18.5 - 24.9",
+#     hjust = -1.25, size = 6, color = "black"
+#   ) +
+#   # Achsen- und Designanpassungen
+#   scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +
+#   scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +
+#   scale_y_continuous(breaks = seq(10, 110, by = 5)) +
+#   labs(title = "BMI-Verteilung nach Geschlecht", x = "Geschlecht", y = "BMI") +
+#   theme.main + theme.adjusted + theme(legend.position = "none")
 
 
 # Kaplan-Meier Plot ####
