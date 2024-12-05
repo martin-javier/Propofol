@@ -211,18 +211,18 @@ model_data %>%
   # Annotation für Female
   annotate(
     "text", 
-    x = 1.13, y = min(model_data$Age) - 5,  # Position unter dem Female-Plot
+    x = 1.13, y = min(model_data$Age) - 5.5,  # Position unter dem Female-Plot
     label = paste0("n = ", counts$Count[counts$Sex == "Female"]),
     hjust = 0, vjust = 0.5,
-    size = 5, color = "black"
+    size = 8, color = "black"
   ) +
   # Annotation für Male
   annotate(
     "text", 
-    x = 2.13, y = min(model_data$Age) - 5,  # Position unter dem Male-Plot
+    x = 2.13, y = min(model_data$Age) - 5.5,  # Position unter dem Male-Plot
     label = paste0("n = ", counts$Count[counts$Sex == "Male"]),
     hjust = 0, vjust = 0.5,
-    size = 5, color = "black"
+    size = 8, color = "black"
   ) +
   # Mittelwert als Punkt
   stat_summary(fun = mean, geom = "point", shape = 16, size = 3, color = "black") +
@@ -248,8 +248,8 @@ model_data %>%
 
 # Boxplot BMI ####
 # Definiere die Normalgewichtsbereiche (in BMI) für Männer und Frauen
-normal_weight_men <- c(20, 25)    # Normalgewicht für Männer (BMI 20-25)
-normal_weight_women <- c(19, 24) # Normalgewicht für Frauen (BMI 19-24)
+normal_weight_men <- c(18.5, 24.9)    # Normalgewicht für Männer (BMI 20-25)
+normal_weight_women <- c(18.5, 24.9) # Normalgewicht für Frauen (BMI 19-24)
 
 # Boxplot erstellen mit Normalgewichts-Intervallen
 model_data %>% 
@@ -291,18 +291,18 @@ model_data %>%
   # Notiz für Normalgewicht Frauen
   annotate(
     "text", 
-    x = 0.97, 
-    y = normal_weight_women[2] - 1.5,  # Oberhalb des Normalgewicht-Intervalls
-    label = "Normalgewicht: 19-24", 
-    hjust = -1.25, size = 4, color = "black"
+    x = 0.7, 
+    y = normal_weight_women[2] - 1.8,  # Oberhalb des Normalgewicht-Intervalls
+    label = "Normalgewicht: 18.5-24.9", 
+    hjust = -1.25, size = 6, color = "black"
   ) +
   # Notiz für Normalgewicht Männer
   annotate(
     "text", 
-    x = 2, 
+    x = 1.729, 
     y = normal_weight_men[2] - 2,  # Oberhalb des Normalgewicht-Intervalls
-    label = "Normalgewicht: 20-25", 
-    hjust = -1.25, size = 4, color = "black"
+    label = "Normalgewicht: 18.5-24.9", 
+    hjust = -1.25, size = 6, color = "black"
   ) +
   # Achsen- und Designanpassungen
   scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +
