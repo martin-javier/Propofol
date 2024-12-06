@@ -129,7 +129,7 @@ ggplot(model_data, aes(x = Age, y = ApacheIIScore)) +
 ggplot(model_data, aes(x = factor(Days_Propofol))) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(
-    title = "Propofol-Nutzung pro Patient",
+    title = "Verteilung der Propofol-Nutzung",
     x = "Anzahl der Propofol-Tage",
     y = "Anzahl der Patienten"
   ) + theme.main + theme.adjusted
@@ -392,27 +392,53 @@ model_data %>%
 # Kaplan-Meier Plot ####
 # Kaplan-Meier Überlebenswahrscheinlichkeit
 km_data_death <- model_data %>%
-  mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent))
+  mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent),
+         roundedDaysToEvent = round(daysToEvent))
 km_death <- survfit(Surv(daysToEvent, PatientDied) ~ 1, data = km_data_death)
-km_death_plot <- ggsurvplot(km_death, conf.int = FALSE, legend = "none",
+# KM Überelbenswsk (mit stetigen Tagen)
+km_death_plot <- ggsurvplot(km_death, legend = "none",
            xlab = "Tage", ylab = "Überlebenswahrscheinlichkeit",
            title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
 km_death_plot$plot +
   scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
   geom_line(size = 1.2, color = "#0072B2")
+# KM Überelbenswsk (gerundet auf ganze Tagen)
+km_death_rounded <- survfit(Surv(roundedDaysToEvent, PatientDied) ~ 1, data = km_data_death)
+km_death_plot_rounded <- ggsurvplot(
+  km_death_rounded, legend = "none",
+  xlab = "Tage (gerundet)", ylab = "Überlebenswahrscheinlichkeit",
+  title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
+  censor = FALSE, ggtheme = (theme.main + theme.adjusted),
+  lwd = 1.2, palette = "#0072B2"
+)
+km_death_plot_rounded$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_death$roundedDaysToEvent), by = 10))
 
 # Kaplan Meier für nicht-entlassung Wahrscheinlichkeit
 km_data_disc <- model_data %>%
-  mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent))
-km_disch <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
-km_disch_plot <- ggsurvplot(km_disch, conf.int = FALSE, legend = "none",
+  mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent),
+         roundedDaysToEvent = round(daysToEvent))
+km_disc <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
+# stetige Tage
+km_disc_plot <- ggsurvplot(km_disc, legend = "none",
            xlab = "Tage", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
            title = "Kaplan-Meier Kurve Nicht-Entlassungen",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
-km_disch_plot$plot +
-  scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
+km_disc_plot$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_disc$daysToEvent), by = 10)) +
   geom_line(size = 1.2, color = "#E69F00")
+# gerundete Tage
+km_disc_rounded <- survfit(Surv(roundedDaysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
+km_disc_plot_rounded <- ggsurvplot(
+  km_disc_rounded, legend = "none",
+  xlab = "Tage (gerundet)", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
+  title = "Kaplan-Meier Kurve Nicht-Entlassungen",
+  censor = FALSE, ggtheme = (theme.main + theme.adjusted),
+  lwd = 1.2, palette = "#E69F00"
+)
+km_disc_plot_rounded$plot +
+  scale_x_continuous(breaks = seq(0, max(km_data_disc$roundedDaysToEvent), by = 10))
 
 
 # Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
@@ -432,7 +458,7 @@ fit_cr <- cuminc(
 # Plot cumulative function for death and discharge
 ggcompetingrisks(
   fit_cr, curvetype = "cuminc", conf.int = FALSE,
-  title = "Vergleich kumulierte Sterbe- und Entlassungswahrscheinlichkeit",
+  title = "Vergleich kumulierte Sterbe- und Entlassungsrate",
   xlab = "Tage",  ylab = "Kumulierte Wahrscheinlichkeit für Event",
   ggtheme = (theme.main + theme.adjusted +
                theme(legend.text = element_text(face = "bold", size = 18)))) +
@@ -441,12 +467,7 @@ ggcompetingrisks(
     values = c("#E69F00", "#0072B2"),
     labels = c("Entlassen", "Verstorben")
   ) + 
-  scale_y_continuous(
-    limits = c(0, 1),
-    labels = scales::percent
-  ) +
-  scale_x_continuous(
-    breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)
-  ) +
+  scale_y_continuous(limits = c(0, 1),) +
+  scale_x_continuous(breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)) +
   guides(color = guide_legend(title = NULL)) + facet_null()
 
