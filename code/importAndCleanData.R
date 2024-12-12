@@ -1,9 +1,6 @@
-import_and_clean <- function(){
-  # read the Rds files in data folder
-  daily <- readRDS("data/daily.Rds")
-  ICU <- readRDS("data/ICU.Rds")
+clean_and_summarise <- function(){
+  # read the Rds file in data folder
   mergedAndCleaned <- readRDS("data/mergedAndCleanedData.Rds")
-  patient <- readRDS("data/patient.Rds")
   
   # filter patients by criteria given by Prof. Hartl
   data <- mergedAndCleaned %>%
@@ -41,6 +38,53 @@ import_and_clean <- function(){
   # Dadurch geht halt etwas Wissen verloren also wie viel hat ein Patient an Tag X bekommen
   # jetzt nurnoch Patient hat Tag 1-7 Summe X an PrpofolCal eingenommen
   
+  # correct wrongly labeled surv_icu_status for some patients
+  data <- data %>%
+    mutate(surv_icu_status = case_when(
+      PatientDischarged == 0 & PatientDied == 0 ~ 0,   # PatientHospital
+      PatientDischarged == 1 & PatientDied == 0 ~ 1,   # PatientDischarged
+      PatientDischarged == 0 & PatientDied == 1 ~ 2    # PatientDied
+    ))
+  data <- data %>%
+    mutate(surv_icu_status_exp = case_when(
+      surv_icu_status == "0" ~ "PatientHospital",
+      surv_icu_status == "1" ~ "PatientDischarged",
+      surv_icu_status == "2" ~ "PatientDied",
+    ))
+  # can check with this:
+  #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 0 & data$surv_icu_status != 0), ]$CombinedID)
+  #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 1 & data$surv_icu_status != 1), ]$CombinedID)
+  #unique(data[(data$PatientDied == 1 & data$PatientDischarged == 0 & data$surv_icu_status != 2), ]$CombinedID)
+  
+  return(data)
+}
+
+
+
+clean_data <- function() {
+  # read the Rds file in data folder
+  mergedAndCleaned <- readRDS("data/mergedAndCleanedData.Rds")
+  
+  # filter patients by criteria given by Prof. Hartl but keep all Study Days
+  data <- mergedAndCleaned %>%
+    filter(Age >= 18, BMI > 13 , DaysInICU >= 7) %>%
+    mutate(ProteinIntakeBelow30 = ifelse(proteinAdjustedPercentage < 30, 1, 0))
+  
+  # remove columns with "2_4"
+  data <- data[, !grepl("2_4", colnames(data))]
+  
+  # get the last day by rounding up the days to event value
+  data$lastDay <- ceiling(data$event)
+  #nrow(data[data$Study_Day > data$lastDay, ])
+  # > theres 2409 observations where the patient was already dead or discharged
+  data <- data[data$Study_Day <= data$lastDay, ]
+  
+  # rename columns
+  colnames(data)[colnames(data) == "Gender"] <- "Sex"
+  colnames(data)[colnames(data) == "DiagID2"] <- "LeadAdmDiag"
+  colnames(data)[colnames(data) == "event"] <- "daysToEvent"
+  colnames(data)[colnames(data) == "PN"] <- "ParNut"
+  
   # correct wrongly labeled surv_icu_status for 12 patients
   data <- data %>%
     mutate(surv_icu_status = case_when(
@@ -48,18 +92,19 @@ import_and_clean <- function(){
       PatientDischarged == 1 & PatientDied == 0 ~ 1,   # PatientDischarged
       PatientDischarged == 0 & PatientDied == 1 ~ 2    # PatientDied
     ))
-  
-  
   data <- data %>%
     mutate(surv_icu_status_exp = case_when(
       surv_icu_status == "0" ~ "PatientHospital",
       surv_icu_status == "1" ~ "PatientDischarged",
       surv_icu_status == "2" ~ "PatientDied",
     ))
+  # again can check with this:
+  #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 0 & data$surv_icu_status != 0), ]$CombinedID)
+  #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 1 & data$surv_icu_status != 1), ]$CombinedID)
+  #unique(data[(data$PatientDied == 1 & data$PatientDischarged == 0 & data$surv_icu_status != 2), ]$CombinedID)
   
   return(data)
 }
-
 
 
 

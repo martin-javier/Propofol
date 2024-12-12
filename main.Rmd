@@ -25,6 +25,7 @@ Import and maipulate dataset
 
 ```{r}
 source("code/importAndCleanData.R")
-model_data <- import_and_clean()
+model_data <- clean_and_summarise()
+data_long <- clean_data()
 ```
 
