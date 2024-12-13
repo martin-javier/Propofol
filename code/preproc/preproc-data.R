@@ -5,7 +5,7 @@
 # to fit the current data situation.
 
 # Edited by martinkandlinger@gmail.com
-# Edit-Date: 2024-22-11 16:58
+# Edit-Date: 2024-13-12 17:56
 
 ## load packages with additional functionality
 library(lubridate) # handling date formats/variables
@@ -13,8 +13,12 @@ library(checkmate) # checking inputs
 library(dplyr)     # data manipulation library
 library(haven)
 
+# set working directory
+if (!require(rstudioapi)) install.packages("rstudioapi")
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
 # create folders
-dir.create("data")
+#dir.create("data")
 
 source("preproc-helpers.R")
 
@@ -1139,7 +1143,7 @@ daily <- daily[, c("CombinedID", "Study_Day", "OralIntake", "incomplete",
                    "calCat2", "calCat3", "caloriesCat2", "caloriesCat3",
                    "protCat2", "protCat3", "proteinCat2", "proteinCat3",
                    "caloriesPercentage", "proteinGproKG",
-                   "proteinAdjustedPercentage",
+                   "proteinAdjustedPercentage", "inMV",
                    "Propofol", "PropofolCal", "PN", "EN", "caloriesIntake")]
 
 # Adapt to Study definition

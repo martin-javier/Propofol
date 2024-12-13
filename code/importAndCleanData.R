@@ -83,7 +83,8 @@ clean_data <- function() {
   colnames(data)[colnames(data) == "Gender"] <- "Sex"
   colnames(data)[colnames(data) == "DiagID2"] <- "LeadAdmDiag"
   colnames(data)[colnames(data) == "event"] <- "daysToEvent"
-  colnames(data)[colnames(data) == "PN"] <- "ParNut"
+  colnames(data)[colnames(data) == "PN"] <- "ParenteralNut"
+  colnames(data)[colnames(data) == "EN"] <- "EnteralNut"
   
   # correct wrongly labeled surv_icu_status for 12 patients
   data <- data %>%
@@ -103,12 +104,21 @@ clean_data <- function() {
   #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 1 & data$surv_icu_status != 1), ]$CombinedID)
   #unique(data[(data$PatientDied == 1 & data$PatientDischarged == 0 & data$surv_icu_status != 2), ]$CombinedID)
   
+  # select needed columns
+  data <- data[, c("CombinedID", "CombinedicuID", "Year", "Age", "BMI", "ApacheIIScore", "Sex",
+                   "AdmCatID", "LeadAdmDiag", "OralIntake", "ParenteralNut", "ProteinIntakeBelow30",
+                   "inMV", "DaysMechVent", "Propofol", "PropofolCal", "Study_Day",
+                   "PatientDied", "PatientDischarged", "surv_icu_status",
+                   "surv_icu_status_exp", "daysToEvent", "DaysInICU", "EnteralNut", "caloriesIntake")]
+  
   return(data)
 }
 
 
 
 
+
+#   Days_Propofol
 
 
 
