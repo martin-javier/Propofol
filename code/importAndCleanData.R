@@ -118,11 +118,6 @@ clean_data <- function() {
 
 
 
-#   Days_Propofol
-
-
-
-
 
 # mergedAndCleaned %>%
 #   group_by(CombinedID) %>%
