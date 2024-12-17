@@ -4,8 +4,18 @@ clean_and_summarise <- function(){
   
   # filter patients by criteria given by Prof. Hartl
   data <- mergedAndCleaned %>%
-    filter(Age >= 18, BMI > 13 , DaysInICU >= 7, Study_Day <= 7) %>%
+    filter(Age >= 18, BMI > 13 , DaysInICU >= 7) %>%
     mutate(ProteinIntakeBelow30 = ifelse(proteinAdjustedPercentage < 30, 1, 0))
+  
+  # remove columns with "2_4"
+  data <- data[, !grepl("2_4", colnames(data))]
+  
+  # get the Event day by rounding up the days to event value
+  data$eventDay <- ceiling(data$event)
+  data$lastDayInICU <- ceiling(data$DaysInICU)
+  #nrow(data[data$Study_Day > data$lastDay, ])
+  # > there's 2409 observations where the patient was already dead or discharged
+  data <- data[data$Study_Day <= data$eventDay, ]
   
   # data %>%
   #   group_by(CombinedID) %>%
@@ -18,25 +28,33 @@ clean_and_summarise <- function(){
   data <- data %>%
     group_by(CombinedID) %>%
     summarise(
-      Year = first(Year), Sex = first(Gender), BMI = first(BMI), Age = first(Age),
-      Weight = first(Weight), ApacheIIScore = first(ApacheIIScore),
-      AdmCat = first(AdmCatID), LeadAdmDiag = first(DiagID2),
-      PatientDied = first(PatientDied), PatientDischarged = first(PatientDischarged),
-      Surv0to60 = first(Surv0To60), Disc0To60 = first(Disc0To60),
-      surv_icu0to60 = first(surv_icu0to60), surv_icu_status = first(surv_icu_status),
-      daysToEvent = first(event), DaysInICU = first(DaysInICU),
-      CombinedicuID = first(CombinedicuID), icuByDummy = first(icuByDummy),
-      Calories = first(Calories), Protein = first(Protein),
-      DaysMechVent = first(DaysMechVent),
+      CombinedicuID = first(CombinedicuID),
+      icuByDummy = first(icuByDummy),
+      Year = first(Year),
+      Age = first(Age),
+      BMI = first(BMI),
+      ApacheIIScore = first(ApacheIIScore),
+      Sex = first(Gender),
+      Weight = first(Weight),
+      AdmCat = first(AdmCatID),
+      LeadAdmDiag = first(DiagID2),
       Days_OralIntake = sum(OralIntake),
-      Days_Propofol = sum(as.numeric(as.character(Propofol))), totalPropofolCal = sum(PropofolCal),
-      Days_ParNut = sum(PN),
+      Days_ParenteralNut = sum(PN),
       Days_ProtIntakeBelow30 = sum(ProteinIntakeBelow30),
+      DaysMechVent = first(DaysMechVent),
+      Days_Propofol = sum(as.numeric(as.character(Propofol))),
+      totalPropofolCal = sum(PropofolCal),
+      PatientDied = first(PatientDied),
+      PatientDischarged = first(PatientDischarged),
+      surv_icu_status = first(surv_icu_status),
+      daysToEvent = first(event),
+      DaysInICU = first(DaysInICU),
+      eventDay = first(eventDay),
+      lastDayInICU = first(lastDayInICU),
+      Days_EnteralNut = sum(EN),
+      totalCalories = sum(caloriesIntake),
       .groups = "drop"
     )
-  # Ist das sinvoll für PropofolCal die komplette Summe zu nehmen? Frage für Mona/Andreas
-  # Dadurch geht halt etwas Wissen verloren also wie viel hat ein Patient an Tag X bekommen
-  # jetzt nurnoch Patient hat Tag 1-7 Summe X an PrpofolCal eingenommen
   
   # correct wrongly labeled surv_icu_status for some patients
   data <- data %>%
@@ -73,11 +91,12 @@ clean_data <- function() {
   # remove columns with "2_4"
   data <- data[, !grepl("2_4", colnames(data))]
   
-  # get the last day by rounding up the days to event value
-  data$lastDay <- ceiling(data$event)
+  # get the Event day by rounding up the days to event value
+  data$eventDay <- ceiling(data$event)
+  data$lastDayInICU <- ceiling(data$DaysInICU)
   #nrow(data[data$Study_Day > data$lastDay, ])
-  # > theres 2409 observations where the patient was already dead or discharged
-  data <- data[data$Study_Day <= data$lastDay, ]
+  # > there's 2409 observations where the patient was already dead or discharged
+  data <- data[data$Study_Day <= data$eventDay, ]
   
   # rename columns
   colnames(data)[colnames(data) == "Gender"] <- "Sex"
@@ -109,7 +128,8 @@ clean_data <- function() {
                    "Sex", "AdmCatID", "LeadAdmDiag", "OralIntake", "ParenteralNut", "ProteinIntakeBelow30",
                    "inMV", "DaysMechVent", "Propofol", "PropofolCal", "Study_Day",
                    "PatientDied", "PatientDischarged", "surv_icu_status",
-                   "surv_icu_status_exp", "daysToEvent", "DaysInICU", "EnteralNut", "caloriesIntake")]
+                   "surv_icu_status_exp", "daysToEvent", "DaysInICU", "eventDay", "lastDayInICU",
+                   "EnteralNut", "caloriesIntake")]
   
   return(data)
 }
