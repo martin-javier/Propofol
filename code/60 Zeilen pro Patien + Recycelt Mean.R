@@ -18,8 +18,8 @@ data_complete <- days_to_add %>%
   left_join(data_long_mean, by = "CombinedID") %>% # Mittelwert von PropofolCal hinzufügen
   group_by(CombinedID) %>%
   fill(Year, LeadAdmDiag, AdmCatID, Sex, ApacheIIScore, BMI, PatientDied, 
-       PatientDischarged, Age, Surv0To60, Disc0To60, surv_icu0to60, 
-       surv_icu_status, daysToEvent, CombinedicuID, icuByDummy, 
+       PatientDischarged, Age, 
+       surv_icu_status, daysToEvent, CombinedicuID, 
        .direction = "downup") %>% # Füllt statische Werte
   mutate(PropofolCal = ifelse(is.na(PropofolCal) & Study_Day > 11, mean_propofolcal_11, PropofolCal)) %>% # Ergänzt Mittelwert
   ungroup()
