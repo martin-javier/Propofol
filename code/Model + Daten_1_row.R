@@ -12,8 +12,8 @@ final_data_summary <- final_data %>%
     ApacheIIScore = first(ApacheIIScore),
     DaysMechVent = first(DaysMechVent),
     OralIntake = first(OralIntake),
-    ParenteralNut = first(ParenteralNut),
-    Gender = first(Sex),
+    ParenteralNut = sum(as.numeric(as.character(ParenteralNut)), na.rm = TRUE),
+    Sex = first(Sex),
     Year = first(Year),
     AdmCatID = first(AdmCatID),
     DiagID2 = first(LeadAdmDiag),
@@ -42,9 +42,9 @@ model_final <- bam(
     s(BMI, bs = "ps") + 
     s(ApacheIIScore, bs = "ps") + 
     s(DaysMechVent, bs = "ps") + 
-    ParenteralNut + # Keine Spline für OralIntake, sondern direkt verwenden
+    s(ParenteralNut, bs = "ps") + # Keine Spline für OralIntake, sondern direkt verwenden
     factor(OralIntake) + # Optional: Als kategoriale Variable
-    factor(Gender) + factor(Year) + factor(AdmCatID) + 
+    factor(Sex) + factor(Year) + factor(AdmCatID) + 
     factor(DiagID2) + s(ProteinIntakeBelow30, bs = "ps") + 
     s(propofol_1_11, bs = "ps") ,
   data = ped_data,
