@@ -25,7 +25,7 @@ clean_and_summarise <- function(){
       Surv0to60 = first(Surv0To60), Disc0To60 = first(Disc0To60),
       surv_icu0to60 = first(surv_icu0to60), surv_icu_status = first(surv_icu_status),
       daysToEvent = first(event), DaysInICU = first(DaysInICU),
-      CombinedicuID = first(CombinedicuID),
+      CombinedicuID = first(CombinedicuID), icuByDummy = first(icuByDummy),
       Calories = first(Calories), Protein = first(Protein),
       DaysMechVent = first(DaysMechVent),
       Days_OralIntake = sum(OralIntake),
@@ -105,8 +105,8 @@ clean_data <- function() {
   #unique(data[(data$PatientDied == 1 & data$PatientDischarged == 0 & data$surv_icu_status != 2), ]$CombinedID)
   
   # select needed columns
-  data <- data[, c("CombinedID", "CombinedicuID", "Year", "Age", "BMI", "ApacheIIScore", "Sex",
-                   "AdmCatID", "LeadAdmDiag", "OralIntake", "ParenteralNut", "ProteinIntakeBelow30",
+  data <- data[, c("CombinedID", "CombinedicuID", "icuByDummy", "Year", "Age", "BMI", "ApacheIIScore",
+                   "Sex", "AdmCatID", "LeadAdmDiag", "OralIntake", "ParenteralNut", "ProteinIntakeBelow30",
                    "inMV", "DaysMechVent", "Propofol", "PropofolCal", "Study_Day",
                    "PatientDied", "PatientDischarged", "surv_icu_status",
                    "surv_icu_status_exp", "daysToEvent", "DaysInICU", "EnteralNut", "caloriesIntake")]
