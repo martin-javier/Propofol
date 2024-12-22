@@ -5,7 +5,11 @@ clean_and_summarise <- function(){
   # filter patients by criteria given by Prof. Hartl
   data <- mergedAndCleaned %>%
     filter(Age >= 18, BMI > 13 , DaysInICU >= 7) %>%
-    mutate(ProteinIntakeBelow30 = ifelse(proteinAdjustedPercentage < 30, 1, 0))
+    mutate(proteinIntake = PN_Protein + EN_Protein) %>%
+    mutate(proteinGperKG = proteinIntake / Weight) %>%
+    mutate(ProteinBelow0.8GperKG = ifelse(proteinGperKG < 0.8, 1, 0)) %>%
+    mutate(CalsBelow16kcalPerKG = ifelse(calproKg < 16, 1, 0)) %>%
+    mutate(CalsPercentageBelow70 = ifelse(caloriesPercentage < 70, 1, 0))
   
   # remove columns with "2_4"
   data <- data[, !grepl("2_4", colnames(data))]
@@ -40,8 +44,11 @@ clean_and_summarise <- function(){
       LeadAdmDiag = first(DiagID2),
       Days_OralIntake = sum(OralIntake),
       Days_ParenteralNut = sum(PN),
-      Days_ProtIntakeBelow30 = sum(ProteinIntakeBelow30),
-      DaysMechVent = first(DaysMechVent),
+      Days_ProtBelow0.8GperKG = sum(ProteinBelow0.8GperKG),
+      Days_CalsBelow16kcalPerKG = sum(CalsBelow16kcalPerKG),
+      Days_CalsPercentageBelow70 = sum(CalsPercentageBelow70),
+      inMV0To11 = sum(inMV),
+      total_DaysMechVent = first(DaysMechVent),
       Days_Propofol = sum(as.numeric(as.character(Propofol))),
       totalPropofolCal = sum(PropofolCal),
       PatientDied = first(PatientDied),
@@ -53,6 +60,92 @@ clean_and_summarise <- function(){
       lastDayInICU = first(lastDayInICU),
       Days_EnteralNut = sum(EN),
       totalCalories = sum(caloriesIntake),
+      DaysRecorded = max(Study_Day),
+      .groups = "drop"
+    )
+  
+  # correct wrongly labeled surv_icu_status for some patients
+  data <- data %>%
+    mutate(surv_icu_status = case_when(
+      PatientDischarged == 0 & PatientDied == 0 ~ 0,   # PatientHospital
+      PatientDischarged == 1 & PatientDied == 0 ~ 1,   # PatientDischarged
+      PatientDischarged == 0 & PatientDied == 1 ~ 2    # PatientDied
+    ))
+  data <- data %>%
+    mutate(surv_icu_status_exp = case_when(
+      surv_icu_status == "0" ~ "PatientHospital",
+      surv_icu_status == "1" ~ "PatientDischarged",
+      surv_icu_status == "2" ~ "PatientDied",
+    ))
+  # can check with this:
+  #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 0 & data$surv_icu_status != 0), ]$CombinedID)
+  #unique(data[(data$PatientDied == 0 & data$PatientDischarged == 1 & data$surv_icu_status != 1), ]$CombinedID)
+  #unique(data[(data$PatientDied == 1 & data$PatientDischarged == 0 & data$surv_icu_status != 2), ]$CombinedID)
+  
+  return(data)
+}
+
+
+clean_and_summarise_Days0To7 <- function(){
+  # read the Rds file in data folder
+  mergedAndCleaned <- readRDS("data/mergedAndCleanedData.Rds")
+  
+  # filter patients by criteria given by Prof. Hartl
+  data <- mergedAndCleaned %>%
+    filter(Age >= 18, BMI > 13 , DaysInICU >= 7, Study_Day <= 7) %>%
+    mutate(proteinIntake = PN_Protein + EN_Protein) %>%
+    mutate(proteinGperKG = proteinIntake / Weight) %>%
+    mutate(ProteinBelow0.8GperKG = ifelse(proteinGperKG < 0.8, 1, 0)) %>%
+    mutate(CalsBelow16kcalPerKG = ifelse(calproKg < 16, 1, 0)) %>%
+    mutate(CalsPercentageBelow70 = ifelse(caloriesPercentage < 70, 1, 0))
+  
+  # remove columns with "2_4"
+  data <- data[, !grepl("2_4", colnames(data))]
+  
+  # get the Event day by rounding up the days to event value
+  data$eventDay <- ceiling(data$event)
+  data$lastDayInICU <- ceiling(data$DaysInICU)
+  
+  # data %>%
+  #   group_by(CombinedID) %>%
+  #   summarize(unique_bmi_count = n_distinct(BMI)) %>%
+  #   filter(unique_bmi_count > 1)
+  # # => Every Patients BMI is the same value for every 7 days
+  # # Same for every Variable which is summerised with first func below, I checked every single one
+  
+  # Summarise Data such that every patient has 1 row
+  data <- data %>%
+    group_by(CombinedID) %>%
+    summarise(
+      CombinedicuID = first(CombinedicuID),
+      icuByDummy = first(icuByDummy),
+      Year = first(Year),
+      Age = first(Age),
+      BMI = first(BMI),
+      ApacheIIScore = first(ApacheIIScore),
+      Sex = first(Gender),
+      Weight = first(Weight),
+      AdmCat = first(AdmCatID),
+      LeadAdmDiag = first(DiagID2),
+      Days_OralIntake = sum(OralIntake),
+      Days_ParenteralNut = sum(PN),
+      Days_ProtBelow0.8GperKG = sum(ProteinBelow0.8GperKG),
+      Days_CalsBelow16kcalPerKG = sum(CalsBelow16kcalPerKG),
+      Days_CalsPercentageBelow70 = sum(CalsPercentageBelow70),
+      inMV0To7 = sum(inMV),
+      total_DaysMechVent = first(DaysMechVent),
+      Days_Propofol = sum(as.numeric(as.character(Propofol))),
+      totalPropofolCal = sum(PropofolCal),
+      PatientDied = first(PatientDied),
+      PatientDischarged = first(PatientDischarged),
+      surv_icu_status = first(surv_icu_status),
+      daysToEvent = first(event),
+      DaysInICU = first(DaysInICU),
+      eventDay = first(eventDay),
+      lastDayInICU = first(lastDayInICU),
+      Days_EnteralNut = sum(EN),
+      totalCalories = sum(caloriesIntake),
+      DaysRecorded = max(Study_Day),
       .groups = "drop"
     )
   
