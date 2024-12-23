@@ -23,12 +23,12 @@ model_death_propDays_16kcal <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    Days_Propofol + 
-    Days_CalsBelow16kcalPerKG + 
-    Days_ProtBelow0.8GperKG,
+    s(Days_Propofol, bs = "ps", k = 10) + 
+    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -41,12 +41,12 @@ model_death_propDays_70pct <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    Days_Propofol + 
-    Days_CalsPercentageBelow70 + 
-    Days_ProtBelow0.8GperKG,
+    s(Days_Propofol, bs = "ps", k = 10) + 
+    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -60,12 +60,12 @@ model_death_propCals_16kcal <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    totalPropofolCal + 
-    Days_CalsBelow16kcalPerKG + 
-    Days_ProtBelow0.8GperKG,
+    s(totalPropofolCal, bs = "ps", k = 10) + 
+    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -78,12 +78,12 @@ model_death_propCals_70pct <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    totalPropofolCal + 
-    Days_CalsPercentageBelow70 + 
-    Days_ProtBelow0.8GperKG,
+    s(totalPropofolCal, bs = "ps", k = 10) + 
+    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -108,12 +108,12 @@ model_disc_propDays_16kcal <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    Days_Propofol + 
-    Days_CalsBelow16kcalPerKG + 
-    Days_ProtBelow0.8GperKG,
+    s(Days_Propofol, bs = "ps", k = 10) + 
+    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -126,12 +126,12 @@ model_disc_propDays_70pct <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    Days_Propofol + 
-    Days_CalsPercentageBelow70 + 
-    Days_ProtBelow0.8GperKG,
+    s(Days_Propofol, bs = "ps", k = 10) + 
+    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -145,12 +145,12 @@ model_disc_propCals_16kcal <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    totalPropofolCal + 
-    Days_CalsBelow16kcalPerKG + 
-    Days_ProtBelow0.8GperKG,
+    s(totalPropofolCal, bs = "ps", k = 10) + 
+    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -163,12 +163,12 @@ model_disc_propCals_70pct <- bam(
     s(ApacheIIScore, bs = "ps", k = 10) + 
     s(inMV0To7, bs = "ps", k = 10) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    Days_OralIntake +
+    s(Days_OralIntake, bs = "ps", k = 10) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    totalPropofolCal + 
-    Days_CalsPercentageBelow70 + 
-    Days_ProtBelow0.8GperKG,
+    s(totalPropofolCal, bs = "ps", k = 10) + 
+    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
   data = ped_disc,
   family = poisson(),
   offset = offset
