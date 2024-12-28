@@ -8,8 +8,8 @@ clean_and_summarise <- function(){
     mutate(proteinIntake = PN_Protein + EN_Protein) %>%
     mutate(proteinGperKG = proteinIntake / Weight) %>%
     mutate(ProteinBelow0.8GperKG = ifelse(proteinGperKG < 0.8, 1, 0)) %>%
-    mutate(CalsBelow16kcalPerKG = ifelse(calproKg < 16, 1, 0)) %>%
-    mutate(CalsPercentageBelow70 = ifelse(caloriesPercentage < 70, 1, 0))
+    mutate(CalsAbove16kcalPerKG = ifelse(calproKg > 16, 1, 0)) %>%
+    mutate(CalsPercentageAbove70 = ifelse(caloriesPercentage > 70, 1, 0))
   
   # remove columns with "2_4"
   data <- data[, !grepl("2_4", colnames(data))]
@@ -45,8 +45,8 @@ clean_and_summarise <- function(){
       Days_OralIntake = sum(OralIntake),
       Days_ParenteralNut = sum(PN),
       Days_ProtBelow0.8GperKG = sum(ProteinBelow0.8GperKG),
-      Days_CalsBelow16kcalPerKG = sum(CalsBelow16kcalPerKG),
-      Days_CalsPercentageBelow70 = sum(CalsPercentageBelow70),
+      Days_CalsAbove16kcalPerKG = sum(CalsAbove16kcalPerKG),
+      Days_CalsPercentageAbove70 = sum(CalsPercentageAbove70),
       inMV0To11 = sum(inMV),
       total_DaysMechVent = first(DaysMechVent),
       Days_Propofol = sum(as.numeric(as.character(Propofol))),
@@ -96,8 +96,8 @@ clean_and_summarise_Days0To7 <- function(){
     mutate(proteinIntake = PN_Protein + EN_Protein) %>%
     mutate(proteinGperKG = proteinIntake / Weight) %>%
     mutate(ProteinBelow0.8GperKG = ifelse(proteinGperKG < 0.8, 1, 0)) %>%
-    mutate(CalsBelow16kcalPerKG = ifelse(calproKg < 16, 1, 0)) %>%
-    mutate(CalsPercentageBelow70 = ifelse(caloriesPercentage < 70, 1, 0))
+    mutate(CalsAbove16kcalPerKG = ifelse(calproKg < 16, 1, 0)) %>%
+    mutate(CalsPercentageAbove70 = ifelse(caloriesPercentage < 70, 1, 0))
   
   # remove columns with "2_4"
   data <- data[, !grepl("2_4", colnames(data))]
@@ -130,8 +130,8 @@ clean_and_summarise_Days0To7 <- function(){
       Days_OralIntake = sum(OralIntake),
       Days_ParenteralNut = sum(PN),
       Days_ProtBelow0.8GperKG = sum(ProteinBelow0.8GperKG),
-      Days_CalsBelow16kcalPerKG = sum(CalsBelow16kcalPerKG),
-      Days_CalsPercentageBelow70 = sum(CalsPercentageBelow70),
+      Days_CalsAbove16kcalPerKG = sum(CalsAbove16kcalPerKG),
+      Days_CalsPercentageAbove70 = sum(CalsPercentageAbove70),
       inMV0To7 = sum(inMV),
       total_DaysMechVent = first(DaysMechVent),
       Days_Propofol = sum(as.numeric(as.character(Propofol))),
