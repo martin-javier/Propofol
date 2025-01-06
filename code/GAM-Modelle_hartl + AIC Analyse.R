@@ -18,35 +18,39 @@ ped_death <- as_ped(
 )
 
 model_death_propDays_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
+    s(Days_OralIntake, bs = "ps", k = 5) +
+    factor(Sex) + 
+    factor(Year) + 
+    factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 10) + 
-    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(Days_Propofol, bs = "ps", k = 5) + 
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) + 
+    s(CombinedicuID, bs = "re"), # verschlechtert das Modell, siehe Devianz aber ist signifikant
   data = ped_death,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  discrete = TRUE # Läuft nur so durch mit Random Effekt (verbessert Laufzeit)
 )
 
 # with Calorie Variable: Days where Calorie Intake was below 70% of Target
 model_death_propDays_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 10) + 
-    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(Days_Propofol, bs = "ps", k = 5) + 
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -55,17 +59,17 @@ model_death_propDays_70pct <- bam(
 ### Propofol Cals ####
 # with Calorie Variable: Days where Calories were lower than 16 kcal/kg
 model_death_propCals_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 10) + 
-    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(totalPropofolCal, bs = "ps", k = 5) + 
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -73,17 +77,17 @@ model_death_propCals_16kcal <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was below 70% of Target
 model_death_propCals_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 10) + 
-    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(totalPropofolCal, bs = "ps", k = 5) + 
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_death,
   family = poisson(),
   offset = offset
@@ -103,17 +107,17 @@ ped_disc <- as_ped(
 )
 
 model_disc_propDays_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 10) + 
-    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(Days_Propofol, bs = "ps", k = 5) + 
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -121,17 +125,17 @@ model_disc_propDays_16kcal <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was below 70% of Target
 model_disc_propDays_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 10) + 
-    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(Days_Propofol, bs = "ps", k = 5) + 
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -140,17 +144,17 @@ model_disc_propDays_70pct <- bam(
 ### Propofol Cals ####
 # with Calorie Variable: Days where Calories were lower than 16 kcal/kg
 model_disc_propCals_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 10) + 
-    s(Days_CalsBelow16kcalPerKG, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(totalPropofolCal, bs = "ps", k = 5) + 
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -158,17 +162,17 @@ model_disc_propCals_16kcal <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was below 70% of Target
 model_disc_propCals_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 10) + 
-    s(BMI, bs = "ps", k = 10) + 
-    s(ApacheIIScore, bs = "ps", k = 10) + 
-    s(inMV0To7, bs = "ps", k = 10) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
+    s(BMI, bs = "ps", k = 5) + 
+    s(ApacheIIScore, bs = "ps", k = 5) + 
+    s(inMV0To7, bs = "ps", k = 5) + 
     s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 10) +
+    s(Days_OralIntake, bs = "ps", k = 5) +
     factor(Sex) + factor(Year) + factor(AdmCat) + 
     factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 10) + 
-    s(Days_CalsPercentageBelow70, bs = "ps", k = 10) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 10),
+    s(totalPropofolCal, bs = "ps", k = 5) + 
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
   data = ped_disc,
   family = poisson(),
   offset = offset
@@ -212,57 +216,57 @@ cat("Bestes Modell für Propofol-Kalorien (Patient Discharged):", best_propCals_
 
 
 
-# # Vergleich der Variablen Days_CalsBelow16kcalPerKG und Days_CalsPercentageBelow70
+# # Vergleich der Variablen Days_CalsAbove16kcalPerKG und Days_CalsPercentageAbove70
 # 
 # library(sensitivity)
 # 
-# # Sensitivitätsanalyse für die Modelle mit Days_CalsBelow16kcalPerKG und Days_CalsPercentageBelow70
+# # Sensitivitätsanalyse für die Modelle mit Days_CalsAbove16kcalPerKG und Days_CalsPercentageAbove70
 # 
-# # Modellfunktion für Days_CalsBelow16kcalPerKG
+# # Modellfunktion für Days_CalsAbove16kcalPerKG
 # model_function_16kcal <- function(X) {
 #   predict(model_death_propDays_16kcal, newdata = X, type = "response")
 # }
 # 
-# # Modellfunktion für Days_CalsPercentageBelow70
+# # Modellfunktion für Days_CalsPercentageAbove70
 # model_function_70pct <- function(X) {
 #   predict(model_death_propDays_70pct, newdata = X, type = "response")
 # }
 # 
 # # Eingabedaten mit relevanten Variablen erstellen
 # data_inputs <- data.frame(
-#   Days_CalsBelow16kcalPerKG = runif(100, min = 0, max = 7),
-#   Days_CalsPercentageBelow70 = runif(100, min = 0, max = 7),
-#   Days_OralIntake = runif(100, min = 0, max = 7),
-#   Sex = sample(c("Male", "Female"), 100, replace = TRUE),
-#   Year = sample(c(2007, 2008, 2009, 2011, 2013, 2014), 100, replace = TRUE),
-#   AdmCat = sample(c("Medical", "Surgical/Emeregency", "Surgical/Elective"), 100, replace = TRUE),
-#   LeadAdmDiag = sample(c("Orthopedic/Trauma", "Respiratory", "Gastrointestinal", "Other", "Sepsis", "Neurologic", "Cardio-Vascular", "Metabolic", "Renal"), 100, replace = TRUE),
-#   inMV0To7 = runif(100, min = 0, max = 7),
-#   Days_ProtBelow0.8GperKG = runif(100, min = 0, max = 7),
-#   Days_Propofol = runif(100, min = 0, max = 7),
-#   Days_ParenteralNut = sample(0:7, 100, replace = TRUE),
-#   Age = runif(100, min = 18, max = 90),
-#   BMI = runif(100, min = 15, max = 45),
-#   ApacheIIScore = runif(100, min = 0, max = 100),
-#   totalPropofolCal = runif(100, min = 0, max = 3000)
+#   Days_CalsAbove16kcalPerKG = runif(50, min = 0, max = 7),
+#   Days_CalsPercentageAbove70 = runif(50, min = 0, max = 7),
+#   Days_OralIntake = runif(50, min = 0, max = 7),
+#   Sex = sample(c("Male", "Female"), 50, replace = TRUE),
+#   Year = sample(c(2007, 2008, 2009, 2011, 2013, 2014), 50, replace = TRUE),
+#   AdmCat = sample(c("Medical", "Surgical/Emeregency", "Surgical/Elective"), 50, replace = TRUE),
+#   LeadAdmDiag = sample(c("Orthopedic/Trauma", "Respiratory", "Gastrointestinal", "Other", "Sepsis", "Neurologic", "Cardio-Vascular", "Metabolic", "Renal"), 50, replace = TRUE),
+#   inMV0To7 = runif(50, min = 0, max = 7),
+#   Days_ProtBelow0.8GperKG = runif(50, min = 0, max = 7),
+#   Days_Propofol = runif(50, min = 0, max = 7),
+#   Days_ParenteralNut = sample(0:7, 50, replace = TRUE),
+#   Age = runif(50, min = 18, max = 90),
+#   BMI = runif(50, min = 15, max = 45),
+#   ApacheIIScore = runif(50, min = 0, max = 50),
+#   totalPropofolCal = runif(50, min = 0, max = 3000)
 # )
 # 
-# # Sensitivitätsanalyse für Days_CalsBelow16kcalPerKG
-# sobol_16kcal <- sobol(model = model_function_16kcal, X1 = data_inputs, X2 = data_inputs, nboot = 100)
+# # Sensitivitätsanalyse für Days_CalsAbove16kcalPerKG
+# sobol_16kcal <- sobol(model = model_function_16kcal, X1 = data_inputs, X2 = data_inputs, nboot = 50)
 # 
-# # Sensitivitätsanalyse für Days_CalsPercentageBelow70
-# sobol_70pct <- sobol(model = model_function_70pct, X1 = data_inputs, X2 = data_inputs, nboot = 100)
+# # Sensitivitätsanalyse für Days_CalsPercentageAbove70
+# sobol_70pct <- sobol(model = model_function_70pct, X1 = data_inputs, X2 = data_inputs, nboot = 50)
 # 
 # # Ergebnisse vergleichen
-# cat("Sensitivitätsanalyse für Days_CalsBelow16kcalPerKG:\n")
+# cat("Sensitivitätsanalyse für Days_CalsAbove16kcalPerKG:\n")
 # print(sobol_16kcal)
 # 
-# cat("Sensitivitätsanalyse für Days_CalsPercentageBelow70:\n")
+# cat("Sensitivitätsanalyse für Days_CalsPercentageAbove70:\n")
 # print(sobol_70pct)
 # 
 # # Auswahl des besseren Modells
 # if (mean(sobol_16kcal$S) > mean(sobol_70pct$S)) {
-#   cat("Days_CalsBelow16kcalPerKG ist die bessere Variable")
+#   cat("Days_CalsAbove16kcalPerKG ist die bessere Variable")
 # } else {
-#   cat("Days_CalsPercentageBelow70 ist die bessere Variable")
+#   cat("Days_CalsPercentageAbove70 ist die bessere Variable")
 # }
