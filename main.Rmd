@@ -25,7 +25,7 @@ Import and maipulate dataset
 
 ```{r}
 source("code/importAndCleanData.R")
-data_summed_Day0To11 <- clean_and_summarise()
+data_summed_Day0To11 <- clean_and_summarise_Days0To11()
 data_summed_Day0To7 <- clean_and_summarise_Days0To7()
 data_long <- clean_data()
 ```
