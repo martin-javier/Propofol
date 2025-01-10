@@ -1,3 +1,4 @@
+# created clean dataset with 1 row per patient, which summarizes first 11 days in hospital
 clean_and_summarise_Days0To11 <- function(){
   # read the Rds file in data folder
   mergedAndCleaned <- readRDS("data/mergedAndCleanedData.Rds")
@@ -86,6 +87,8 @@ clean_and_summarise_Days0To11 <- function(){
 }
 
 
+
+# created clean dataset with 1 row per patient, which summarizes first 7 days in ICU
 clean_and_summarise_Days0To7 <- function(){
   # read the Rds file in data folder
   mergedAndCleaned <- readRDS("data/mergedAndCleanedData.Rds")
@@ -172,6 +175,7 @@ clean_and_summarise_Days0To7 <- function(){
 
 
 
+# creates cleaned dataset with up to 11 rows per patient
 clean_data <- function() {
   # read the Rds file in data folder
   mergedAndCleaned <- readRDS("data/mergedAndCleanedData.Rds")
@@ -233,57 +237,85 @@ clean_data <- function() {
 }
 
 
-# Manually create ped from data_long (data with up to 11 observations per patient)
-manualPED <- data_long %>%
-  arrange(CombinedID, Study_Day) %>%
-  mutate(
-    last_row = Study_Day == 11
-  ) %>%
-  filter(last_row) %>%
-  ungroup() %>%
-  rowwise() %>%
-  do({
-    last_row <- .
-    new_rows <- tibble(
-      CombinedID = last_row$CombinedID,
-      CombinedicuID = last_row$CombinedicuID,
-      Study_Day = (last_row$Study_Day + 1):last_row$eventDay,
-      icuByDummy = last_row$icuByDummy,
-      Year = last_row$Year,
-      Age = last_row$Age,
-      BMI = last_row$BMI,
-      ApacheIIScore = last_row$ApacheIIScore,
-      Sex = last_row$Sex,
-      AdmCatID = last_row$AdmCatID,
-      LeadAdmDiag = last_row$LeadAdmDiag,
-      OralIntake = last_row$OralIntake,
-      ParenteralNut = last_row$ParenteralNut,
-      ProteinBelow0.8GperKG = last_row$ProteinBelow0.8GperKG,
-      CalsAbove16kcalPerKG = last_row$CalsAbove16kcalPerKG,
-      CalsPercentageAbove70 = last_row$CalsPercentageAbove70,
-      inMV = last_row$inMV,
-      DaysMechVent = last_row$DaysMechVent,
-      Propofol = last_row$Propofol,
-      PropofolCal = last_row$PropofolCal,
-      PatientDied = last_row$PatientDied,
-      PatientDischarged = last_row$PatientDischarged,
-      surv_icu_status = last_row$surv_icu_status,
-      surv_icu_status_exp = last_row$surv_icu_status_exp,
-      daysToEvent = last_row$daysToEvent,
-      DaysInICU = last_row$DaysInICU,
-      eventDay = last_row$eventDay,
-      lastDayInICU = last_row$lastDayInICU,
-      EnteralNut = last_row$EnteralNut,
-      caloriesIntake = last_row$caloriesIntake
-    )
-    bind_rows(last_row, new_rows)
-  }) %>%
-  bind_rows(data_long, .) %>%
-  arrange(CombinedID, Study_Day) %>%
-  mutate(
-    inMV = ifelse(Study_Day > ceiling(DaysMechVent), 0, 1)
-  ) %>%
-  select(-last_row)
+
+# Manually creates ped from data with 11 observations per patient (data_long)
+create_ped_manually <- function(data, outcome){
+  assertChoice(outcome, c("died", "discharged"))
+  assertDataFrame(data)
+  
+  if (outcome == "died"){
+    data <- data %>%
+      mutate(daysToEvent = if_else(surv_icu_status == 1, 61L, daysToEvent))
+  } else if (outcome == "discharged") {
+    data <- data %>%
+      mutate(daysToEvent = if_else(surv_icu_status == 2, 61L, daysToEvent))
+  }
+  data$eventDay <- ceiling(data$daysToEvent)
+  
+  manualPED <- data %>%
+    arrange(CombinedID, Study_Day) %>%
+    mutate(
+      last_row = Study_Day == 11
+    ) %>%
+    filter(last_row) %>%
+    ungroup() %>%
+    rowwise() %>%
+    do({
+      last_row <- .
+      new_rows <- tibble(
+        CombinedID = last_row$CombinedID,
+        CombinedicuID = last_row$CombinedicuID,
+        Study_Day = (last_row$Study_Day + 1):last_row$eventDay,
+        icuByDummy = last_row$icuByDummy,
+        Year = last_row$Year,
+        Age = last_row$Age,
+        BMI = last_row$BMI,
+        ApacheIIScore = last_row$ApacheIIScore,
+        Sex = last_row$Sex,
+        AdmCatID = last_row$AdmCatID,
+        LeadAdmDiag = last_row$LeadAdmDiag,
+        OralIntake = last_row$OralIntake,
+        ParenteralNut = last_row$ParenteralNut,
+        ProteinBelow0.8GperKG = last_row$ProteinBelow0.8GperKG,
+        CalsAbove16kcalPerKG = last_row$CalsAbove16kcalPerKG,
+        CalsPercentageAbove70 = last_row$CalsPercentageAbove70,
+        inMV = last_row$inMV,
+        DaysMechVent = last_row$DaysMechVent,
+        Propofol = last_row$Propofol,
+        PropofolCal = last_row$PropofolCal,
+        PatientDied = last_row$PatientDied,
+        PatientDischarged = last_row$PatientDischarged,
+        surv_icu_status = last_row$surv_icu_status,
+        surv_icu_status_exp = last_row$surv_icu_status_exp,
+        daysToEvent = last_row$daysToEvent,
+        DaysInICU = last_row$DaysInICU,
+        eventDay = last_row$eventDay,
+        lastDayInICU = last_row$lastDayInICU,
+        EnteralNut = last_row$EnteralNut,
+        caloriesIntake = last_row$caloriesIntake
+      )
+      bind_rows(last_row, new_rows)
+    }) %>%
+    bind_rows(data, .) %>%
+    arrange(CombinedID, Study_Day) %>%
+    mutate(
+      inMV = ifelse(Study_Day > ceiling(DaysMechVent), 0, 1),
+      tstart = Study_Day - 1,
+      tend = Study_Day,
+      interval = paste0("(", tstart, ",", tend, "]"),
+      offset = 0,
+      ped_status = ifelse(
+        (outcome == "died" & Study_Day == eventDay & surv_icu_status == 2) |
+          (outcome == "discharged" & Study_Day == eventDay & surv_icu_status == 1),
+        1, 0
+      )
+    ) %>%
+    select(CombinedID, tstart, tend, interval, offset, ped_status, Study_Day,
+           surv_icu_status_exp, everything(), -last_row)
+  
+  return(manualPED)
+}
+
 
 
 

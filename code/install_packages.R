@@ -1,5 +1,6 @@
 # List of required packages
-required_packages <- c("tidyverse", "dplyr", "pammtools", "ggplot2", "pammtools", "survival")
+required_packages <- c("tidyverse", "dplyr", "pammtools", "ggplot2", "pammtools", "survival",
+                       "checkmate")
 
 # survminer für ggsurvplot() und cmprsk für plot mit Sterbe- und Entlassungsratio
 # survival für coxph usw.
