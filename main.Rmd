@@ -8,7 +8,7 @@ output: html_document
 Set working directory
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 if (!require(rstudioapi)) install.packages("rstudioapi")
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
@@ -28,7 +28,7 @@ source("code/importAndCleanData.R")
 data_summed_Day0To11 <- clean_and_summarise_Days0To11()
 data_summed_Day0To7 <- clean_and_summarise_Days0To7()
 data_long <- clean_data()
-manualPED_death <- create_ped_manually(data_long, "died")
-manualPED_disc <- create_ped_manually(data_long, "discharged")
+manualPED_death <- create_ped_manually(data_long, "death")
+manualPED_disc <- create_ped_manually(data_long, "discharge")
 ```
 

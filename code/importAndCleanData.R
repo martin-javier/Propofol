@@ -239,14 +239,14 @@ clean_data <- function() {
 
 
 # Manually creates ped from data with 11 observations per patient (data_long)
-create_ped_manually <- function(data, outcome){
-  assertChoice(outcome, c("died", "discharged"))
+create_ped_manually <- function(data, event){
+  assertChoice(event, c("death", "discharge"))
   assertDataFrame(data)
   
-  if (outcome == "died"){
+  if (event == "died"){
     data <- data %>%
       mutate(daysToEvent = if_else(surv_icu_status == 1, 61L, daysToEvent))
-  } else if (outcome == "discharged") {
+  } else if (event == "discharged") {
     data <- data %>%
       mutate(daysToEvent = if_else(surv_icu_status == 2, 61L, daysToEvent))
   }
@@ -305,13 +305,18 @@ create_ped_manually <- function(data, outcome){
       interval = paste0("(", tstart, ",", tend, "]"),
       offset = 0,
       ped_status = ifelse(
-        (outcome == "died" & Study_Day == eventDay & surv_icu_status == 2) |
-          (outcome == "discharged" & Study_Day == eventDay & surv_icu_status == 1),
+        (event == "died" & Study_Day == eventDay & surv_icu_status == 2) |
+          (event == "discharged" & Study_Day == eventDay & surv_icu_status == 1),
         1, 0
       )
     ) %>%
     select(CombinedID, tstart, tend, interval, offset, ped_status, Study_Day,
            surv_icu_status_exp, everything(), -last_row)
+  
+  bin_vars <- c("interval", "OralIntake", "inMV", "ParenteralNut", "Propofol",
+                "ProteinBelow0.8GperKG", "CalsAbove16kcalPerKG", "CalsPercentageAbove70",
+                "surv_icu_status", "surv_icu_status_exp")
+  manualPED[bin_vars] <- lapply(manualPED[bin_vars], as.factor)
   
   return(manualPED)
 }
