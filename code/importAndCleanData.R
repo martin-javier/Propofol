@@ -246,11 +246,9 @@ create_ped_manually <- function(data, event){
   if (event == "died"){
     data <- data %>%
       mutate(daysToEvent = if_else(surv_icu_status == 1, 61L, daysToEvent))
-  } else if (event == "discharged") {
-    data <- data %>%
-      mutate(daysToEvent = if_else(surv_icu_status == 2, 61L, daysToEvent))
   }
   data$eventDay <- ceiling(data$daysToEvent)
+  data <- data[data$eventDay <= 60, ]
   
   manualPED <- data %>%
     arrange(CombinedID, Study_Day) %>%
