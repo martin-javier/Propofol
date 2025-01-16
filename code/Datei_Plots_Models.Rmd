@@ -1,0 +1,62 @@
+---
+title: "Datei_Plots_Models"
+author: "Raseen Ramish"
+date: "2025-01-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("gratia")
+```
+
+#### Allgemeine Themen Set 
+
+```{r}
+
+theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
+                        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+                        axis.title.y = element_text(margin = margin(r = 20), size = 22),
+                        title = element_text(color = "black"),
+                        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+                        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+                        panel.grid.major = element_line(color = "black", linewidth = 0.1), 
+                        panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
+                        plot.background = element_rect(fill = "beige", color = NA))
+```
+
+#### best Models from "GAM-Modelle_hartl + AIC Analyse.R"
+
+Bestes Modell für Propofol-Tage (Patient Died): "model_death_propDays_70pct"
+Bestes Modell für Propofol-Kalorien (Patient Died):"model_death_propCals_16kcal"
+Bestes Modell für Propofol-Tage (Patient Discharged):"model_disc_propDays_70pct"
+Bestes Modell für Propofol-Kalorien (Patient Discharged):"model_disc_propCals_70pct"
+
+#### Model Diagnostic of model "model_death_propDays_70pct" 
+
+```{r}
+model_death_propDays_70pct.Diag <- gratia::appraise(model_death_propDays_70pct) & theme_bw()
+model_death_propDays_70pct.Diag 
+ggsave("model_death_propDays_70pct.Diag.png", plot = model_death_propDays_70pct.Diag, width = 8, height = 6)
+```
+
+```{r}
+sms <- gratia::smooths(model_death_propDays_70pct)
+model_death_propDays_70pct.Diag.Spl_4 <- gratia::draw(model_death_propDays_70pct,
+                                                    select = sms[1:4]) & theme_bw()
+model_death_propDays_70pct.Diag.Spl_4
+ggsave("model_death_propDays_70pct.Diag.Spl_4.png", plot = model_death_propDays_70pct.Diag.Spl_4, width = 8, height = 6)
+
+```
+
+```{r}
+model_death_propDays_70pct.Diag.Spl_5_8 <- gratia::draw(model_death_propDays_70pct,
+                                                    select = sms[5:8]) & theme_bw()
+model_death_propDays_70pct.Diag.Spl_5_8
+ggsave("model_death_propDays_70pct.Diag.Spl_5_8.png", plot = model_death_propDays_70pct.Diag.Spl_5_8, width = 8, height = 6)
+```
+
