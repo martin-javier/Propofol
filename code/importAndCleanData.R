@@ -243,18 +243,15 @@ create_ped_manually <- function(data, event){
   assertChoice(event, c("death", "discharge"))
   assertDataFrame(data)
   
-  if (event == "died"){
+  if (event == "death"){
     data <- data %>%
       mutate(daysToEvent = if_else(surv_icu_status == 1, 61L, daysToEvent))
   }
   data$eventDay <- ceiling(data$daysToEvent)
-  data <- data[data$eventDay <= 60, ]
   
   manualPED <- data %>%
     arrange(CombinedID, Study_Day) %>%
-    mutate(
-      last_row = Study_Day == 11
-    ) %>%
+    mutate(last_row = Study_Day == 11) %>%
     filter(last_row) %>%
     ungroup() %>%
     rowwise() %>%
@@ -296,21 +293,22 @@ create_ped_manually <- function(data, event){
     }) %>%
     bind_rows(data, .) %>%
     arrange(CombinedID, Study_Day) %>%
+    distinct(CombinedID, Study_Day, .keep_all = TRUE) %>%
     mutate(
       inMV = ifelse(Study_Day > ceiling(DaysMechVent), 0, 1),
       tstart = Study_Day - 1,
       tend = Study_Day,
       interval = paste0("(", tstart, ",", tend, "]"),
-      offset = 0,
       ped_status = ifelse(
-        (event == "died" & Study_Day == eventDay & surv_icu_status == 2) |
-          (event == "discharged" & Study_Day == eventDay & surv_icu_status == 1),
-        1, 0
-      )
+        (event == "death" & Study_Day == eventDay & surv_icu_status == 2) |
+          (event == "discharge" & Study_Day == eventDay & surv_icu_status == 1), 1, 0
+      ),
+      offset = ifelse(ped_status == 1, log(daysToEvent - tstart), 0)
     ) %>%
     select(CombinedID, tstart, tend, interval, offset, ped_status, Study_Day,
            surv_icu_status_exp, everything(), -last_row)
   
+  manualPED <- manualPED[manualPED$Study_Day <= 60, ]
   bin_vars <- c("interval", "OralIntake", "inMV", "ParenteralNut", "Propofol",
                 "ProteinBelow0.8GperKG", "CalsAbove16kcalPerKG", "CalsPercentageAbove70",
                 "surv_icu_status", "surv_icu_status_exp")

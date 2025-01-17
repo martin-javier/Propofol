@@ -10,7 +10,7 @@ data_death <- data_summed_Day0To7 %>%
   mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent))
 
 ### Propofol Days ####
-# with Calorie Variable: Days where Calories were lower than 16 kcal/kg
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
 ped_death <- as_ped(
   data = data_death,
   Surv(daysToEvent, PatientDied) ~ .,
@@ -38,7 +38,7 @@ model_death_propDays_16kcal <- bam(
   discrete = TRUE # Läuft nur so durch mit Random Effekt (verbessert Laufzeit)
 )
 
-# with Calorie Variable: Days where Calorie Intake was below 70% of Target
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_propDays_70pct <- bam(
   formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
     s(BMI, bs = "ps", k = 5) + 
@@ -57,7 +57,7 @@ model_death_propDays_70pct <- bam(
 )
 
 ### Propofol Cals ####
-# with Calorie Variable: Days where Calories were lower than 16 kcal/kg
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_propCals_16kcal <- bam(
   formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
     s(BMI, bs = "ps", k = 5) + 
@@ -75,7 +75,7 @@ model_death_propCals_16kcal <- bam(
   offset = offset
 )
 
-# with Calorie Variable: Days where Calorie Intake was below 70% of Target
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_propCals_70pct <- bam(
   formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
     s(BMI, bs = "ps", k = 5) + 
@@ -94,14 +94,11 @@ model_death_propCals_70pct <- bam(
 )
 
 ## Patient Discharged ####
-# prepare data
-data_disc <- data_summed_Day0To7 %>%
-  mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent))
 
 ### Propofol Days ####
-# with Calorie Variable: Days where Calories were lower than 16 kcal/kg
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
 ped_disc <- as_ped(
-  data = data_disc,
+  data = data_summed_Day0To7,
   Surv(daysToEvent, PatientDischarged) ~ .,
   cut = 0:60, id = "CombinedID" # Zeitintervall für 60 Tage (1 Tag-Schritte)
 )
@@ -123,7 +120,7 @@ model_disc_propDays_16kcal <- bam(
   offset = offset
 )
 
-# with Calorie Variable: Days where Calorie Intake was below 70% of Target
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_propDays_70pct <- bam(
   formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
     s(BMI, bs = "ps", k = 5) + 
@@ -142,7 +139,7 @@ model_disc_propDays_70pct <- bam(
 )
 
 ### Propofol Cals ####
-# with Calorie Variable: Days where Calories were lower than 16 kcal/kg
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_propCals_16kcal <- bam(
   formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
     s(BMI, bs = "ps", k = 5) + 
@@ -160,7 +157,7 @@ model_disc_propCals_16kcal <- bam(
   offset = offset
 )
 
-# with Calorie Variable: Days where Calorie Intake was below 70% of Target
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_propCals_70pct <- bam(
   formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
     s(BMI, bs = "ps", k = 5) + 
