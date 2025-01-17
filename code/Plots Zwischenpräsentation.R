@@ -19,7 +19,7 @@ theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margi
                         plot.background = element_rect(fill = "beige", color = NA))
 
 # Altersgruppen mit Counts erstellen
-age_counts <- model_data %>%
+age_counts <- data_summed_Day0To11 %>%
   mutate(AgeGroup = cut(Age, 
                         breaks = c(17, 30, 40, 50, 60, 70, 80, 90, 102), 
                         labels = c("18-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-102"))) %>% 
@@ -37,14 +37,14 @@ ggplot(age_counts, aes(x = AgeGroup, y = n)) +
   ## TO DO: Make the x-achse labels obliquely
 
 # Histogramm
-ggplot(model_data, aes(x = Age)) +
+ggplot(data_summed_Day0To11, aes(x = Age)) +
   geom_histogram(binwidth = 4, fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(title = "Verteilung Alter", x = "Alter", y = "Anzahl Patienten") +
   scale_x_continuous(breaks = seq(20, 100, by = 10)) +
   theme.main + theme.adjusted
 
 # Histogramm mit Dichte
-model_data %>% select(Age) %>% ggplot(aes(Age)) +
+data_summed_Day0To11 %>% select(Age) %>% ggplot(aes(Age)) +
   geom_histogram(aes(y = ..density..), fill = "#74C1E9", colour = 1, binwidth = 1, alpha = 0.8) +
   labs(title = "Verteilung Alter (Binwidth = 1)", x = "Alter", y = "Dichte") +
   geom_density(color = "orange", lwd = 1.2, linetype = 1, ) + 
@@ -53,7 +53,7 @@ model_data %>% select(Age) %>% ggplot(aes(Age)) +
 
 # ApacheIIScore ####
 # Boxplot
-ggplot(model_data, aes(x = "", y = ApacheIIScore)) +
+ggplot(data_summed_Day0To11, aes(x = "", y = ApacheIIScore)) +
   # Boxplot zeichnen
   geom_boxplot(fill = "darkgrey", color = "black", coef = 1.5, alpha = 0.7, outlier.size = 3, outlier.shape = 16, lwd = 0.8) +
   
@@ -66,14 +66,14 @@ ggplot(model_data, aes(x = "", y = ApacheIIScore)) +
     title = "Verteilung des ApacheIIScore",        # Haupttitel
     x = "",                                       # Leere X-Achse
     y = "ApacheIIScore")+
-  scale_y_continuous(breaks = seq(0, max(data_EK$ApacheIIScore, na.rm = TRUE), by = 10)) +
+  scale_y_continuous(breaks = seq(0, max(data_summed_Day0To11$ApacheIIScore, na.rm = TRUE), by = 10)) +
   theme.main + 
   theme.adjusted
 
 # oder Histogram
 # binwidth = 2 bedeutet, dass jede Klasse (bin) eine Breite von 2 Einheiten hat.
 # [10, 12), [12, 14), [14, 16), ..., [58, 60]
-# ggplot(model_data, aes(x = ApacheIIScore)) +
+# ggplot(data_summed_Day0To11, aes(x = ApacheIIScore)) +
 #   geom_histogram(binwidth = 2, fill = "#56B4E9", color = "black", alpha = 0.7) +
 #   scale_x_continuous(breaks = seq(0, 80, by = 10)) +
 #   labs(title = "Verteilung des ApacheIIScore", 
@@ -83,7 +83,7 @@ ggplot(model_data, aes(x = "", y = ApacheIIScore)) +
 #   theme.adjusted
 
 # Balkendiagramm für Gender ####
-ggplot(model_data, aes(x = Sex, fill = Sex)) +
+ggplot(data_summed_Day0To11, aes(x = Sex, fill = Sex)) +
   geom_bar(color = "black", alpha = 0.7) +
   labs(title = "Geschlechterverteilung", x = NULL, y = "Anzahl Patienten") +
   scale_x_discrete(labels = c("Weiblich", "Männlich")) +
@@ -92,7 +92,7 @@ ggplot(model_data, aes(x = Sex, fill = Sex)) +
 
 
 # Verstorbene vs. Entlassene vs. im Krankenhaus ####
-ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
+ggplot(data_summed_Day0To11, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
   geom_bar(color = "black", alpha = 0.8) +
   scale_x_discrete(labels = c("PatientDied" = "Verstorbene",
                               "PatientDischarged" = "Entlassene",
@@ -110,7 +110,7 @@ ggplot(model_data, aes(x = surv_icu_status_exp, fill = surv_icu_status_exp)) +
 
 # Beziehung zwischen Alter und ApacheIIScore ####
 # Scatterplot: Zeigt die Beziehung zwischen Alter und ApacheIIScore.
-ggplot(model_data, aes(x = Age, y = ApacheIIScore)) +
+ggplot(data_summed_Day0To11, aes(x = Age, y = ApacheIIScore)) +
   geom_point(alpha = 0.5, color = "black") +  # Punkte plotten
   geom_smooth(method = "lm", color = "red", se = TRUE) +  # Lineare Trendlinie mit Konfidenzintervall
   labs(
@@ -126,7 +126,7 @@ ggplot(model_data, aes(x = Age, y = ApacheIIScore)) +
 
 
 # Plot Propofol-Tage ####
-ggplot(model_data, aes(x = factor(Days_Propofol))) +
+ggplot(data_summed_Day0To11, aes(x = factor(Days_Propofol))) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(
     title = "Verteilung der Propofol-Nutzung",
@@ -135,7 +135,7 @@ ggplot(model_data, aes(x = factor(Days_Propofol))) +
   ) + theme.main + theme.adjusted
 
 # Verteilung Admission Categories ####
-ggplot(model_data, aes(x = AdmCat)) +
+ggplot(data_summed_Day0To11, aes(x = AdmCat)) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
   scale_x_discrete(labels =c("Medical" = "Medizinisch",
                              "Surgical/Emeregency" = "Notfalloperation",
@@ -144,13 +144,13 @@ ggplot(model_data, aes(x = AdmCat)) +
   theme.main + theme.adjusted
 
 # Verteilung Leading admission Diagnosis ####
-ggplot(model_data, aes(x = LeadAdmDiag)) +
+ggplot(data_summed_Day0To11, aes(x = LeadAdmDiag)) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(title = "Verteilung Erstdiagnose", x = NULL, y = "Anzahl Patienten") +
   theme.main + theme.adjusted
 
 # BMI Plot ####
-ggplot(model_data, aes(x = cut(BMI, 
+ggplot(data_summed_Day0To11, aes(x = cut(BMI, 
                                breaks = c(-Inf, 18.5, 25, 30, 35, Inf),
                                labels = c("Untergewicht", "Normalgewicht", "Übergewicht", 
                                           "Adipositas I", "Adipositas II+")),
@@ -189,15 +189,15 @@ ggplot(model_data, aes(x = cut(BMI,
 #Unlike a box plot that can only show summary statistics, 
 #violin plots depict summary statistics and the density of each variable.
 
-counts <- model_data %>%
+counts <- data_summed_Day0To11 %>%
   group_by(Sex) %>%
   summarize(Count = n())
-means <- model_data %>%
+means <- data_summed_Day0To11 %>%
   group_by(Sex) %>%
   summarize(Mean = mean(Age))
 
 # Violinplot mit individueller Annotation pro Geschlecht
-model_data %>% 
+data_summed_Day0To11 %>% 
   select(Age, Sex) %>%
   ggplot(aes(x = Sex, y = Age, fill = Sex)) +
   geom_violin(trim = FALSE, alpha = 0.5, adjust = 0.7, scale = "count", color = "black") + 
@@ -211,7 +211,7 @@ model_data %>%
   # Annotation für Female
   annotate(
     "text", 
-    x = 1.13, y = min(model_data$Age) - 5.5,  # Position unter dem Female-Plot
+    x = 1.13, y = min(data_summed_Day0To11$Age) - 5.5,  # Position unter dem Female-Plot
     label = paste0("n = ", counts$Count[counts$Sex == "Female"]),
     hjust = 0, vjust = 0.5,
     size = 8, color = "black"
@@ -219,7 +219,7 @@ model_data %>%
   # Annotation für Male
   annotate(
     "text", 
-    x = 2.13, y = min(model_data$Age) - 5.5,  # Position unter dem Male-Plot
+    x = 2.13, y = min(data_summed_Day0To11$Age) - 5.5,  # Position unter dem Male-Plot
     label = paste0("n = ", counts$Count[counts$Sex == "Male"]),
     hjust = 0, vjust = 0.5,
     size = 8, color = "black"
@@ -252,7 +252,7 @@ normal_weight_men <- c(18.5, 24.9)    # Normalgewicht für Männer (BMI 20-25)
 normal_weight_women <- c(18.5, 24.9) # Normalgewicht für Frauen (BMI 19-24)
 
 # Boxplot erstellen mit Normalgewichts-Intervallen
-model_data %>% 
+data_summed_Day0To11 %>% 
   select(BMI, Sex) %>%
   ggplot(aes(x = Sex, y = BMI, fill = Sex)) +
   geom_boxplot(
@@ -329,7 +329,7 @@ model_data %>%
 # ) +
 
 # perfekte Ausrichtung von Normalgewicht für Martin:
-# model_data %>% 
+# data_summed_Day0To11 %>% 
 #   select(BMI, Sex) %>%
 #   ggplot(aes(x = Sex, y = BMI, fill = Sex)) +
 #   geom_boxplot(
@@ -391,7 +391,7 @@ model_data %>%
 
 # Kaplan-Meier Plot ####
 # Kaplan-Meier Überlebenswahrscheinlichkeit
-km_data_death <- model_data %>%
+km_data_death <- data_summed_Day0To11 %>%
   mutate(daysToEvent = if_else(PatientDischarged == 1, 61L, daysToEvent),
          roundedDaysToEvent = round(daysToEvent))
 km_death <- survfit(Surv(daysToEvent, PatientDied) ~ 1, data = km_data_death)
@@ -416,7 +416,7 @@ km_death_plot_rounded$plot +
   scale_x_continuous(breaks = seq(0, max(km_data_death$roundedDaysToEvent), by = 10))
 
 # Kaplan Meier für nicht-entlassung Wahrscheinlichkeit
-km_data_disc <- model_data %>%
+km_data_disc <- data_summed_Day0To11 %>%
   mutate(daysToEvent = if_else(PatientDied == 1, 61L, daysToEvent),
          roundedDaysToEvent = round(daysToEvent))
 km_disc <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
@@ -443,7 +443,7 @@ km_disc_plot_rounded$plot +
 
 # Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
 # Create competing risks data | Event type: 1 = Discharged, 2 = Died
-km_data_discharge <- model_data %>%
+km_data_discharge <- data_summed_Day0To11 %>%
   mutate(event = case_when(
     PatientDischarged == 1 ~ 1,  # Discharge
     PatientDied == 1 ~ 2,       # Death
@@ -459,7 +459,7 @@ fit_cr <- cuminc(
 ggcompetingrisks(
   fit_cr, curvetype = "cuminc", conf.int = FALSE,
   title = "Vergleich kumulierte Sterbe- und Entlassungsrate",
-  xlab = "Tage",  ylab = "Kumulierte Wahrscheinlichkeit für Event",
+  xlab = "Tage | KURVEN SIND UNABHÄNGIG",  ylab = "Kumulierte Wahrscheinlichkeit für Event",
   ggtheme = (theme.main + theme.adjusted +
                theme(legend.text = element_text(face = "bold", size = 18)))) +
   geom_line(size = 1) +

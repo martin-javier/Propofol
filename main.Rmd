@@ -8,7 +8,7 @@ output: html_document
 Set working directory
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 if (!require(rstudioapi)) install.packages("rstudioapi")
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
@@ -21,12 +21,14 @@ source("code/install_packages.R") # hier bitte nur packages rein, die wir am End
 # sonst laden wir am Ende unnötige packages obwohl sie nicht genutzt werden
 ```
 
-Import and maipulate dataset
+Import and maipulate datasets
 
 ```{r}
 source("code/importAndCleanData.R")
-data_summed_Day0To11 <- clean_and_summarise()
+data_summed_Day0To11 <- clean_and_summarise_Days0To11()
 data_summed_Day0To7 <- clean_and_summarise_Days0To7()
 data_long <- clean_data()
+manualPED_death <- create_ped_manually(data_long, "death")
+manualPED_disc <- create_ped_manually(data_long, "discharge")
 ```
 
