@@ -32,31 +32,103 @@ theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margi
 #### best Models from "GAM-Modelle_hartl + AIC Analyse.R"
 
 Bestes Modell für Propofol-Tage (Patient Died): "model_death_propDays_70pct"
-Bestes Modell für Propofol-Kalorien (Patient Died):"model_death_propCals_16kcal"
-Bestes Modell für Propofol-Tage (Patient Discharged):"model_disc_propDays_70pct"
-Bestes Modell für Propofol-Kalorien (Patient Discharged):"model_disc_propCals_70pct"
 
 #### Model Diagnostic of model "model_death_propDays_70pct" 
 
 ```{r}
 model_death_propDays_70pct.Diag <- gratia::appraise(model_death_propDays_70pct) & theme_bw()
 model_death_propDays_70pct.Diag 
+
 ggsave("model_death_propDays_70pct.Diag.png", plot = model_death_propDays_70pct.Diag, width = 8, height = 6)
 ```
 
 ```{r}
 sms <- gratia::smooths(model_death_propDays_70pct)
-model_death_propDays_70pct.Diag.Spl_4 <- gratia::draw(model_death_propDays_70pct,
-                                                    select = sms[1:4]) & theme_bw()
+model_death_propDays_70pct.Diag.Spl_4 <- gratia::draw(model_death_propDays_70pct, select = sms[1:4]) & theme_bw()
 model_death_propDays_70pct.Diag.Spl_4
+
 ggsave("model_death_propDays_70pct.Diag.Spl_4.png", plot = model_death_propDays_70pct.Diag.Spl_4, width = 8, height = 6)
 
 ```
 
 ```{r}
-model_death_propDays_70pct.Diag.Spl_5_8 <- gratia::draw(model_death_propDays_70pct,
-                                                    select = sms[5:8]) & theme_bw()
+model_death_propDays_70pct.Diag.Spl_5_8 <- gratia::draw(model_death_propDays_70pct, select = sms[5:8]) & theme_bw()
 model_death_propDays_70pct.Diag.Spl_5_8
+
 ggsave("model_death_propDays_70pct.Diag.Spl_5_8.png", plot = model_death_propDays_70pct.Diag.Spl_5_8, width = 8, height = 6)
+```
+
+### Bestes Modell für Propofol-Kalorien (PatientDied):"model_death_propCals_16kcal"
+
+```{r}
+
+model_death_propCals_16kcal.Diag <- gratia::appraise(model_death_propCals_16kcal) & theme_bw()
+model_death_propCals_16kcal.Diag 
+
+ggsave("model_death_propCals_16kcal.Diag.png", plot = model_death_propCals_16kcal, width = 8, height = 6)
+```
+
+
+```{r}
+sms <- gratia::smooths(model_death_propCals_16kcal)
+model_death_propCals_16kcal_4 <- gratia::draw(model_death_propCals_16kcal, select = sms[1:4]) & theme_bw()
+model_death_propCals_16kcal_4
+
+ggsave("model_death_propCals_16kcall_4.png", plot = model_death_propCals_16kcal_4, width = 8, height = 6)
+```
+
+```{r}
+model_death_propCals_16kcal_5_8 <- gratia::draw(model_death_propCals_16kcal, select = sms[5:8]) & theme_bw()
+model_death_propDays_70pct.Diag.Spl_5_8
+
+ggsave("model_death_propCals_16kcal_5_8.png", plot = model_death_propDays_70pct.Diag.Spl_5_8, width = 8, height = 6)
+```
+
+#### Bestes Modell für Propofol-Tage (Patient Discharged):"model_disc_propDays_70pct"
+
+```{r}
+model_disc_propDays_70pct.Diag <- gratia::appraise(model_disc_propDays_70pct) & theme_bw()
+model_disc_propDays_70pct.Diag 
+
+ggsave("model_disc_propDays_70pct.Diag.png", plot = model_disc_propDays_70pct, width = 8, height = 6)
+```
+
+```{r}
+sms <- gratia::smooths(model_disc_propDays_70pct)
+model_disc_propDays_70pct.Spl_4 <- gratia::draw(model_disc_propDays_70pct, select = sms[1:4]) & theme_bw()
+model_disc_propDays_70pct.Spl_4
+
+ggsave("model_disc_propDays_70pct.Spl_4.png", plot = model_disc_propDays_70pct.Spl_4, width = 8, height = 6)
+```
+
+```{r}
+model_disc_propDays_70pct_5_8 <- gratia::draw(model_disc_propDays_70pct, select = sms[5:8]) & theme_bw()
+model_disc_propDays_70pct_5_8
+
+ggsave("model_disc_propDays_70pct_5_8.png", plot = model_disc_propDays_70pct_5_8, width = 8, height = 6)
+```
+
+#### Bestes Modell für Propofol-Kalorien (Patient Discharged):"model_disc_propCals_70pct"
+
+```{r}
+model_disc_propCals_70pct.Diag <- gratia::appraise(model_disc_propCals_70pct) & theme_bw()
+model_disc_propCals_70pct.Diag 
+
+ggsave("model_disc_propCals_70pct.Diag.png", plot = model_disc_propCals_70pct.Diag, width = 8, height = 6)
+```
+
+```{r}
+sms <- gratia::smooths(model_disc_propCals_70pct)
+model_disc_propCals_70pct.Spl_4 <- gratia::draw(model_disc_propCals_70pct, select = sms[1:4]) & theme_bw()
+model_disc_propCals_70pct.Spl_4
+
+ggsave("model_disc_propCals_70pct.Spl_4.png", plot = model_disc_propCals_70pct.Spl_4, width = 8, height = 6)
+```
+
+```{r}
+model_disc_propCals_70pct_5_8 <- gratia::draw(model_disc_propCals_70pct, select = sms[5:8]) & theme_bw()
+model_disc_propCals_70pct_5_8
+
+ggsave("model_disc_propCals_70pct_5_8.png", plot = model_disc_propCals_70pct_5_8, width = 8, height = 6)
 ```
 
