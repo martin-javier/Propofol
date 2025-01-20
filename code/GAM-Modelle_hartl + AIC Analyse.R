@@ -18,79 +18,91 @@ ped_death <- as_ped(
 )
 
 model_death_propDays_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + 
-    factor(Year) + 
-    factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 5) + 
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) + 
-    s(CombinedicuID, bs = "re"), # verschlechtert das Modell, siehe Devianz aber ist signifikant
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(Days_Propofol, bs = "ps", k = 5) +
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_death,
   family = poisson(),
   offset = offset,
-  discrete = TRUE # Läuft nur so durch mit Random Effekt (verbessert Laufzeit)
+  nthreads = parallel::detectCores()
 )
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_propDays_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 5) + 
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(Days_Propofol, bs = "ps", k = 5) +
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_death,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
 
 ### Propofol Cals ####
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_propCals_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 5) + 
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(totalPropofolCal, bs = "ps", k = 5) +
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_death,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_propCals_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 5) + 
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(totalPropofolCal, bs = "ps", k = 5) +
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_death,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
 
 ## Patient Discharged ####
@@ -104,76 +116,106 @@ ped_disc <- as_ped(
 )
 
 model_disc_propDays_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 5) + 
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(Days_Propofol, bs = "ps", k = 5) +
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_disc,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_propDays_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(Days_Propofol, bs = "ps", k = 5) + 
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(Days_Propofol, bs = "ps", k = 5) +
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_disc,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
 
 ### Propofol Cals ####
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_propCals_16kcal <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 5) + 
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(totalPropofolCal, bs = "ps", k = 5) +
+    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_disc,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_propCals_70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) + 
-    s(BMI, bs = "ps", k = 5) + 
-    s(ApacheIIScore, bs = "ps", k = 5) + 
-    s(inMV0To7, bs = "ps", k = 5) + 
+  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) + factor(Year) + factor(AdmCat) + 
-    factor(LeadAdmDiag) + 
-    s(totalPropofolCal, bs = "ps", k = 5) + 
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) + 
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5),
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCat) +
+    factor(LeadAdmDiag) +
+    s(totalPropofolCal, bs = "ps", k = 5) +
+    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
+    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    s(CombinedicuID, bs = "re"),
   data = ped_disc,
   family = poisson(),
-  offset = offset
+  offset = offset,
+  nthreads = parallel::detectCores()
 )
+
+
+# Modelle für "Patient Died"
+saveRDS(model_death_propDays_16kcal, "models/model_death_propDays_16kcal.rds")
+saveRDS(model_death_propDays_70pct, "models/model_death_propDays_70pct.rds")
+saveRDS(model_death_propCals_16kcal, "models/model_death_propCals_16kcal.rds")
+saveRDS(model_death_propCals_70pct, "models/model_death_propCals_70pct.rds")
+
+# Modelle für "Patient Discharged"
+saveRDS(model_disc_propDays_16kcal, "models/model_disc_propDays_16kcal.rds")
+saveRDS(model_disc_propDays_70pct, "models/model_disc_propDays_70pct.rds")
+saveRDS(model_disc_propCals_16kcal, "models/model_disc_propCals_16kcal.rds")
+saveRDS(model_disc_propCals_70pct, "models/model_disc_propCals_70pct.rds")
+
 
 # Summary der Modelle
 summary(model_death_propDays_16kcal)
