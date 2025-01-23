@@ -1,5 +1,5 @@
-model1 <- model_death_propDays_calsAbove70pct_reICU
-model2 <- model_disc_propCals_calsAbove16_reICU
+model1 <- model_death_propDays_calsAbove70pct
+model2 <- model_disc_propCals_calsAbove16
 
 library(mgcv)
 library(ggplot2)
@@ -87,21 +87,21 @@ smooth_apache_df_1 <- data.frame(
 ggplot(smooth_age_df_1, aes(x = x, y = fit)) +
   geom_line(color = "blue", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "blue") +
-  labs(title = "Geschätzter Spline-Effekt: Alter", x = "Age", y = "Schätzwerte") +
+  labs(title = "Estimated Spline Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(BMI)
 ggplot(smooth_bmi_df_1, aes(x = x, y = fit)) +
   geom_line(color = "green", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "green") +
-  labs(title = "Geschätzter Spline-Effekt: BMI", x = "BMI", y = "Schätzwerte") +
+  labs(title = "Estimated Spline Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(ApacheIIScore)
 ggplot(smooth_apache_df_1, aes(x = x, y = fit)) +
   geom_line(color = "red", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "red") +
-  labs(title = "Geschätzter Spline-Effekt: ApacheIIScores", x = "ApacheIIScore", y = "Schätzwerte") +
+  labs(title = "Estimated Spline Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Das Modell ist bereits definiert als `model2`
@@ -176,31 +176,53 @@ smooth_apache_df_2 <- data.frame(
 ggplot(smooth_age_df_2, aes(x = x, y = fit)) +
   geom_line(color = "blue", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "blue") +
-  labs(title = "Geschätzter Spline-Effekt: Alter", x = "Age", y = "Schätzwerte") +
+  labs(title = "Estimated Spline Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(BMI)
 ggplot(smooth_bmi_df_2, aes(x = x, y = fit)) +
   geom_line(color = "green", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "green") +
-  labs(title = "Geschätzter Spline-Effekt: BMI", x = "BMI", y = "Schätzwerte") +
+  labs(title = "Estimated Spline Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(ApacheIIScore)
 ggplot(smooth_apache_df_2, aes(x = x, y = fit)) +
   geom_line(color = "red", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "red") +
-  labs(title = "Geschätzter Spline-Effekt: ApacheIIScores", x = "ApacheIIScore", y = "Schätzwerte") +
+  labs(title = "Estimated Spline Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
-
+# # Definiere die gewünschte Reihenfolge der Variablen
+# desired_order <- rev(c(
+#   "Propofol1",               # Propofol
+#   "PropofolCal",             # Propofol Calories
+#   "ParenteralNut1",          # Parenteral Nutrition
+#   "OralIntake1",             # Oral Intake
+#   "inMV1",                   # Mechanical Ventilation
+#   "CalsPercentageAbove701",  # Calories > 70%
+#   "CalsAbove16kcalPerKG1",   # Calories > 16kcal/kg
+#   "ProteinBelow0.8GperKG1",  # Protein < 0.8g/kg
+#   "factor(Sex)Male",         # Sex: Male
+#   "factor(LeadAdmDiag)Sepsis",
+#   "factor(LeadAdmDiag)Respiratory",
+#   "factor(LeadAdmDiag)Renal",
+#   "factor(LeadAdmDiag)Orthopedic/Trauma",
+#   "factor(LeadAdmDiag)Neurologic",
+#   "factor(LeadAdmDiag)Metabolic",
+#   "factor(LeadAdmDiag)Gastrointestinal",
+#   "factor(LeadAdmDiag)Cardio-Vascular",
+#   "factor(AdmCatID)Surgical/Emeregency",
+#   "factor(AdmCatID)Surgical/Elective"
+# ))
 
 renamed_labels <- c(
   "ProteinBelow0.8GperKG1" = "Protein < 0.8g/kg",
   "Propofol1" = "Propofol",
+  "PropofolCal" = "Propofol Calories",
   "ParenteralNut1" = "Parenteral Nutrition",
   "OralIntake1" = "Oral Intake",
-  "inMV1" = "inMV",
+  "inMV1" = "Mechanical Ventilation",
   "factor(Year)2014" = "Year: 2014",
   "factor(Year)2013" = "Year: 2013",
   "factor(Year)2011" = "Year: 2011",
@@ -217,40 +239,55 @@ renamed_labels <- c(
   "factor(LeadAdmDiag)Cardio-Vascular" = "LeadAdmDiag: Cardio-Vascular",
   "factor(AdmCatID)Surgical/Emeregency" = "AdmCatID: Surgical/Emergency",
   "factor(AdmCatID)Surgical/Elective" = "AdmCatID: Surgical/Elective",
-  "CalsPercentageAbove701" = "Calories > 70%"
+  "CalsPercentageAbove701" = "Calories > 70%",
+  "CalsAbove16kcalPerKG1" = "Calories > 16kcal/kg"
 )
-
-# Forest Plot für Modelle 1 und 2
-# x <- as.data.frame(tidy_fixed(model1)[1]) 
-# variables <- c("ProteinBelow0.8GperKG1", "Propofol1", "ParenteralNut1", "OralIntake1",
-#                "inMV1", "factor(Sex)Male", "factor(LeadAdmDiag)Sepsis", "factor(LeadAdmDiag)Respiratory", 
-#                "factor(AdmCatID)Surgical/Elective", "factor(AdmCatID)Surgical/Emeregency",
-#                "factor(LeadAdmDiag)Cardio-Vascular", "factor(LeadAdmDiag)Respiratory", 
-#                "factor(LeadAdmDiag)Gastrointestinal", "factor(LeadAdmDiag)Neurologic",      
-#                "factor(LeadAdmDiag)Sepsis", "factor(LeadAdmDiag)Orthopedic/Trauma",
-#                "factor(LeadAdmDiag)Metabolic", "factor(LeadAdmDiag)Renal", "CalsPercentageAbove701")
-#  x <- x %>% filter(variable %in% variables)
-tidy_fixed(model1)
+# Erstelle den Plot basierend auf model1
 plot1 <- gg_fixed(model1)
-plot1 + 
-  scale_x_discrete(labels = renamed_labels) + 
-  ggtitle("Forrest Plot of fixed Coefficients") +
-  theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
-        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
-        axis.title.y = element_text(margin = margin(r = 20), size = 22),
-        title = element_text(color = "black"),
-        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
-        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-        plot.background = element_rect(fill = "beige", color = NA))
 
+# Greife auf die Daten im Plot zu und filtere die Jahre heraus
+plot1$data <- plot1$data %>% 
+  filter(!grepl("factor\\(Year\\)", variable)) # Entferne alle Variablen mit "factor(Year)"
+
+# Plot mit den gefilterten Daten
+plot1 +
+  scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot1$data$variable]) + 
+  ylab(expression("Regression Coefficient " * hat(beta) ~ "(95% Confidence Interval)")) + 
+  ggtitle("Forrest Plot of fixed Coefficients") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
+    axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+    axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+    axis.title.y = element_text(margin = margin(r = 20), size = 22),
+    title = element_text(color = "black"),
+    plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+    plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+    plot.background = element_rect(fill = "beige", color = NA)
+  )
+  
+          # Interpreation: Das Konfidenzintervall beschreibt die Unsicherheit der Schätzung. 
+          # Wenn das CI 0 überschreitet, ist der Effekt statistisch nicht signifikant.
+
+
+# Erstelle den Plot basierend auf model1
 plot2 <- gg_fixed(model2)
-plot2 + ggtitle("Forrest Plot of fixed Coefficients") + 
-  theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
-        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
-        axis.title.y = element_text(margin = margin(r = 20), size = 22),
-        title = element_text(color = "black"),
-        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
-        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-        plot.background = element_rect(fill = "beige", color = NA))
+
+# Greife auf die Daten im Plot zu und filtere die Jahre heraus
+plot2$data <- plot2$data %>% 
+  filter(!grepl("factor\\(Year\\)", variable)) # Entferne alle Variablen mit "factor(Year)"
+
+# Plot mit den gefilterten Daten
+plot2 +
+  scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot2$data$variable]) + 
+  ylab(expression("Regression Coefficient " * hat(beta) ~ "(95% Confidence Interval)")) + 
+  ggtitle("Forrest Plot of fixed Coefficients") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
+    axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+    axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+    axis.title.y = element_text(margin = margin(r = 20), size = 22),
+    title = element_text(color = "black"),
+    plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+    plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+    plot.background = element_rect(fill = "beige", color = NA)
+  )

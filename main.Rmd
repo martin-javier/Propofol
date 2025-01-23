@@ -33,7 +33,7 @@ manualPED_disc <- create_ped_manually(data_long, "discharge")
 ```
 Import all Models
 ```{r}
-model_files <- list.files("models", pattern = "\\.rds$", full.names = TRUE)
+model_files <- list.files("models", pattern = "\\.rds$", full.names = TRUE, recursive = TRUE)
 
 # Load models dynamically into the environment
 for (file in model_files) {
