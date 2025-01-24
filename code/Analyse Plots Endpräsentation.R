@@ -86,7 +86,7 @@ ggplot(smooth_age_df_1, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "blue") +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
-  labs(title = "Estimated Spline Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(BMI)
@@ -95,7 +95,7 @@ ggplot(smooth_bmi_df_1, aes(x = x, y = fit)) +
   scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) + 
   geom_line(color = "green", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "green") +
-  labs(title = "Estimated Spline Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(ApacheIIScore)
@@ -104,7 +104,7 @@ ggplot(smooth_apache_df_1, aes(x = x, y = fit)) +
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) + 
   geom_line(color = "red", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "red") +
-  labs(title = "Estimated Spline Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Glatte Terme manuell extrahieren und darstellen
@@ -178,7 +178,7 @@ ggplot(smooth_age_df_2, aes(x = x, y = fit)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
   geom_line(color = "blue", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "blue") +
-  labs(title = "Estimated Spline Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(BMI)
@@ -187,7 +187,7 @@ ggplot(smooth_bmi_df_2, aes(x = x, y = fit)) +
   scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) + 
   geom_line(color = "green", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "green") +
-  labs(title = "Estimated Spline Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 # Plot für s(ApacheIIScore)
@@ -196,7 +196,7 @@ ggplot(smooth_apache_df_2, aes(x = x, y = fit)) +
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) + 
   geom_line(color = "red", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "red") +
-  labs(title = "Estimated Spline Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
 renamed_labels <- c(
