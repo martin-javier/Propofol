@@ -31,7 +31,9 @@ data_long <- clean_data()
 manualPED_death <- create_ped_manually(data_long, "death")
 manualPED_disc <- create_ped_manually(data_long, "discharge")
 ```
+
 Import all Models
+
 ```{r}
 model_files <- list.files("models", pattern = "\\.rds$", full.names = TRUE, recursive = TRUE)
 
@@ -41,5 +43,3 @@ for (file in model_files) {
   assign(model_name, readRDS(file)) # Load the model and assign it to the environment
 }
 ```
-
-
