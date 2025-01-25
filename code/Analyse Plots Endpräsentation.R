@@ -82,8 +82,8 @@ smooth_apache_df_1 <- data.frame(
 # Visualisierung mit ggplot2
 # Plot für s(Age)
 ggplot(smooth_age_df_1, aes(x = x, y = fit)) +
-  geom_line(color = "blue", size = 2.5) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "blue") +
+  geom_line(color = "darkgreen", size = 2.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkgreen") +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
   labs(title = "Estimated Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
@@ -93,8 +93,8 @@ ggplot(smooth_age_df_1, aes(x = x, y = fit)) +
 ggplot(smooth_bmi_df_1, aes(x = x, y = fit)) +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2.01, 2)) + 
   scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) + 
-  geom_line(color = "green", size = 2.5) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "green") +
+  geom_line(color = "darkorchid3", size = 2.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkorchid3") +
   labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
@@ -102,8 +102,8 @@ ggplot(smooth_bmi_df_1, aes(x = x, y = fit)) +
 ggplot(smooth_apache_df_1, aes(x = x, y = fit)) +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) + 
-  geom_line(color = "red", size = 2.5) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "red") +
+  geom_line(color = "deepskyblue3", size = 2.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "deepskyblue3") +
   labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
@@ -176,8 +176,8 @@ smooth_apache_df_2 <- data.frame(
 ggplot(smooth_age_df_2, aes(x = x, y = fit)) +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
-  geom_line(color = "blue", size = 2.5) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "blue") +
+  geom_line(color = "darkgreen", size = 2.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkgreen") +
   labs(title = "Estimated Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
@@ -185,8 +185,8 @@ ggplot(smooth_age_df_2, aes(x = x, y = fit)) +
 ggplot(smooth_bmi_df_2, aes(x = x, y = fit)) +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
   scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) + 
-  geom_line(color = "green", size = 2.5) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "green") +
+  geom_line(color = "darkorchid3", size = 2.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkorchid3") +
   labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
@@ -194,8 +194,8 @@ ggplot(smooth_bmi_df_2, aes(x = x, y = fit)) +
 ggplot(smooth_apache_df_2, aes(x = x, y = fit)) +
   scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) + 
-  geom_line(color = "red", size = 2.5) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "red") +
+  geom_line(color = "deepskyblue3", size = 2.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "deepskyblue3") +
   labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
   theme.adjusted
 
