@@ -228,17 +228,18 @@ renamed_labels <- c(
 # Erstelle den Plot basierend auf model1
 plot1 <- gg_fixed(model1)
 se_1 <- sqrt(diag(model1$Vp))
+coef_1 <- model1$coefficients
 
 # Greife auf die Daten im Plot zu und filtere die Jahre heraus
 plot1$data <- plot1$data %>% 
   filter(!grepl("factor\\(Year\\)", variable)) # Entferne alle Variablen mit "factor(Year)"
 # Berechnung der Hazard Ratios und Konfidenzintervalle
 results_1 <- data.frame(
-  variable = parametric_vars,                  # Nur die parametrischen Variablen
-  coef = names(model1$coefficients),                                 # Log-Skala Koeffizienten
-  coef_exp = exp(coef),                        # Hazard Ratios
-  ci_lower = exp(coef - 1.96 * se_1),            # Unteres Konfidenzintervall
-  ci_upper = exp(coef + 1.96 * se_1)             # Oberes Konfidenzintervall
+  variable = names(model1$coefficients),                  # Nur die parametrischen Variablen
+  coef = coef_1,                                 # Log-Skala Koeffizienten
+  coef_exp = exp(coef_1),                        # Hazard Ratios
+  ci_lower = exp(coef_1 - 1.96 * se_1),            # Unteres Konfidenzintervall
+  ci_upper = exp(coef_1 + 1.96 * se_1)             # Oberes Konfidenzintervall
 )
 # Entferne Splines, den Intercept und andere unerwünschte Variablen
 results_1 <- results_1 %>%
@@ -247,7 +248,7 @@ results_1 <- results_1 %>%
   filter(!grepl("factor\\(Year\\)", variable)) # Entferne spezifische Faktoren
 
 # Plot mit den gefilterten Daten
-ggplot(results, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
+ggplot(results_1, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
   geom_pointrange() +                                   # Punkte und CI-Balken
   coord_flip() +                                        # Flip für horizontales Layout 
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
@@ -272,6 +273,7 @@ ggplot(results, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper
 # Erstelle den Plot basierend auf model2
 plot2 <- gg_fixed(model2)
 se_2 <- sqrt(diag(model2$Vp))
+coef_2 <- model2$coefficients
 
 # Greife auf die Daten im Plot zu und filtere die Jahre heraus
 plot2$data <- plot2$data %>% 
@@ -280,10 +282,10 @@ plot2$data <- plot2$data %>%
 # Berechnung der Hazard Ratios und Konfidenzintervalle
 results_2 <- data.frame(
   variable = names(model2$coefficients),      # Nur die parametrischen Variablen
-  coef = model2$coefficients,                 # Log-Skala Koeffizienten
-  coef_exp = exp(model2$coefficients),        # Hazard Ratios
-  ci_lower = exp(model2$coefficients - 1.96 * se_2), # Unteres Konfidenzintervall
-  ci_upper = exp(model2$coefficients + 1.96 * se_2)  # Oberes Konfidenzintervall
+  coef = coef_2,                 # Log-Skala Koeffizienten
+  coef_exp = exp(coef_2),        # Hazard Ratios
+  ci_lower = exp(coef_2 - 1.96 * se_2), # Unteres Konfidenzintervall
+  ci_upper = exp(coef_2 + 1.96 * se_2)  # Oberes Konfidenzintervall
 )
 
 # Entferne Splines, den Intercept und andere unerwünschte Variablen
