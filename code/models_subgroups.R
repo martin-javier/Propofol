@@ -461,7 +461,6 @@ model_death_female_propDays_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -483,7 +482,6 @@ model_death_female_propDays_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -507,7 +505,6 @@ model_death_female_propCals_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -529,7 +526,6 @@ model_death_female_propCals_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -557,7 +553,6 @@ model_disc_female_propDays_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -579,7 +574,6 @@ model_disc_female_propDays_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -603,7 +597,6 @@ model_disc_female_propCals_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -625,7 +618,6 @@ model_disc_female_propCals_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -677,7 +669,6 @@ model_death_male_propDays_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -699,7 +690,6 @@ model_death_male_propDays_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -723,7 +713,6 @@ model_death_male_propCals_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -745,7 +734,6 @@ model_death_male_propCals_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -773,7 +761,6 @@ model_disc_male_propDays_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -795,7 +782,6 @@ model_disc_male_propDays_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -819,7 +805,6 @@ model_disc_male_propCals_16kcal <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -841,7 +826,6 @@ model_disc_male_propCals_70pct <- bam(
     s(inMV0To7, bs = "ps", k = 5) +
     s(Days_ParenteralNut, bs = "ps", k = 5) +
     s(Days_OralIntake, bs = "ps", k = 5) +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCat) +
     factor(LeadAdmDiag) +
@@ -1328,7 +1312,6 @@ model_death_female_propDays_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1350,7 +1333,6 @@ model_death_female_propDays_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1374,7 +1356,6 @@ model_death_female_propCals_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1396,7 +1377,6 @@ model_death_female_propCals_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1424,7 +1404,6 @@ model_disc_female_propDays_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1446,7 +1425,6 @@ model_disc_female_propDays_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1470,7 +1448,6 @@ model_disc_female_propCals_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1492,7 +1469,6 @@ model_disc_female_propCals_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1544,7 +1520,6 @@ model_death_male_propDays_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1566,7 +1541,6 @@ model_death_male_propDays_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1590,7 +1564,6 @@ model_death_male_propCals_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1612,7 +1585,6 @@ model_death_male_propCals_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1640,7 +1612,6 @@ model_disc_male_propDays_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1662,7 +1633,6 @@ model_disc_male_propDays_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1686,7 +1656,6 @@ model_disc_male_propCals_calsAbove16 <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
@@ -1708,7 +1677,6 @@ model_disc_male_propCals_calsAbove70pct <- bam(
     inMV +
     ParenteralNut +
     OralIntake +
-    factor(Sex) +
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
