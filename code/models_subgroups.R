@@ -890,19 +890,19 @@ manualPED_death_older65 <- manualPED_death[manualPED_death$Age > 65, ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_older65_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_older65,
   family = poisson(),
@@ -912,19 +912,19 @@ model_death_older65_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_older65_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_older65,
   family = poisson(),
@@ -936,19 +936,19 @@ model_death_older65_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_older65_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal + 
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_older65,
   family = poisson(),
@@ -958,19 +958,19 @@ model_death_older65_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_older65_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_older65,
   family = poisson(),
@@ -986,19 +986,19 @@ manualPED_disc_older65 <- manualPED_disc[manualPED_disc$Age > 65, ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_older65_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_older65,
   family = poisson(),
@@ -1008,19 +1008,19 @@ model_disc_older65_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_older65_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_older65,
   family = poisson(),
@@ -1032,19 +1032,19 @@ model_disc_older65_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_older65_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_older65,
   family = poisson(),
@@ -1054,19 +1054,19 @@ model_disc_older65_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_older65_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_older65,
   family = poisson(),
@@ -1106,19 +1106,19 @@ manualPED_death_younger66 <- manualPED_death[manualPED_death$Age <= 65, ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_younger66_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_younger66,
   family = poisson(),
@@ -1128,19 +1128,19 @@ model_death_younger66_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_younger66_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_younger66,
   family = poisson(),
@@ -1152,19 +1152,19 @@ model_death_younger66_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_younger66_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_younger66,
   family = poisson(),
@@ -1174,19 +1174,19 @@ model_death_younger66_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_younger66_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_younger66,
   family = poisson(),
@@ -1202,19 +1202,19 @@ manualPED_disc_younger66 <- manualPED_disc[manualPED_disc$Age <= 65, ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_younger66_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_younger66,
   family = poisson(),
@@ -1224,19 +1224,19 @@ model_disc_younger66_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_younger66_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_younger66,
   family = poisson(),
@@ -1248,19 +1248,19 @@ model_disc_younger66_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_younger66_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_younger66,
   family = poisson(),
@@ -1270,19 +1270,19 @@ model_disc_younger66_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_younger66_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_younger66,
   family = poisson(),
@@ -1322,19 +1322,19 @@ manualPED_death_female <- manualPED_death[manualPED_death$Sex == "Female", ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_female_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_female,
   family = poisson(),
@@ -1344,19 +1344,19 @@ model_death_female_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_female_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_female,
   family = poisson(),
@@ -1368,19 +1368,19 @@ model_death_female_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_female_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_female,
   family = poisson(),
@@ -1390,19 +1390,19 @@ model_death_female_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_female_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_female,
   family = poisson(),
@@ -1418,19 +1418,19 @@ manualPED_disc_female <- manualPED_disc[manualPED_disc$Sex == "Female", ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_female_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_female,
   family = poisson(),
@@ -1440,19 +1440,19 @@ model_disc_female_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_female_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_female,
   family = poisson(),
@@ -1464,19 +1464,19 @@ model_disc_female_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_female_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_female,
   family = poisson(),
@@ -1486,19 +1486,19 @@ model_disc_female_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_female_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_female,
   family = poisson(),
@@ -1538,19 +1538,19 @@ manualPED_death_male <- manualPED_death[manualPED_death$Sex == "Male", ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_male_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_male,
   family = poisson(),
@@ -1560,19 +1560,19 @@ model_death_male_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_male_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_male,
   family = poisson(),
@@ -1584,19 +1584,19 @@ model_death_male_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_male_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_male,
   family = poisson(),
@@ -1606,19 +1606,19 @@ model_death_male_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_male_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death_male,
   family = poisson(),
@@ -1634,19 +1634,19 @@ manualPED_disc_male <- manualPED_disc[manualPED_disc$Sex == "Male", ]
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_male_propDays_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_male,
   family = poisson(),
@@ -1656,19 +1656,19 @@ model_disc_male_propDays_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_male_propDays_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(Days_Propofol, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_male,
   family = poisson(),
@@ -1680,19 +1680,19 @@ model_disc_male_propDays_calsAbove70pct <- bam(
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_male_propCals_calsAbove16 <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsAbove16kcalPerKG, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_male,
   family = poisson(),
@@ -1702,19 +1702,19 @@ model_disc_male_propCals_calsAbove16 <- bam(
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_male_propCals_calsAbove70pct <- bam(
-  formula = ped_status ~ s(Age, bs = "ps", k = 5) +
-    s(BMI, bs = "ps", k = 5) +
-    s(ApacheIIScore, bs = "ps", k = 5) +
-    s(inMV0To7, bs = "ps", k = 5) +
-    s(Days_ParenteralNut, bs = "ps", k = 5) +
-    s(Days_OralIntake, bs = "ps", k = 5) +
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
     factor(Sex) +
     factor(Year) +
-    factor(AdmCat) +
+    factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    s(totalPropofolCal, bs = "ps", k = 5) +
-    s(Days_CalsPercentageAbove70, bs = "ps", k = 5) +
-    s(Days_ProtBelow0.8GperKG, bs = "ps", k = 5) +
+    PropofolCal +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
   data = manualPED_disc_male,
   family = poisson(),
@@ -1741,4 +1741,3 @@ saveRDS(model_disc_male_propCals_calsAbove16,
         "models/subgroups/manualPED/model_disc_male_propCals_calsAbove16.rds")
 saveRDS(model_disc_male_propCals_calsAbove70pct,
         "models/subgroups/manualPED/model_disc_male_propCals_calsAbove70pct.rds")
-

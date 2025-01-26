@@ -17,7 +17,7 @@ model_death_propDays_calsAbove16 <- bam(
     Propofol + 
     CalsAbove16kcalPerKG + 
     ProteinBelow0.8GperKG +
-    s(CombinedicuID, bs = "re", by = icuByDummy),
+    s(CombinedicuID, bs = "re"),
   data = manualPED_death,
   family = poisson(),
   offset = offset,
