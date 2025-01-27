@@ -201,7 +201,7 @@ ggplot(smooth_apache_df_2, aes(x = x, y = fit)) +
 
 renamed_labels <- c(
   "ProteinBelow0.8GperKG1" = "Protein < 0.8g/kg",
-  "Propofol1" = "Propofol Days",
+  "Propofol1" = "Propofol Binary",
   "PropofolCal" = "Propofol Calories",
   "ParenteralNut1" = "Parenteral Nutrition",
   "OralIntake1" = "Oral Intake",
@@ -254,7 +254,7 @@ ggplot(results_1, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upp
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot1$data$variable]) +
   ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
-  ggtitle("Forest Plot of Hazard Ratios (Fixed Effects)") +
+  ggtitle("Forest Plot of Hazard Ratios (Death)") +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
     axis.title.x = element_text(margin = margin(t = 20), size = 22), 
@@ -301,7 +301,7 @@ ggplot(results_2, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upp
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot2$data$variable]) +
   ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
-  ggtitle("Forest Plot of Hazard Ratios (Fixed Effects)") +
+  ggtitle("Forest Plot of Hazard Ratios (Discharged)") +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
     axis.title.x = element_text(margin = margin(t = 20), size = 22), 
