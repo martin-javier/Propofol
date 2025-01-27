@@ -32,9 +32,9 @@ se_age_1 <- sqrt(rowSums((X_age_1 %*% vcov_age_1) * X_age_1))
 
 smooth_age_df_1 <- data.frame(
   x = x_age_1,
-  fit = fitted_age_1,
-  upper = fitted_age_1 + 2 * se_age_1,
-  lower = fitted_age_1 - 2 * se_age_1
+  fit = exp(fitted_age_1),  # Exponentiation für Hazard Ratio
+  upper = exp(fitted_age_1 + 2 * se_age_1),  # Oberes Konfidenzintervall
+  lower = exp(fitted_age_1 - 2 * se_age_1)   # Unteres Konfidenzintervall
 )
 
 # 2. Spline: s(BMI)
@@ -53,9 +53,9 @@ se_bmi_1 <- sqrt(rowSums((X_bmi_1 %*% vcov_bmi_1) * X_bmi_1))
 
 smooth_bmi_df_1 <- data.frame(
   x = x_bmi_1,
-  fit = fitted_bmi_1,
-  upper = fitted_bmi_1 + 2 * se_bmi_1,
-  lower = fitted_bmi_1 - 2 * se_bmi_1
+  fit = exp(fitted_bmi_1),  # Exponentiation für Hazard Ratio
+  upper = exp(fitted_bmi_1 + 2 * se_bmi_1),  # Oberes Konfidenzintervall
+  lower = exp(fitted_bmi_1 - 2 * se_bmi_1)   # Unteres Konfidenzintervall
 )
 
 # 3. Spline: s(ApacheIIScore)
@@ -74,9 +74,9 @@ se_apache_1 <- sqrt(rowSums((X_apache_1 %*% vcov_apache_1) * X_apache_1))
 
 smooth_apache_df_1 <- data.frame(
   x = x_apache_1,
-  fit = fitted_apache_1,
-  upper = fitted_apache_1 + 2 * se_apache_1,
-  lower = fitted_apache_1 - 2 * se_apache_1
+  fit = exp(fitted_apache_1),  # Exponentiation für Hazard Ratio
+  upper = exp(fitted_apache_1 + 2 * se_apache_1),  # Oberes Konfidenzintervall
+  lower = exp(fitted_apache_1 - 2 * se_apache_1)   # Unteres Konfidenzintervall
 )
 
 # Visualisierung mit ggplot2
@@ -84,28 +84,29 @@ smooth_apache_df_1 <- data.frame(
 ggplot(smooth_age_df_1, aes(x = x, y = fit)) +
   geom_line(color = "darkgreen", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkgreen") +
-  scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) +
+  scale_y_continuous(breaks = seq(0, 3.5, by = 0.5), limits = c(0, 3.5)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
-  labs(title = "Estimated Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
+  labs(title = "Estimated Effect: Age", x = "Age", y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
 # Plot für s(BMI)
 ggplot(smooth_bmi_df_1, aes(x = x, y = fit)) +
-  scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2.01, 2)) + 
-  scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) + 
   geom_line(color = "darkorchid3", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkorchid3") +
-  labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
+  scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.7)) +  # Angepasste y-Achse
+  scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) +
+  labs(title = "Estimated Effect: BMI", x = "BMI",y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
 # Plot für s(ApacheIIScore)
 ggplot(smooth_apache_df_1, aes(x = x, y = fit)) +
-  scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
-  scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) + 
   geom_line(color = "deepskyblue3", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "deepskyblue3") +
-  labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
+  scale_y_continuous(breaks = seq(0, 6, by = 0.5), limits = c(0, 6.3)) +  # Angepasste y-Achse
+  scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) +
+  labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
+
 
 # Glatte Terme manuell extrahieren und darstellen
 # 1. Spline: s(Age)
@@ -124,9 +125,9 @@ se_age_2 <- sqrt(rowSums((X_age_2 %*% vcov_age_2) * X_age_2))
 
 smooth_age_df_2 <- data.frame(
   x = x_age_2,
-  fit = fitted_age_2,
-  upper = fitted_age_2 + 2 * se_age_2,
-  lower = fitted_age_2 - 2 * se_age_2
+  fit = exp(fitted_age_2),  # Exponentiation für Hazard Ratio
+  upper = exp(fitted_age_2 + 2 * se_age_2),  # Oberes Konfidenzintervall
+  lower = exp(fitted_age_2 - 2 * se_age_2)   # Unteres Konfidenzintervall
 )
 
 # 2. Spline: s(BMI)
@@ -145,9 +146,9 @@ se_bmi_2 <- sqrt(rowSums((X_bmi_2 %*% vcov_bmi_2) * X_bmi_2))
 
 smooth_bmi_df_2 <- data.frame(
   x = x_bmi_2,
-  fit = fitted_bmi_2,
-  upper = fitted_bmi_2 + 2 * se_bmi_2,
-  lower = fitted_bmi_2 - 2 * se_bmi_2
+  fit = exp(fitted_bmi_2),  # Exponentiation für Hazard Ratio
+  upper = exp(fitted_bmi_2 + 2 * se_bmi_2),  # Oberes Konfidenzintervall
+  lower = exp(fitted_bmi_2 - 2 * se_bmi_2)   # Unteres Konfidenzintervall
 )
 
 # 3. Spline: s(ApacheIIScore)
@@ -166,37 +167,38 @@ se_apache_2 <- sqrt(rowSums((X_apache_2 %*% vcov_apache_2) * X_apache_2))
 
 smooth_apache_df_2 <- data.frame(
   x = x_apache_2,
-  fit = fitted_apache_2,
-  upper = fitted_apache_2 + 2 * se_apache_2,
-  lower = fitted_apache_2 - 2 * se_apache_2
+  fit = exp(fitted_apache_2),  # Exponentiation für Hazard Ratio
+  upper = exp(fitted_apache_2 + 2 * se_apache_2),  # Oberes Konfidenzintervall
+  lower = exp(fitted_apache_2 - 2 * se_apache_2)   # Unteres Konfidenzintervall
 )
 
 # Visualisierung mit ggplot2
+
 # Plot für s(Age)
 ggplot(smooth_age_df_2, aes(x = x, y = fit)) +
-  scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
-  scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
   geom_line(color = "darkgreen", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkgreen") +
-  labs(title = "Estimated Effect: Age", x = "Age", y = expression("Regression Coefficient  " * hat(beta))) +
+  scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) +
+  scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
+  labs(title = "Estimated Effect: Age", x = "Age", y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
 # Plot für s(BMI)
 ggplot(smooth_bmi_df_2, aes(x = x, y = fit)) +
-  scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
-  scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) + 
   geom_line(color = "darkorchid3", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkorchid3") +
-  labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Regression Coefficient  " * hat(beta))) +
+  scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) +
+  scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) +
+  labs(title = "Estimated Effect: BMI", x = "BMI", y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
 # Plot für s(ApacheIIScore)
 ggplot(smooth_apache_df_2, aes(x = x, y = fit)) +
-  scale_y_continuous(breaks = seq(-2, 2, by = 0.5), limits = c(-2, 2)) + 
-  scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) + 
   geom_line(color = "deepskyblue3", size = 2.5) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "deepskyblue3") +
-  labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Regression Coefficient  " * hat(beta))) +
+  scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) +
+  scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) +
+  labs(title = "Estimated Effect: ApacheIIScore", x = "ApacheIIScore", y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
 renamed_labels <- c(
