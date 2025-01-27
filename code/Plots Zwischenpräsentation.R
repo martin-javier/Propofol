@@ -471,3 +471,27 @@ ggcompetingrisks(
   scale_x_continuous(breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)) +
   guides(color = guide_legend(title = NULL)) + facet_null()
 
+# Plot Propofol Cals pro Tag
+# Filter only the days with Propofol administration
+
+propofol_data <- subset(data_long, Propofol == 1)
+
+# Create the boxplot
+ggplot(propofol_data, aes(x = as.factor(Study_Day), y = PropofolCal)) +
+  geom_boxplot(fill = "#56B4E9", color = "black", outlier.size = 2, outlier.color = "black") +
+  scale_y_continuous(breaks = seq(0, max(propofol_data$PropofolCal, na.rm = TRUE) + 500, 500)) +
+  labs(
+    title = "Daily Distribution of Propofol Calories",
+    x = "Study Day",
+    y = "Propofol Calories (kcal)"
+  ) +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
+        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+        axis.title.y = element_text(margin = margin(r = 20), size = 22),
+        title = element_text(color = "black"),
+        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+        panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
+        panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
+        plot.background = element_rect(fill = "beige", color = NA))
