@@ -14,7 +14,7 @@ theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margi
                         title = element_text(color = "black"),
                         plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
                         plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-                        panel.grid.major = element_line(color = "black", linewidth = 0.1), 
+                        panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
                         panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
                         plot.background = element_rect(fill = "beige", color = NA))
 
@@ -24,6 +24,7 @@ age_counts <- data_summed_Day0To11 %>%
                         breaks = c(17, 30, 40, 50, 60, 70, 80, 90, 102), 
                         labels = c("18-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-102"))) %>% 
   count(AgeGroup)
+
 
 # Verteilung Alter ####
 # Barplot mit Count-Anzeige
@@ -81,6 +82,7 @@ ggplot(data_summed_Day0To11, aes(x = "", y = ApacheIIScore)) +
 #        y = "Häufigkeit") +
 #   theme.main + 
 #   theme.adjusted
+
 
 # Balkendiagramm für Gender ####
 ggplot(data_summed_Day0To11, aes(x = Sex, fill = Sex)) +
@@ -143,6 +145,7 @@ ggplot(data_summed_Day0To11, aes(x = AdmCat)) +
   labs(title = "Verteilung Admissionsgründe", x = NULL, y = "Anzahl Patienten") +
   theme.main + theme.adjusted
 
+
 # Verteilung Leading admission Diagnosis ####
 ggplot(data_summed_Day0To11, aes(x = LeadAdmDiag)) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
@@ -181,6 +184,7 @@ ggplot(data_summed_Day0To11, aes(x = cut(BMI,
   theme.main + 
   theme.adjusted + 
   theme(legend.position = "none")
+
 
 # Violin Plot Alter ####
 # Brief description of Violin Graph:
@@ -245,6 +249,7 @@ data_summed_Day0To11 %>%
   theme.adjusted +
   theme(legend.position = "none")
         
+
 
 # Boxplot BMI ####
 # Definiere die Normalgewichtsbereiche (in BMI) für Männer und Frauen
@@ -441,37 +446,7 @@ km_disc_plot_rounded$plot +
   scale_x_continuous(breaks = seq(0, max(km_data_disc$roundedDaysToEvent), by = 10))
 
 
-# Plot Vergelich Sterbe- und Entlassungswahrscheinlichkeit ####
-# Create competing risks data | Event type: 1 = Discharged, 2 = Died
-km_data_discharge <- data_summed_Day0To11 %>%
-  mutate(event = case_when(
-    PatientDischarged == 1 ~ 1,  # Discharge
-    PatientDied == 1 ~ 2,       # Death
-    TRUE ~ 0                    # Censored
-  ))
-# use cuminc form cmprsk package
-fit_cr <- cuminc(
-  ftime = km_data_discharge$daysToEvent,
-  fstatus = km_data_discharge$event,
-  cencode = 0 # for censored data
-)
-# Plot cumulative function for death and discharge
-ggcompetingrisks(
-  fit_cr, curvetype = "cuminc", conf.int = FALSE,
-  title = "Vergleich kumulierte Sterbe- und Entlassungsrate",
-  xlab = "Tage | KURVEN SIND UNABHÄNGIG",  ylab = "Kumulierte Wahrscheinlichkeit für Event",
-  ggtheme = (theme.main + theme.adjusted +
-               theme(legend.text = element_text(face = "bold", size = 18)))) +
-  geom_line(size = 1) +
-  scale_color_manual(
-    values = c("#E69F00", "#0072B2"),
-    labels = c("Entlassen", "Verstorben")
-  ) + 
-  scale_y_continuous(limits = c(0, 1),) +
-  scale_x_continuous(breaks = seq(0, max(km_data_discharge$daysToEvent), by = 10)) +
-  guides(color = guide_legend(title = NULL)) + facet_null()
-
-# Plot Propofol Cals pro Tag
+# Verteilung Propofol Cals pro Tag ####
 # Filter only the days with Propofol administration
 
 propofol_data <- subset(data_long, Propofol == 1)
@@ -484,14 +459,28 @@ ggplot(propofol_data, aes(x = as.factor(Study_Day), y = PropofolCal)) +
     title = "Daily Distribution of Propofol Calories",
     x = "Study Day",
     y = "Propofol Calories (kcal)"
-  ) +
-  theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
-        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
-        axis.title.y = element_text(margin = margin(r = 20), size = 22),
-        title = element_text(color = "black"),
-        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
-        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-        panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
-        panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
-        plot.background = element_rect(fill = "beige", color = NA))
+  ) + theme.main + theme.adjusted
+
+
+# Cumulative Incidenc Functions ####
+# prep data
+cumu_data <- data_summed_Day0To11[data_summed_Day0To11$surv_icu_status != 0, ]
+km <- survfit(formula = Surv(daysToEvent) ~ surv_icu_status,
+              data = data_summed_Day0To11)
+ggsurvplot(km,
+           data = data_summed_Day0To11,
+#           risk.table = TRUE, # adds table below plot
+           legend.labs = c("Discharge", "Death"),
+           title = "Cumulative Incidences for Death and Discharge",
+           xlim = c(0,60),
+           break.time.by = 10,
+           ylim = c(0,1),
+           xlab = "Days",
+           ylab = "Event Probability",
+           legend.title = "",
+           palette = c("#E69F00", "#0072B2"),
+           fun = "event",
+           ggtheme = (theme.main + theme.adjusted +
+                        theme(legend.text = element_text(size = 18),
+                              legend.key.size = unit(0.8, "cm")))
+)

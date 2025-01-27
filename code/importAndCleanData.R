@@ -296,6 +296,7 @@ create_ped_manually <- function(data, event){
     distinct(CombinedID, Study_Day, .keep_all = TRUE) %>%
     mutate(
       inMV = ifelse(Study_Day > ceiling(DaysMechVent), 0, 1),
+      AgeKat = ifelse(Age > 65, ">65", "<=65"),
       tstart = Study_Day - 1,
       tend = Study_Day,
       interval = paste0("(", tstart, ",", tend, "]"),
@@ -311,7 +312,7 @@ create_ped_manually <- function(data, event){
   manualPED <- manualPED[manualPED$Study_Day <= 60, ]
   bin_vars <- c("interval", "OralIntake", "inMV", "ParenteralNut", "Propofol",
                 "ProteinBelow0.8GperKG", "CalsAbove16kcalPerKG", "CalsPercentageAbove70",
-                "surv_icu_status", "surv_icu_status_exp")
+                "surv_icu_status", "surv_icu_status_exp", "AgeKat")
   manualPED[bin_vars] <- lapply(manualPED[bin_vars], as.factor)
   
   return(manualPED)
