@@ -466,7 +466,7 @@ ggplot(propofol_data, aes(x = as.factor(Study_Day), y = PropofolCal)) +
 # prep data
 cumu_data <- data_summed_Day0To11[data_summed_Day0To11$surv_icu_status != 0, ]
 km <- survfit(formula = Surv(daysToEvent) ~ surv_icu_status,
-              data = data_summed_Day0To11)
+              data = cumu_data)
 ggsurvplot(km,
            data = data_summed_Day0To11,
 #           risk.table = TRUE, # adds table below plot
