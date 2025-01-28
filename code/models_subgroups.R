@@ -1718,6 +1718,8 @@ saveRDS(model_disc_male_propCals_calsAbove70pct,
 
 #### Propofol Days ####
 
+manualPED_death$Propofol <- relevel(factor(manualPED_death$Propofol), ref = "0")
+
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_death_subgrp_int_propDays_calsAbove16 <- bam(
   formula = ped_status ~ AgeKat +
@@ -1747,6 +1749,8 @@ model_death_subgrp_int_propDays_calsAbove16 <- bam(
 
 ### Patient Discharged ####
 
+manualPED_disc$Propofol <- relevel(factor(manualPED_disc$Propofol), ref = "0")
+
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_subgrp_int_propDays_calsAbove16 <- bam(
   formula = ped_status ~ AgeKat +
@@ -1765,7 +1769,7 @@ model_disc_subgrp_int_propDays_calsAbove16 <- bam(
     AgeKat:Propofol +
     Sex:Propofol +
     s(CombinedicuID, bs = "re"),
-  data = manualPED_death,
+  data = manualPED_disc,
   family = poisson(),
   offset = offset,
   nthreads = parallel::detectCores()
