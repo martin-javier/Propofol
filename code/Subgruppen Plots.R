@@ -66,6 +66,7 @@
 
 model_sub_female <- model_death_female_propDays_calsAbove16
 model_sub_age <- model_death_age_int_propDays_calsAbove16
+model_sub_interaction <- model_death_subgrp_int_propDays_calsAbove16
 
 library(mgcv)
 library(ggplot2)
@@ -96,7 +97,9 @@ renamed_labels <- c(
   "CalsPercentageAbove701" = "Calories > 70%",
   "CalsAbove16kcalPerKG1" = "Calories > 16kcal/kg",
   "AgeKat>65:Propofol1" = "Interaktion: (Alter > 65) & Propofol",
-  "AgeKat>65" = "Alter > 65 Jahre"
+  "AgeKat>65" = "Alter > 65 Jahre",
+  "Propofol0:SexMale" = "Interaktion: Kein Propofol & Männlich",
+  "Propofol1:SexMale" = "Interaktion: Propofol & Männlich"
 )
 # Erstelle den Plot basierend auf model_sub_female
 
@@ -169,6 +172,49 @@ ggplot(results_age, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_u
   coord_flip() +                                        # Flip für horizontales Layout 
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot_age$data$variable]) +
+  ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
+  ggtitle("Forest Plot of Hazard Ratios (Age <= 65)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
+    axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+    axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+    axis.title.y = element_blank(),
+    title = element_text(color = "black"),
+    plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+    plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+    plot.background = element_rect(fill = "beige", color = NA)
+  )
+
+# Erstelle den Plot basierend auf model_sub_interaction
+
+plot_interaction <- gg_fixed(model_sub_interaction)
+se_interaction <- sqrt(diag(model_sub_interaction$Vp))
+coef_interaction <- model_sub_interaction$coefficients
+
+# Greife auf die Daten im Plot zu und filtere die Jahre heraus
+plot_interaction$data <- plot_interaction$data %>% 
+  filter(!grepl("factor\\(Year\\)", variable)) # Entferne alle Variablen mit "factor(Year)"
+# Berechnung der Hazard Ratios und Konfidenzintervalle
+results_interaction <- data.frame(
+  variable = names(model_sub_interaction$coefficients),                  # Nur die parametrischen Variablen
+  coef = coef_interaction,                                 # Log-Skala Koeffizienten
+  coef_exp = exp(coef_interaction),                        # Hazard Ratios
+  ci_lower = exp(coef_interaction - 1.96 * se_interaction),            # Unteres Konfidenzintervall
+  ci_upper = exp(coef_interaction + 1.96 * se_interaction)             # Oberes Konfidenzintervall
+)
+# Entferne Splines, den Intercept und andere unerwünschte Variablen
+results_interaction <- results_interaction %>%
+  filter(!grepl("s\\(", variable)) %>%         # Entferne Splines
+  filter(!grepl("Intercept", variable)) %>%    # Entferne den Intercept
+  filter(!grepl("factor\\(Year\\)", variable)) %>%    # Entferne den Intercept
+  filter(variable != "Propofol1:SexMale") # Entferne spezifische Faktoren
+
+# Plot mit den gefilterten Daten
+ggplot(results_interaction, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
+  geom_pointrange() +                                   # Punkte und CI-Balken
+  coord_flip() +                                        # Flip für horizontales Layout 
+  scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
+  scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot_interaction$data$variable]) +
   ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
   ggtitle("Forest Plot of Hazard Ratios (Age <= 65)") +
   theme(
