@@ -1714,15 +1714,12 @@ saveRDS(model_disc_male_propCals_calsAbove70pct,
 
 # With Interaction ####
 
-
-## Alter ####
-
 ### Patient Died ####
 
 #### Propofol Days ####
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
-model_death_age_int_propDays_calsAbove16 <- bam(
+model_death_subgrp_int_propDays_calsAbove16 <- bam(
   formula = ped_status ~ AgeKat +
     s(BMI, bs = "ps", k = 5) +
     s(ApacheIIScore, bs = "ps", k = 5) +
@@ -1737,6 +1734,7 @@ model_death_age_int_propDays_calsAbove16 <- bam(
     CalsAbove16kcalPerKG +
     ProteinBelow0.8GperKG +
     AgeKat:Propofol +
+    Sex:Propofol +
     s(CombinedicuID, bs = "re"),
   data = manualPED_death,
   family = poisson(),
@@ -1744,5 +1742,40 @@ model_death_age_int_propDays_calsAbove16 <- bam(
   nthreads = parallel::detectCores()
 )
 
-saveRDS(model_death_age_int_propDays_calsAbove16,
-        "models/subgroups/interaction/model_death_age_int_propDays_calsAbove16.rds")
+##############################
+# hier noch restliche einfügen
+
+### Patient Discharged ####
+
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
+model_disc_subgrp_int_propDays_calsAbove16 <- bam(
+  formula = ped_status ~ AgeKat +
+    s(BMI, bs = "ps", k = 5) +
+    s(ApacheIIScore, bs = "ps", k = 5) +
+    inMV +
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    Propofol +
+    CalsAbove16kcalPerKG +
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_death,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
+
+##############################
+# hier noch restliche einfügen
+
+saveRDS(model_death_subgrp_int_propDays_calsAbove16,
+        "models/subgroups/interaction/model_death_subgrp_int_propDays_calsAbove16.rds")
+
+saveRDS(model_disc_subgrp_int_propDays_calsAbove16,
+        "models/subgroups/interaction/model_disc_subgrp_int_propDays_calsAbove16.rds")
