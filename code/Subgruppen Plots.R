@@ -66,7 +66,7 @@
 
 model_sub_female <- model_death_female_propDays_calsAbove16
 model_sub_age <- model_death_age_int_propDays_calsAbove16
-model_sub_interaction <- model_death_subgrp_int_propDays_calsAbove16
+model_sub_interaction <- model_disc_subgrp_int_propDays_calsAbove16
 
 library(mgcv)
 library(ggplot2)
@@ -96,10 +96,10 @@ renamed_labels <- c(
   "factor(AdmCatID)Surgical/Elective" = "AdmCat: Surgical/Elective",
   "CalsPercentageAbove701" = "Calories > 70%",
   "CalsAbove16kcalPerKG1" = "Calories > 16kcal/kg",
-  "AgeKat>65:Propofol1" = "Interaktion: (Alter > 65) & Propofol",
-  "AgeKat>65" = "Alter > 65 Jahre",
-  "Propofol0:SexMale" = "Interaktion: Kein Propofol & Männlich",
-  "Propofol1:SexMale" = "Interaktion: Propofol & Männlich"
+  "AgeKat>65:Propofol1" = "Interaction: (Age > 65) & Propofol",
+  "AgeKat>65" = "Age > 65",
+  "Propofol0:SexMale" = "Interaction: No Propofol & Male",
+  "Propofol1:SexMale" = "Interaction: Propofol & Male"
 )
 # Erstelle den Plot basierend auf model_sub_female
 
@@ -207,7 +207,7 @@ results_interaction <- results_interaction %>%
   filter(!grepl("s\\(", variable)) %>%         # Entferne Splines
   filter(!grepl("Intercept", variable)) %>%    # Entferne den Intercept
   filter(!grepl("factor\\(Year\\)", variable)) %>%    # Entferne den Intercept
-  filter(variable != "Propofol1:SexMale") # Entferne spezifische Faktoren
+  filter(variable != "Propofol0:SexMale") # Entferne spezifische Faktoren
 
 # Plot mit den gefilterten Daten
 ggplot(results_interaction, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
@@ -216,7 +216,7 @@ ggplot(results_interaction, aes(x = variable, y = coef_exp, ymin = ci_lower, yma
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot_interaction$data$variable]) +
   ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
-  ggtitle("Forest Plot of Hazard Ratios (Age <= 65)") +
+  ggtitle("Forest Plot of Hazard Ratios (Discharged)") +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
     axis.title.x = element_text(margin = margin(t = 20), size = 22), 
