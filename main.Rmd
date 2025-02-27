@@ -21,7 +21,7 @@ source("code/install_packages.R") # hier bitte nur packages rein, die wir am End
 # sonst laden wir am Ende unnötige packages obwohl sie nicht genutzt werden
 ```
 
-Import and maipulate datasets
+Import and manipulate datasets
 
 ```{r}
 source("code/importAndCleanData.R")

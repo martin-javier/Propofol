@@ -20,6 +20,7 @@ clean_and_summarise_Days0To11 <- function(){
   data$lastDayInICU <- ceiling(data$DaysInICU)
   #nrow(data[data$Study_Day > data$lastDay, ])
   # > there's 2409 observations where the patient was already dead or discharged
+  # remove days where patient was already dead or discharged
   data <- data[data$Study_Day <= data$eventDay, ]
   
   # data %>%
@@ -38,6 +39,7 @@ clean_and_summarise_Days0To11 <- function(){
       Year = first(Year),
       Age = first(Age),
       BMI = first(BMI),
+      Weight = first(Weight),
       ApacheIIScore = first(ApacheIIScore),
       Sex = first(Gender),
       Weight = first(Weight),
@@ -125,6 +127,7 @@ clean_and_summarise_Days0To7 <- function(){
       Year = first(Year),
       Age = first(Age),
       BMI = first(BMI),
+      Weight = first(Weight),
       ApacheIIScore = first(ApacheIIScore),
       Sex = first(Gender),
       Weight = first(Weight),
@@ -225,8 +228,8 @@ clean_data <- function() {
   #unique(data[(data$PatientDied == 1 & data$PatientDischarged == 0 & data$surv_icu_status != 2), ]$CombinedID)
   
   # select needed columns
-  data <- data[, c("CombinedID", "CombinedicuID", "icuByDummy", "Year", "Age", "BMI", "ApacheIIScore",
-                   "Sex", "AdmCatID", "LeadAdmDiag", "OralIntake", "ParenteralNut",
+  data <- data[, c("CombinedID", "CombinedicuID", "icuByDummy", "Year", "Age", "BMI", "Weight",
+                   "ApacheIIScore", "Sex", "AdmCatID", "LeadAdmDiag", "OralIntake", "ParenteralNut",
                    "ProteinBelow0.8GperKG", "CalsAbove16kcalPerKG", "CalsPercentageAbove70",
                    "inMV", "DaysMechVent", "Propofol", "PropofolCal", "Study_Day",
                    "PatientDied", "PatientDischarged", "surv_icu_status",
@@ -265,6 +268,7 @@ create_ped_manually <- function(data, event){
         Year = last_row$Year,
         Age = last_row$Age,
         BMI = last_row$BMI,
+        Weight = last_row$Weight,
         ApacheIIScore = last_row$ApacheIIScore,
         Sex = last_row$Sex,
         AdmCatID = last_row$AdmCatID,
