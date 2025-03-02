@@ -2,16 +2,16 @@
 
 # Custom ggplot theme for consistency in the plots
 theme.main <- theme_stata(scheme = "s1color")
-theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-                        axis.title.x = element_text(margin = margin(t = 20), size = 22), 
-                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
-                        axis.title.y = element_text(margin = margin(r = 20), size = 22),
+theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 22),
+                        axis.title.x = element_text(margin = margin(t = 20), size = 32), 
+                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 22, angle = 0),
+                        axis.title.y = element_text(margin = margin(r = 20), size = 32),
                         title = element_text(color = "black"),
                         plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
                         plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
                         panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
                         panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
-                        plot.background = element_rect(fill = "beige", color = NA))
+                        plot.background = element_rect(fill = "white", color = NA))
 
 
 
@@ -28,8 +28,8 @@ age_counts <- data_summed_Day0To11 %>%
 
 dist_age_groups <- ggplot(age_counts, aes(x = AgeGroup, y = n)) +
   geom_bar(stat = "identity", fill = "#56B4E9", color = "black", alpha = 0.7) +
-  geom_text(aes(label = n), vjust = -0.5, size = 5) +  # Anzahl der Patienten über den Balken
-  labs(title = "Verteilung der Altersgruppen", x = "Altersgruppe", y = "Anzahl Patienten") +
+  geom_text(aes(label = n), vjust = -0.3, size = 6) +  # Anzahl der Patienten über den Balken
+  labs( x = "Altersgruppe", y = "Anzahl Patienten") +
   theme.main + 
   theme.adjusted + 
   theme(axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 18, angle = 0))
@@ -37,7 +37,7 @@ dist_age_groups <- ggplot(age_counts, aes(x = AgeGroup, y = n)) +
 ## histogram with density:
 dist_age_hist <- data_summed_Day0To11 %>% select(Age) %>% ggplot(aes(Age)) +
   geom_histogram(aes(y = ..density..), fill = "#74C1E9", colour = 1, binwidth = 1, alpha = 0.8) +
-  labs(title = "Verteilung Alter (Balkenbreite = 1 Jahr)", x = "Alter", y = "Dichte") +
+  labs( x = "Alter", y = "Dichte") +
   geom_density(color = "orange", lwd = 1.2, linetype = 1, ) + 
   theme.main + theme.adjusted
 
@@ -77,7 +77,6 @@ violin_age <- data_summed_Day0To11 %>%
   scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +
   scale_y_continuous(breaks = seq(0, 100, by = 10)) +
   labs(
-    title = "Verteilung des Alters nach Geschlecht",
     x = "Geschlecht",
     y = "Alter"
   ) +
@@ -90,9 +89,9 @@ violin_age <- data_summed_Day0To11 %>%
 
 barpl_sex <- ggplot(data_summed_Day0To11, aes(x = Sex, fill = Sex)) +
   geom_bar(color = "black", alpha = 0.7) +
-  labs(title = "Geschlechterverteilung", x = NULL, y = "Anzahl Patienten") +
+  labs(x = NULL, y = "Anzahl Patienten") +
   scale_x_discrete(labels = c("Weiblich", "Männlich")) +
-  scale_fill_manual(values = c("Female" = "tomato", "Male" = "skyblue")) +
+  scale_fill_manual(values = c("Female" = "tomato", "Male" = "steelblue")) +
   theme.main + theme.adjusted + theme(legend.position = "none")
 
 
@@ -102,14 +101,13 @@ barpl_sex <- ggplot(data_summed_Day0To11, aes(x = Sex, fill = Sex)) +
 barpl_bmi_groups <- ggplot(
   data_summed_Day0To11, aes(x = cut(BMI, breaks = c(-Inf, 18.5, 25, 30, 35, Inf),
                                     labels = c("Untergewicht", "Normalgewicht", "Übergewicht",
-                                               "Adipositas I", "Adipositas II+")),
+                                               "Adipositas I", "Adipositas II")),
                             fill = cut(BMI, breaks = c(-Inf, 18.5, 25, 30, 35, Inf),
                                        labels = c("Untergewicht", "Normalgewicht", "Übergewicht",
-                                                  "Adipositas I", "Adipositas II+")))) +
+                                                  "Adipositas I", "Adipositas II")))) +
   geom_bar(color = "black", alpha = 0.8) +
-  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, color = "black") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.3, color = "black", size = 6) +
   labs(
-    title = "Verteilung der Patienten nach BMI-Kategorien",
     x = "BMI-Kategorie",
     y = "Anzahl Patienten"
   ) +
@@ -119,7 +117,7 @@ barpl_bmi_groups <- ggplot(
     "Normalgewicht" = "Normalgewicht\n(BMI 18.5–24.9)",
     "Übergewicht" = "Übergewicht\n(BMI 25–29.9)",
     "Adipositas I" = "Adipositas I\n(BMI 30–34.9)",
-    "Adipositas II+" = "Adipositas II+\n(BMI ≥ 35)"
+    "Adipositas II" = "Adipositas II\n(BMI ≥ 35)"
   )) +
   theme(axis.text.x = element_text(size = 10, hjust = 0.5, vjust = 0.5)) +
   theme.main +
@@ -171,7 +169,6 @@ boxplt_bmi <- data_summed_Day0To11 %>%
   scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +
   scale_y_continuous(breaks = seq(10, 110, by = 5)) +
   labs(
-    title = "BMI-Verteilung nach Geschlecht",
     x = "Geschlecht",
     y = "BMI"
   ) +
@@ -232,7 +229,7 @@ barpl_events <- ggplot(data_summed_Day0To11, aes(x = surv_icu_status_exp, fill =
   scale_x_discrete(labels = c("PatientDied" = "Verstorbene",
                               "PatientDischarged" = "Entlassene",
                               "PatientHospital" = "Rechtszensiert")) +
-  labs(title = "Verteilung Patienten", 
+  labs(
        x = NULL, 
        y = "Anzahl Patienten") +
   scale_fill_manual(values = c("PatientDied" = "#0072B2", 
@@ -247,7 +244,6 @@ barpl_events <- ggplot(data_summed_Day0To11, aes(x = surv_icu_status_exp, fill =
 prop_days <- ggplot(data_summed_Day0To11, aes(x = factor(Days_Propofol))) +
   geom_bar(fill = "#56B4E9", color = "black", alpha = 0.8) +
   labs(
-    title = "Verteilung der Propofol-Einnahme",
     x = "Anzahl der Propofol-Tage",
     y = "Anzahl der Patienten"
   ) + theme.main + theme.adjusted
@@ -261,7 +257,6 @@ boxplts_propcals <- ggplot(propofol_data, aes(x = as.factor(Study_Day), y = Prop
   geom_boxplot(fill = "#56B4E9", color = "black", outlier.size = 2, outlier.color = "black") +
   scale_y_continuous(breaks = seq(0, max(propofol_data$PropofolCal, na.rm = TRUE) + 500, 500)) +
   labs(
-    title = "Verteilung der Propofol-Kalorien",
     x = "Beobachtungstag",
     y = "Propofol-Kalorien (kcal)"
   ) + theme.main + theme.adjusted
@@ -273,7 +268,7 @@ barpl_admCats <- ggplot(data_summed_Day0To11, aes(x = AdmCat)) +
   scale_x_discrete(labels =c("Medical" = "Medizinischer Eingriff",
                              "Surgical/Emeregency" = "Notfalloperation",
                              "Surgical/Elective" = "Geplante Operation")) +
-  labs(title = "Verteilung Admissionsgründe", x = NULL, y = "Anzahl Patienten") +
+  labs(x = NULL, y = "Anzahl Patienten") +
   theme.main + theme.adjusted
 
 
@@ -289,7 +284,6 @@ km_data_death <- data_summed_Day0To11 %>%
 km_death <- survfit(Surv(daysToEvent, PatientDied) ~ 1, data = km_data_death)
 km_death_plot <- ggsurvplot(km_death, legend = "none",
            xlab = "Tage", ylab = "Überlebenswahrscheinlichkeit",
-           title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
 km_death_plot <- km_death_plot$plot +
   scale_x_continuous(breaks = seq(0, max(km_data_death$daysToEvent), by = 10)) +
@@ -300,7 +294,6 @@ km_death_rounded <- survfit(Surv(roundedDaysToEvent, PatientDied) ~ 1, data = km
 km_death_plot_rounded <- ggsurvplot(
   km_death_rounded, legend = "none",
   xlab = "Tage (gerundet)", ylab = "Überlebenswahrscheinlichkeit",
-  title = "Kaplan-Meier Kurve Überlebenswahrscheinlichkeit",
   censor = FALSE, ggtheme = (theme.main + theme.adjusted),
   lwd = 1.2, palette = "#0072B2"
 )
@@ -317,7 +310,6 @@ km_data_disc <- data_summed_Day0To11 %>%
 km_disc <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
 km_disc_plot <- ggsurvplot(km_disc, legend = "none",
            xlab = "Tage", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
-           title = "Kaplan-Meier Kurve Nicht-Entlassungen",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
 km_disc_plot <- km_disc_plot$plot +
   scale_x_continuous(breaks = seq(0, max(km_data_disc$daysToEvent), by = 10)) +
@@ -328,7 +320,6 @@ km_disc_rounded <- survfit(Surv(roundedDaysToEvent, PatientDischarged) ~ 1, data
 km_disc_plot_rounded <- ggsurvplot(
   km_disc_rounded, legend = "none",
   xlab = "Tage (gerundet)", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
-  title = "Kaplan-Meier Kurve Nicht-Entlassungen",
   censor = FALSE, ggtheme = (theme.main + theme.adjusted),
   lwd = 1.2, palette = "#E69F00"
 )
@@ -345,7 +336,6 @@ cumu_inc <- ggsurvplot(km,
            data = data_summed_Day0To11,
 #           risk.table = TRUE, # adds table below plot
            legend.labs = c("Entlassung", "Tod"),
-           title = "Kumulative Inzidencen für Tod und Entlassung",
            xlim = c(0,60),
            break.time.by = 10,
            ylim = c(0,1),
@@ -374,3 +364,4 @@ desc_plot_names <- c(
   "barpl_admCats","km_death_plot", "km_death_plot_rounded","km_disc_plot",
   "km_disc_plot_rounded","cumu_inc"
 )
+
