@@ -33,16 +33,6 @@ manualPED_disc <- create_ped_manually(data_long, "discharge")
 # ignore NaNs warning - there aren't any in the dataframes
 ```
 
-Save all plots
-
-```{r}
-source("code/descriptive_plots.R")
-for(i in seq_along(plots)) {
-  filename <- paste0("plots/descriptive/", plot_names[i], ".png")
-  ggsave(filename, plot = plots[[i]], device = "png", width = 18, height = 8.25)
-}
-```
-
 Import all Models
 
 ```{r}
@@ -52,5 +42,21 @@ model_files <- list.files("models", pattern = "\\.rds$", full.names = TRUE, recu
 for (file in model_files) {
   model_name <- tools::file_path_sans_ext(basename(file)) # Extract model name
   assign(model_name, readRDS(file)) # Load the model and assign it to the environment
+}
+```
+
+Save all plots
+
+```{r}
+source("code/plots_descriptive.R")
+for(i in seq_along(desc_plots)) {
+  filename <- paste0("plots/descriptive/", desc_plot_names[i], ".png")
+  ggsave(filename, plot = desc_plots[[i]], device = "png", width = 18, height = 8.25)
+}
+
+source("code/plots_models.R")
+for(i in seq_along(model_plots)) {
+  filename <- paste0("plots/models/", model_plot_names[i], ".png")
+  ggsave(filename, plot = model_plots[[i]], device = "png", width = 18, height = 8.25)
 }
 ```

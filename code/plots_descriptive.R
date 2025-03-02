@@ -1,3 +1,6 @@
+# All descriptive plots (some used in presentation slides)
+
+# Custom ggplot theme for consistency in the plots
 theme.main <- theme_stata(scheme = "s1color")
 theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
                         axis.title.x = element_text(margin = margin(t = 20), size = 22), 
@@ -341,13 +344,13 @@ km <- survfit(formula = Surv(daysToEvent) ~ surv_icu_status,
 cumu_inc <- ggsurvplot(km,
            data = data_summed_Day0To11,
 #           risk.table = TRUE, # adds table below plot
-           legend.labs = c("Discharge", "Death"),
-           title = "Cumulative Incidences for Death and Discharge",
+           legend.labs = c("Entlassung", "Tod"),
+           title = "Kumulative Inzidencen für Tod und Entlassung",
            xlim = c(0,60),
            break.time.by = 10,
            ylim = c(0,1),
-           xlab = "Days",
-           ylab = "Event Probability",
+           xlab = "Beobachtungstag",
+           ylab = "Event Wahrscheinlichkeit",
            legend.title = "",
            palette = c("#E69F00", "#0072B2"),
            fun = "event",
@@ -358,16 +361,16 @@ cumu_inc <- ggsurvplot(km,
 
 
 
-# Save plots ####
+# Autosave helpers ####
 
-plots <- list(
+desc_plots <- list(
   dist_age_groups, dist_age_hist, violin_age, barpl_sex, barpl_bmi_groups,
   boxplt_bmi, barpl_events, prop_days, boxplts_propcals, barpl_admCats,
   km_death_plot, km_death_plot_rounded, km_disc_plot, km_disc_plot_rounded, cumu_inc$plot
 )
-plot_names <- c(
+desc_plot_names <- c(
   "dist_age_groups", "dist_age_hist", "violin_age", "barpl_sex", "barpl_bmi_groups",
-                "boxplt_bmi", "barpl_events", "prop_days", "boxplts_propcals",
-                "barpl_admCats", "km_death_plot", "km_death_plot_rounded",
-                "km_disc_plot", "km_disc_plot_rounded", "cumu_inc"
+  "boxplt_bmi", "barpl_events", "prop_days", "boxplts_propcals",
+  "barpl_admCats","km_death_plot", "km_death_plot_rounded","km_disc_plot",
+  "km_disc_plot_rounded","cumu_inc"
 )
