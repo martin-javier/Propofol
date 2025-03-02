@@ -8,18 +8,16 @@ model1 <- model_death_propDays_calsAbove70pct
 model2 <- model_disc_propCals_calsAbove16
 
 # Custom ggplot theme for consistency in the plots
-theme.adjusted <- theme(
-  axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-  axis.title.x = element_text(margin = margin(t = 20), size = 22), 
-  axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
-  axis.title.y = element_text(margin = margin(r = 20), size = 22),
-  title = element_text(color = "black"),
-  plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
-  plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-  panel.grid.major = element_line(color = "black", linewidth = 0.1), 
-  panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
-  plot.background = element_rect(fill = "beige", color = NA)
-)
+theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 22),
+                        axis.title.x = element_text(margin = margin(t = 20), size = 32), 
+                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 22, angle = 0),
+                        axis.title.y = element_text(margin = margin(r = 20), size = 32),
+                        title = element_text(color = "black"),
+                        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+                        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+                        panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
+                        panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
+                        plot.background = element_rect(fill = "white", color = NA))
 
 
 # Spline-plots for Model 1 ####
@@ -56,7 +54,7 @@ model1_sp_age <- ggplot(smooth_age_df_1, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkgreen") +
   scale_y_continuous(breaks = seq(0, 3.5, by = 0.5), limits = c(0, 3.5)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
-  labs(title = "Glatter Term: Alter", x = "Alter",
+  labs(x = "Alter",
        y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
@@ -91,7 +89,7 @@ model1_sp_bmi <- ggplot(smooth_bmi_df_1, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkorchid3") +
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.7)) +
   scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) +
-  labs(title = "Glatter Term: BMI", x = "BMI",
+  labs( x = "BMI",
        y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
@@ -126,7 +124,7 @@ model1_sp_apache <- ggplot(smooth_apache_df_1, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "deepskyblue3") +
   scale_y_continuous(breaks = seq(0, 6, by = 0.5), limits = c(0, 6.3)) +
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) +
-  labs(title = "Glatter Term: ApacheIIScore", x = "ApacheIIScore",
+  labs( x = "ApacheIIScore",
        y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
@@ -159,7 +157,7 @@ model2_sp_age <- ggplot(smooth_age_df_2, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkgreen") +
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) +
   scale_x_continuous(breaks = seq(20, 100, by = 10), limits = c(18, 105)) + 
-  labs(title = "Glatter Term: Alter", x = "Alter",
+  labs( x = "Alter",
        y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
@@ -189,7 +187,7 @@ model2_sp_bmi <- ggplot(smooth_bmi_df_2, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, fill = "darkorchid3") +
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) +
   scale_x_continuous(breaks = seq(10, 100, by = 10), limits = c(13, 110)) +
-  labs(title = "Glatter Term: BMI", x = "BMI",
+  labs( x = "BMI",
        y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
@@ -219,7 +217,7 @@ model2_sp_apache <- ggplot(smooth_apache_df_2, aes(x = x, y = fit)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "deepskyblue3") +
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) +
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 71)) +
-  labs(title = "Glatter Term: ApacheIIScore", x = "ApacheIIScore",
+  labs( x = "ApacheIIScore",
        y = expression("Hazard Ratio  " * exp * " " * (hat(beta)))) +
   theme.adjusted
 
@@ -288,7 +286,6 @@ model1_frst <- ggplot(results_1, aes(x = variable, y = coef_exp, ymin = ci_lower
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot1$data$variable]) +
   ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
-  ggtitle("Forest Plot der Hazard Ratios (Event = Tod)") +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
     axis.title.x = element_text(margin = margin(t = 20), size = 22), 
@@ -297,7 +294,7 @@ model1_frst <- ggplot(results_1, aes(x = variable, y = coef_exp, ymin = ci_lower
     title = element_text(color = "black"),
     plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
     plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-    plot.background = element_rect(fill = "beige", color = NA)
+    plot.background = element_rect(fill = "white", color = NA)
   )
 
 
@@ -333,7 +330,6 @@ model2_frst <- ggplot(results_2, aes(x = variable, y = coef_exp, ymin = ci_lower
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot2$data$variable]) +
   ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
-  ggtitle("Forest Plot der Hazard Ratios (Event = Entlassung)") +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
     axis.title.x = element_text(margin = margin(t = 20), size = 22), 
@@ -342,7 +338,7 @@ model2_frst <- ggplot(results_2, aes(x = variable, y = coef_exp, ymin = ci_lower
     title = element_text(color = "black"),
     plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
     plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
-    plot.background = element_rect(fill = "beige", color = NA)
+    plot.background = element_rect(fill = "white", color = NA)
   )
 
 
