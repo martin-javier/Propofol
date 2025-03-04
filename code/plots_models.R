@@ -262,6 +262,7 @@ renamed_labels <- c(
 plot1 <- gg_fixed(model1)
 se_1 <- sqrt(diag(model1$Vp))
 coef_1 <- model1$coefficients
+model1_tidy <- tidy(model1, parametric = TRUE)
 
 # Remove Year factors from the plot data
 plot1$data <- plot1$data %>% 
@@ -276,6 +277,15 @@ results_1 <- data.frame(
   ci_upper = exp(coef_1 + 1.96 * se_1)
 )
 
+results_1 <- left_join(results_1, model1_tidy %>% select(term, p.value), by = c("variable" = "term"))
+results_1 <- results_1 %>%
+  mutate(significance = case_when(
+    p.value < 0.001 ~ "***",
+    p.value < 0.01  ~ "**",
+    p.value < 0.05  ~ "*",
+    TRUE ~ ""
+  ))
+
 # Remove spline terms, intercept, and Year factors
 results_1 <- results_1 %>%
   filter(!grepl("s\\(", variable)) %>%       
@@ -284,7 +294,10 @@ results_1 <- results_1 %>%
 
 # Create the forest plot for Model 1
 model1_frst <- ggplot(results_1, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
-  geom_pointrange() +
+  geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +  # Farbliche Unterscheidung
+  geom_hline(yintercept = 1, linetype = "solid", color = "black") +  # Horizontale Linie bei 1
+  scale_color_identity(guide = "none") +  # Keine Legende für Farben
+  geom_text(aes(y = ci_upper + 0.05, label = significance), size = 6, color = "black") +  # Signifikanz hinzufügen
   coord_flip() +
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot1$data$variable]) +
@@ -307,6 +320,7 @@ model1_frst <- ggplot(results_1, aes(x = variable, y = coef_exp, ymin = ci_lower
 plot2 <- gg_fixed(model2)
 se_2 <- sqrt(diag(model2$Vp))
 coef_2 <- model2$coefficients
+model2_tidy <- tidy(model2, parametric = TRUE)
 
 # Remove Year factors from the plot data
 plot2$data <- plot2$data %>% 
@@ -321,6 +335,15 @@ results_2 <- data.frame(
   ci_upper = exp(coef_2 + 1.96 * se_2)
 )
 
+results_2 <- left_join(results_2, model2_tidy %>% select(term, p.value), by = c("variable" = "term"))
+results_2 <- results_2 %>%
+  mutate(significance = case_when(
+    p.value < 0.001 ~ "***",
+    p.value < 0.01  ~ "**",
+    p.value < 0.05  ~ "*",
+    TRUE ~ ""
+  ))
+
 # Remove spline terms, intercept, and Year factors
 results_2 <- results_2 %>%
   filter(!grepl("s\\(", variable)) %>%       
@@ -329,7 +352,10 @@ results_2 <- results_2 %>%
 
 # Create the forest plot for Model 2
 model2_frst <- ggplot(results_2, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
-  geom_pointrange() +
+  geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +
+  geom_hline(yintercept = 1, linetype = "solid", color = "black") +
+  scale_color_identity(guide = "none") + 
+  geom_text(aes(y = ci_upper + 0.05, label = significance), size = 6, color = "black") +
   coord_flip() +
   scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
   scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot2$data$variable]) +
