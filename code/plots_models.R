@@ -103,7 +103,7 @@ generate_forest_plot <- function(model, plot_title) {
     ggtitle(plot_title) +
     theme(
       axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-      axis.title.x = element_text(margin = margin(t = 20), size = 22), 
+      axis.title.x = element_text(hjust = 0.39, margin = margin(t = 20), size = 22), 
       axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
       axis.title.y = element_blank(),
       title = element_text(color = "black"),
