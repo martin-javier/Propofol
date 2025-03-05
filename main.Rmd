@@ -59,4 +59,10 @@ for(i in seq_along(model_plots)) {
   filename <- paste0("plots/models/", model_plot_names[i], ".png")
   ggsave(filename, plot = model_plots[[i]], device = "png", width = 18, height = 8.25)
 }
+
+source("code/plots_splines.R")
+for(i in seq_along(model_splines)) {
+  filename <- paste0("plots/models/", model_splines_names[i], ".png")
+  ggsave(filename, plot = model_splines[[i]], device = "png", width = 18, height = 8.25)
+}
 ```
