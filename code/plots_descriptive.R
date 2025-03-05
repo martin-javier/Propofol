@@ -171,7 +171,7 @@ boxplt_bmi <- data_summed_Day0To11 %>%
   scale_x_discrete(labels = c("Female" = "Frauen", "Male" = "Männer")) +
   scale_y_continuous(breaks = seq(10, 110, by = 5)) +
   labs(
-    title = "BMI-Verteilung nach Geschlecht"
+    title = "BMI-Verteilung nach Geschlecht",
     x = "Geschlecht",
     y = "BMI"
   ) +
@@ -314,7 +314,7 @@ km_data_disc <- data_summed_Day0To11 %>%
 ### KM with constant time variable:
 km_disc <- survfit(Surv(daysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
 km_disc_plot <- ggsurvplot(km_disc, legend = "none",
-           xlab = "Tage", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
+           xlab = "Tage", ylab = "Verbleibswahrscheinlichkeit",
            title = "Kaplan-Meier Kurve Nicht-Entlassung",
            censor = FALSE, ggtheme = (theme.main + theme.adjusted))
 km_disc_plot <- km_disc_plot$plot +
