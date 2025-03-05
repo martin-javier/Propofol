@@ -71,7 +71,7 @@ model_death_propCals_calsAbove16 <- bam(
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    PropofolCal + 
+    s(PropofolCal, bs = "ps") + 
     CalsAbove16kcalPerKG + 
     ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
@@ -93,7 +93,7 @@ model_death_propCals_calsAbove70pct <- bam(
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    PropofolCal +
+    s(PropofolCal, bs = "ps") +
     CalsPercentageAbove70 +
     ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
@@ -166,7 +166,7 @@ model_disc_propCals_calsAbove16 <- bam(
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    PropofolCal + 
+    s(PropofolCal, bs = "ps") + 
     CalsAbove16kcalPerKG + 
     ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
@@ -188,7 +188,7 @@ model_disc_propCals_calsAbove70pct <- bam(
     factor(Year) +
     factor(AdmCatID) +
     factor(LeadAdmDiag) +
-    PropofolCal +
+    s(PropofolCal, bs = "ps") +
     CalsPercentageAbove70 +
     ProteinBelow0.8GperKG +
     s(CombinedicuID, bs = "re"),
