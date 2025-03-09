@@ -252,10 +252,12 @@ prop_days <- ggplot(data_summed_Day0To11, aes(x = factor(Days_Propofol))) +
   ) + theme.main + theme.adjusted
 
 
-# Propofol Cals per Study Day ####
+# Propofol Calories ####
+
 # Filter only the days with Propofol administration
 propofol_data <- subset(data_long, Propofol == 1)
 
+## Propofol Calories per Study Day
 boxplts_propcals <- ggplot(propofol_data, aes(x = as.factor(Study_Day), y = PropofolCal)) +
   geom_boxplot(fill = "#56B4E9", color = "black", outlier.size = 2, outlier.color = "black") +
   scale_y_continuous(breaks = seq(0, max(propofol_data$PropofolCal, na.rm = TRUE) + 500, 500)) +
@@ -263,6 +265,74 @@ boxplts_propcals <- ggplot(propofol_data, aes(x = as.factor(Study_Day), y = Prop
     x = "Beobachtungstag",
     y = "Propofol-Kalorien (kcal)"
   ) + theme.main + theme.adjusted
+
+
+## Propofol Calories / Patients Weight (in kg)
+prop_plt_data <- propofol_data %>% 
+  mutate(PropCal_per_kg = PropofolCal / Weight)
+
+daily_stats <- prop_plt_data %>%
+  group_by(Study_Day) %>%
+  summarise(
+    median = median(PropCal_per_kg, na.rm = TRUE),
+    q1 = quantile(PropCal_per_kg, 0.25, na.rm = TRUE),
+    q3 = quantile(PropCal_per_kg, 0.75, na.rm = TRUE)
+  )
+
+propCals_per_kg <- ggplot(daily_stats, aes(x = Study_Day, y = median)) +
+  geom_line(color = "#56B4E9", linewidth = 1) +
+  geom_point(color = "#56B4E9", size = 3) +
+  # Main errorbars with standard caps
+  geom_errorbar(aes(ymin = q1, ymax = q3), 
+                width = 0.2, 
+                color = "#56B4E9",
+                linewidth = 1) +
+  # Special errorbar caps for first and last day
+  geom_errorbar(data = filter(daily_stats, Study_Day %in% c(1, 11)),
+                aes(ymin = q1, ymax = q3),
+                width = 0.2,  # Keep original width
+                color = "#56B4E9",
+                linewidth = 1,
+                lineend = "square") +  # Force square line ends
+  # Axis adjustments
+  scale_x_continuous(
+    breaks = 1:11,
+    limits = c(0.8, 11.2),  # Extended limits
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(clip = "off") +
+  labs(
+    title = "Tägliche Propofol-assoziierte Kalorienzufuhr pro kg Körpergewicht",
+    x = "Beobachtungstag", 
+    y = "kcal/kg  (Median + IQR)"
+  ) +
+  theme.main + theme.adjusted
+
+## Quartile Distribution (seperated for each Study day)
+# Calculate global quartile thresholds (based on all data)
+quartile_breaks <- quantile(prop_plt_data$PropCal_per_kg, 
+                            probs = seq(0, 1, 0.25), 
+                            na.rm = TRUE)
+
+# Create daily quartile counts
+daily_quartiles <- prop_plt_data %>%
+  mutate(quartile = cut(PropCal_per_kg,
+                        breaks = quartile_breaks,
+                        include.lowest = TRUE,
+                        labels = c("Q1", "Q2", "Q3", "Q4"))) %>%
+  count(Study_Day, quartile) %>%
+  complete(Study_Day = 1:11, quartile, fill = list(n = 0))  # Ensure all days appear
+
+# Create stacked bar plot
+quart_dist_barplt <- ggplot(daily_quartiles, aes(x = factor(Study_Day), y = n, fill = quartile)) +
+  geom_col(position = position_stack(reverse = TRUE)) +
+  scale_fill_brewer(palette = "Blues", direction = -1) +
+  scale_x_discrete(breaks = 1:11, expand = expansion(0)) +
+  labs(title = "Tägliche Verteilung der Propofol-Kalorienquartile",
+       x = "Beobachtungstag", y = "Anzahl der Patient*innen",
+       fill = "Quartilgruppe") +
+  theme.main + theme.adjusted +
+  guides(fill = guide_legend(reverse = TRUE))  # Q1 at bottom in legend
 
 
 # Admission Categories ####
@@ -325,7 +395,7 @@ km_disc_plot <- km_disc_plot$plot +
 km_disc_rounded <- survfit(Surv(roundedDaysToEvent, PatientDischarged) ~ 1, data = km_data_disc)
 km_disc_plot_rounded <- ggsurvplot(
   km_disc_rounded, legend = "none",
-  xlab = "Tage (gerundet)", ylab = "Wahrscheinlichkeit - Patient wird nicht entlassen",
+  xlab = "Tage (gerundet)", ylab = "Verbleibswahrscheinlichkeit",
   title = "Kaplan-Meier Kurve Nicht-Entlassung",
   censor = FALSE, ggtheme = (theme.main + theme.adjusted),
   lwd = 1.2, palette = "#E69F00"
@@ -363,13 +433,14 @@ title = "Kumulative Inzidenzen für Tod und Entlassung",
 
 desc_plots <- list(
   dist_age_groups, dist_age_hist, violin_age, barpl_sex, barpl_bmi_groups,
-  boxplt_bmi, barpl_events, prop_days, boxplts_propcals, barpl_admCats,
-  km_death_plot, km_death_plot_rounded, km_disc_plot, km_disc_plot_rounded, cumu_inc$plot
+  boxplt_bmi, barpl_events, prop_days, boxplts_propcals, propCals_per_kg,
+  quart_dist_barplt, barpl_admCats, km_death_plot, km_death_plot_rounded,
+  km_disc_plot, km_disc_plot_rounded, cumu_inc$plot
 )
 desc_plot_names <- c(
   "dist_age_groups", "dist_age_hist", "violin_age", "barpl_sex", "barpl_bmi_groups",
-  "boxplt_bmi", "barpl_events", "prop_days", "boxplts_propcals",
-  "barpl_admCats","km_death_plot", "km_death_plot_rounded","km_disc_plot",
-  "km_disc_plot_rounded","cumu_inc"
+  "boxplt_bmi", "barpl_events", "prop_days", "boxplts_propcals", "propCals_per_kg",
+  "quart_dist_barplt", "barpl_admCats","km_death_plot", "km_death_plot_rounded",
+  "km_disc_plot", "km_disc_plot_rounded","cumu_inc"
 )
 
