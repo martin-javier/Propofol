@@ -407,25 +407,21 @@ km_disc_plot_rounded <- km_disc_plot_rounded$plot +
 # Cumulative Incidence Functions ####
 # prepare data
 cumu_data <- data_summed_Day0To11[data_summed_Day0To11$surv_icu_status != 0, ]
-km <- survfit(formula = Surv(daysToEvent) ~ surv_icu_status,
-              data = cumu_data)
-cumu_inc <- ggsurvplot(km,
-           data = data_summed_Day0To11,
-#           risk.table = TRUE, # adds table below plot
-           legend.labs = c("Entlassung", "Tod"),
-           xlim = c(0,60),
-           break.time.by = 10,
-           ylim = c(0,1),
-title = "Kumulative Inzidenzen für Tod und Entlassung",
-           xlab = "Beobachtungstag",
-           ylab = "Event Wahrscheinlichkeit",
-           legend.title = "",
-           palette = c("#E69F00", "#0072B2"),
-           fun = "event",
-           ggtheme = (theme.main + theme.adjusted +
-                        theme(legend.text = element_text(size = 18),
-                              legend.key.size = unit(0.8, "cm")))
-)
+cumu_inc <- survfit(Surv(daysToEvent) ~ surv_icu_status, data = cumu_data) %>%
+  ggsurvplot(#risk.table = TRUE, # adds table below plot
+             legend.labs = c("Entlassung", "Tod"),
+             xlim = c(0,60),
+             break.time.by = 10,
+             ylim = c(0,1),
+             title = "Kumulative Inzidenzen für Tod und Entlassung",
+             xlab = "Beobachtungstag", ylab = "Event Wahrscheinlichkeit",
+             legend.title = "",
+             palette = c("#E69F00", "#0072B2"),
+             fun = "event",
+             ggtheme = (theme.main + theme.adjusted +
+                          theme(legend.text = element_text(size = 18),
+                                legend.key.size = unit(0.8, "cm")))
+             )
 
 
 
