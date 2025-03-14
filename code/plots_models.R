@@ -66,7 +66,7 @@ renamed_labels <- c(
 )
 
 
-generate_forest_plot <- function(model, plot_title) {
+generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
   plot_data <- gg_fixed(model)
   se <- sqrt(diag(model$Vp))
   coef_values <- model$coefficients
@@ -100,6 +100,12 @@ generate_forest_plot <- function(model, plot_title) {
     filter(!grepl("Intercept", variable)) %>%  
     filter(!grepl("factor\\(Year\\)", variable))
   
+  # If subgroup = TRUE, only Interactions
+  if (subgroup) {
+    results <- results %>%
+      filter(variable %in% c("Propofol1:SexMale", "AgeKat>65:Propofol1"))
+  }
+  
   # Create the forest plot
   ggplot(results, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
     geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +  # Farbliche Unterscheidung
@@ -127,14 +133,16 @@ model1_frst <- generate_forest_plot(model1, "Forest Plot der Hazard Ratios (Even
 model2_frst <- generate_forest_plot(model2, "Forest Plot der Hazard Ratios (Event = Tod)") # Hier keine veränderung, da PropCals ist Spline
 model3_frst <- generate_forest_plot(model3, "Forest Plot der Hazard Ratios (Event = Entlassung)")
 model4_frst <- generate_forest_plot(model4, "Forest Plot der Hazard Ratios (Event = Entlassung)")
-model5_frst <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)")
-model6_frst <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)")
+model5_frst_whole <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)", subgroup = FALSE)
+model6_frst_whole <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)", subgroup = FALSE)
+model5_frst_interactions <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)", subgroup = TRUE)
+model6_frst_interactions <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)", subgroup = TRUE)
 
 # Autosave helpers ####
 
 model_plots <- list(
-  model1_frst, model2_frst, model3_frst, model4_frst, model5_frst, model6_frst
+  model1_frst, model2_frst, model3_frst, model4_frst, model5_frst_whole, model6_frst_whole, model5_frst_interactions, model6_frst_interactions
 )
 model_plot_names <- c(
-  "model1_frst", "model2_frst", "model3_frst", "model4_frst", "model5_frst", "model6_frst"
+  "model1_frst", "model2_frst", "model3_frst", "model4_frst", "model5_frst_whole", "model6_frst_whole", "model5_frst_interactions", "model6_frst_interactions"
 )
