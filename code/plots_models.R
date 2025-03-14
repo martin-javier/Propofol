@@ -13,6 +13,12 @@ model3 <- model_disc_propDays_calsAbove70pct
 # Model 4: Outcome = discharge, with propofol-calories and calorie intake as >70% of target (binary)
 model4 <- model_disc_propCals_calsAbove70pct
 
+# Model 5: Outcome = discharge, propofol as a binary variable, calorie intake above 16 kcal/kg
+model5 <- model_death_subgrp_int_propDays_calsAbove16
+
+# Model 6: Outcome = discharge, propofol as a binary variable, calorie intake above 16 kcal/kg
+model6 <- model_disc_subgrp_int_propDays_calsAbove16
+
 # Custom ggplot theme for consistency in the plots
 theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 22),
                         axis.title.x = element_text(margin = margin(t = 20), size = 32), 
@@ -52,7 +58,11 @@ renamed_labels <- c(
   "factor(AdmCatID)Surgical/Emeregency" = "Aufnahmekat.: Nofall OP",
   "factor(AdmCatID)Surgical/Elective" = "Aufnahmekat.: Geplante OP",
   "CalsPercentageAbove701" = "Kalorien > 70%",
-  "CalsAbove16kcalPerKG1" = "Kalorien > 16 kcal/kg"
+  "CalsAbove16kcalPerKG1" = "Kalorien > 16 kcal/kg",
+  "AgeKat>65:Propofol1" = "Interaktion: (Alter > 65) & Propofol",
+  "AgeKat>65" = "Alter > 65",
+  "Propofol0:SexMale" = "Interaktion: Kein Propofol & Männlich",
+  "Propofol1:SexMale" = "Interaktion: Propofol & Männlich"
 )
 
 
@@ -117,12 +127,14 @@ model1_frst <- generate_forest_plot(model1, "Forest Plot der Hazard Ratios (Even
 model2_frst <- generate_forest_plot(model2, "Forest Plot der Hazard Ratios (Event = Tod)") # Hier keine veränderung, da PropCals ist Spline
 model3_frst <- generate_forest_plot(model3, "Forest Plot der Hazard Ratios (Event = Entlassung)")
 model4_frst <- generate_forest_plot(model4, "Forest Plot der Hazard Ratios (Event = Entlassung)")
+model5_frst <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)")
+model6_frst <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)")
 
 # Autosave helpers ####
 
 model_plots <- list(
-  model1_frst, model2_frst, model3_frst, model4_frst
+  model1_frst, model2_frst, model3_frst, model4_frst, model5_frst, model6_frst
 )
 model_plot_names <- c(
-  "model1_frst", "model2_frst", "model3_frst", "model4_frst"
+  "model1_frst", "model2_frst", "model3_frst", "model4_frst", "model5_frst", "model6_frst"
 )
