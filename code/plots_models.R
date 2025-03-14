@@ -1,6 +1,6 @@
-# Analysis-Plots for 2 PAMMs used in Report
+# Forest Plots for 6 of the fitted models
 
-# Define the models used for plotting:
+# Define models and theme ####
 # Model 1: Outcome = death, propofol as a binary variable, calorie intake as >70% of target (binary)
 model1 <- model_death_propDays_calsAbove70pct
 
@@ -20,20 +20,25 @@ model5 <- model_death_subgrp_int_propDays_calsAbove16
 model6 <- model_disc_subgrp_int_propDays_calsAbove16
 
 # Custom ggplot theme for consistency in the plots
-theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 22),
+theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5,
+                                                   margin = margin(t = 5), size = 22),
                         axis.title.x = element_text(margin = margin(t = 20), size = 32), 
-                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 22, angle = 0),
+                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10),
+                                                   size = 22, angle = 0),
                         axis.title.y = element_text(margin = margin(r = 20), size = 32),
                         title = element_text(color = "black"),
-                        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
-                        plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
+                        plot.title = element_text(size = 28, color = "black",
+                                                  face = "bold", hjust = 0.5), 
+                        plot.subtitle = element_text(size = 17, color = "black",
+                                                     face = "italic"),
                         panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
                         panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
                         plot.background = element_rect(fill = "white", color = NA))
 
-# Forest Plots for Hazard Ratios ####
 
-# Create a set of user-friendly labels for the variables
+# Function to create Forest Plots ####
+
+# Translate and reword the Confounders for the labels
 renamed_labels <- c(
   "ProteinBelow0.8GperKG1" = "Protein < 0,8 g/kg",
   "Propofol1" = "Propofol (binär)",
@@ -85,7 +90,8 @@ generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
     ci_upper = exp(coef_values + 1.96 * se)
   )
   
-  results <- left_join(results, model_tidy %>% select(term, p.value), by = c("variable" = "term"))
+  results <- left_join(results, model_tidy %>% select(term, p.value),
+                       by = c("variable" = "term"))
   results <- results %>%
     mutate(significance = case_when(
       p.value < 0.001 ~ "***",
@@ -108,10 +114,10 @@ generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
   
   # Create the forest plot
   ggplot(results, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
-    geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +  # Farbliche Unterscheidung
-    geom_hline(yintercept = 1, linetype = "solid", color = "black") +  # Horizontale Linie bei 1
-    scale_color_identity(guide = "none") +  # Keine Legende für Farben
-    geom_text(aes(y = ci_upper + 0.05, label = significance), size = 6, color = "black") +  # Signifikanz hinzufügen
+    geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +
+    geom_hline(yintercept = 1, linetype = "solid", color = "black") +  # Horizontal line at 1
+    scale_color_identity(guide = "none") +
+    geom_text(aes(y = ci_upper + 0.05, label = significance), size = 6, color = "black") +
     coord_flip() +
     scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
     scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot_data$data$variable]) +
@@ -129,20 +135,28 @@ generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
     )
 }
 
+
+# Creates Forest Plots ####
+
 model1_frst <- generate_forest_plot(model1, "Forest Plot der Hazard Ratios (Event = Tod)")
-model2_frst <- generate_forest_plot(model2, "Forest Plot der Hazard Ratios (Event = Tod)") # Hier keine veränderung, da PropCals ist Spline
+model2_frst <- generate_forest_plot(model2, "Forest Plot der Hazard Ratios (Event = Tod)") # No difference here (PropCals as spline)
 model3_frst <- generate_forest_plot(model3, "Forest Plot der Hazard Ratios (Event = Entlassung)")
 model4_frst <- generate_forest_plot(model4, "Forest Plot der Hazard Ratios (Event = Entlassung)")
-model5_frst_whole <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)", subgroup = FALSE)
-model6_frst_whole <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)", subgroup = FALSE)
-model5_frst_interactions <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)", subgroup = TRUE)
-model6_frst_interactions <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)", subgroup = TRUE)
+model5_frst_whole <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen
+                                          (Event = Tod)", subgroup = FALSE)
+model6_frst_whole <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen
+                                          (Event = Entlassung)", subgroup = FALSE)
+model5_frst_interactions <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen
+                                                 (Event = Tod)", subgroup = TRUE)
+model6_frst_interactions <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen
+                                                 (Event = Entlassung)", subgroup = TRUE)
+
 
 # Autosave helpers ####
 
-model_plots <- list(
-  model1_frst, model2_frst, model3_frst, model4_frst, model5_frst_whole, model6_frst_whole, model5_frst_interactions, model6_frst_interactions
-)
-model_plot_names <- c(
-  "model1_frst", "model2_frst", "model3_frst", "model4_frst", "model5_frst_whole", "model6_frst_whole", "model5_frst_interactions", "model6_frst_interactions"
-)
+model_plots <- list(model1_frst, model2_frst, model3_frst, model4_frst, model5_frst_whole,
+                    model6_frst_whole, model5_frst_interactions, model6_frst_interactions)
+
+model_plot_names <- c("model1_frst", "model2_frst", "model3_frst", "model4_frst",
+                      "model5_frst_whole", "model6_frst_whole", "model5_frst_interactions",
+                      "model6_frst_interactions")

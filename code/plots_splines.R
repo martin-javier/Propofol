@@ -1,6 +1,6 @@
-# Analysis-Plots for 2 PAMMs used in Report
+# Plots of the smooth terms unsed in 4 of the models 
 
-# Define the models used for plotting:
+# Define models and theme ####
 # Model 1: Outcome = death, propofol as a binary variable, calorie intake as >70% of target (binary)
 model1 <- model_death_propDays_calsAbove70pct
 
@@ -14,16 +14,22 @@ model3 <- model_disc_propDays_calsAbove70pct
 model4 <- model_disc_propCals_calsAbove70pct
 
 # Custom ggplot theme for consistency in the plots
-theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 22),
+theme.adjusted <- theme(axis.text.x = element_text(angle = 0, hjust = 0.5,
+                                                   margin = margin(t = 5), size = 22),
                         axis.title.x = element_text(margin = margin(t = 20), size = 32), 
-                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 22, angle = 0),
+                        axis.text.y = element_text(hjust = 1, margin = margin(r = 10),
+                                                   size = 22, angle = 0),
                         axis.title.y = element_text(margin = margin(r = 20), size = 32),
                         title = element_text(color = "black"),
-                        plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+                        plot.title = element_text(size = 28, color = "black", face = "bold",
+                                                  hjust = 0.5), 
                         plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
                         panel.grid.major = element_line(color = "darkgray", linewidth = 0.2), 
                         panel.grid.minor = element_line(color = "gray", linewidth  = 0.1),
                         plot.background = element_rect(fill = "white", color = NA))
+
+
+# Function to create Spline Plots ####
 
 create_spline_plot <- function(model, variable_name, color = "deepskyblue3", 
                                x_limit = NULL, y_limit = c(0, 2.5), 
@@ -88,51 +94,71 @@ create_spline_plot <- function(model, variable_name, color = "deepskyblue3",
 }
 
 
+# Create Spline Plots ####
 
 # Model 1
-model1_sp_age <- create_spline_plot(model1, "Age", color = "darkgreen", x_limit = c(18, 102), variable_label = "Alter",
-                   y_limit = c(0, 3.5), y_breaks = seq(0, 3.5, 0.5), title = FALSE)
+model1_sp_age <- create_spline_plot(model1, "Age", color = "darkgreen", x_limit = c(18, 102),
+                                    variable_label = "Alter", y_limit = c(0, 3.5),
+                                    y_breaks = seq(0, 3.5, 0.5))
 
-model1_sp_bmi <- create_spline_plot(model1, "BMI", color = "darkorchid3", x_limit = c(13, 109), y_limit = c(0, 2.6), title = FALSE)
+model1_sp_bmi <- create_spline_plot(model1, "BMI", color = "darkorchid3", x_limit = c(13, 109),
+                                    y_limit = c(0, 2.6))
 
-model1_sp_apacheII <- create_spline_plot(model1, "ApacheIIScore", color = "deepskyblue3", x_limit = c(0, 72), 
-                   y_limit = c(0, 7), y_breaks = seq(0, 7, 0.5), title = FALSE)
+model1_sp_apacheII <- create_spline_plot(model1, "ApacheIIScore", color = "deepskyblue3",
+                                         x_limit = c(0, 72), y_limit = c(0, 7),
+                                         y_breaks = seq(0, 7, 0.5))
 
 
 # Model 2 
-model2_sp_age <- create_spline_plot(model2, "Age", color = "darkgreen", x_limit = c(18, 102), variable_label = "Alter",
-                   y_limit = c(0, 3.5), y_breaks = seq(0, 3.5, 0.5), title = FALSE)
+model2_sp_age <- create_spline_plot(model2, "Age", color = "darkgreen", x_limit = c(18, 102),
+                                    variable_label = "Alter", y_limit = c(0, 3.5),
+                                    y_breaks = seq(0, 3.5, 0.5))
 
-model2_sp_bmi <- create_spline_plot(model2, "BMI", color = "darkorchid3", x_limit = c(13, 109), y_limit = c(0, 2.6), title = FALSE)
+model2_sp_bmi <- create_spline_plot(model2, "BMI", color = "darkorchid3",
+                                    x_limit = c(13, 109), y_limit = c(0, 2.6))
 
-model2_sp_apacheII <- create_spline_plot(model2, "ApacheIIScore", color = "deepskyblue3", x_limit = c(0, 72), 
-                   y_limit = c(0, 7), y_breaks = seq(0, 7, 0.5), title = FALSE)
+model2_sp_apacheII <- create_spline_plot(model2, "ApacheIIScore", color = "deepskyblue3",
+                                         x_limit = c(0, 72), y_limit = c(0, 7),
+                                         y_breaks = seq(0, 7, 0.5))
 
-model2_sp_propofolCal <- create_spline_plot(model2, "PropofolCal", color = "orange", x_limit = c(0, 5500), x_breaks = seq(0, 5500, by = 500), 
-                   y_limit = c(0, 5), y_breaks = seq(0, 5, by = 0.5), variable_label = "Propofol Kalorien", title = FALSE)
+model2_sp_propofolCal <- create_spline_plot(model2, "PropofolCal", color = "orange",
+                                            x_limit = c(0, 5500), x_breaks = seq(0, 5500, by = 500),
+                                            y_limit = c(0, 5), y_breaks = seq(0, 5, by = 0.5),
+                                            variable_label = "Propofol Kalorien")
 
 
 # Model 3
-model3_sp_age <- create_spline_plot(model3, "Age", color = "darkgreen", x_limit = c(18, 102), variable_label = "Alter",
-                   y_limit = c(0, 3.5), y_breaks = seq(0, 3.5, 0.5), title = FALSE)
+model3_sp_age <- create_spline_plot(model3, "Age", color = "darkgreen", x_limit = c(18, 102),
+                                    variable_label = "Alter", y_limit = c(0, 3.5),
+                                    y_breaks = seq(0, 3.5, 0.5))
 
-model3_sp_bmi <- create_spline_plot(model3, "BMI", color = "darkorchid3", x_limit = c(13, 109), y_limit = c(0, 2.6), title = FALSE)
+model3_sp_bmi <- create_spline_plot(model3, "BMI", color = "darkorchid3",
+                                    x_limit = c(13, 109), y_limit = c(0, 2.6))
 
-model3_sp_apacheII <- create_spline_plot(model3, "ApacheIIScore", color = "deepskyblue3", x_limit = c(0, 72), 
-                   y_limit = c(0, 7), y_breaks = seq(0, 7, 0.5), title = FALSE)
+model3_sp_apacheII <- create_spline_plot(model3, "ApacheIIScore", color = "deepskyblue3",
+                                         x_limit = c(0, 72), y_limit = c(0, 7),
+                                         y_breaks = seq(0, 7, 0.5))
 
 
 # Model 4
-model4_sp_age <- create_spline_plot(model4, "Age", color = "darkgreen",x_limit = c(18, 102), variable_label = "Alter", 
-                   y_limit = c(0, 2.6), title = FALSE)
-model4_sp_bmi <- create_spline_plot(model4, "BMI", color = "darkorchid3", x_limit = c(13, 109), y_limit = c(0, 2.6), title = FALSE)
+model4_sp_age <- create_spline_plot(model4, "Age", color = "darkgreen",x_limit = c(18, 102),
+                                    variable_label = "Alter", y_limit = c(0, 2.6))
 
-model4_sp_apacheII <- create_spline_plot(model4, "ApacheIIScore", color = "deepskyblue3", x_limit = c(0, 72), 
-                   y_limit = c(0, 7), y_breaks = seq(0, 7, 0.5), title = FALSE)
+model4_sp_bmi <- create_spline_plot(model4, "BMI", color = "darkorchid3", x_limit = c(13, 109),
+                                    y_limit = c(0, 2.6))
 
-model4_sp_propofolCal <- create_spline_plot(model4, "PropofolCal", color = "orange", x_limit = c(0, 5500), x_breaks = seq(0, 5500, by = 500), 
-                   y_limit = c(0, 5), y_breaks = seq(0, 5, by = 0.5), variable_label = "Propofol Kalorien", title = FALSE)
-      
+model4_sp_apacheII <- create_spline_plot(model4, "ApacheIIScore", color = "deepskyblue3",
+                                         x_limit = c(0, 72), y_limit = c(0, 7),
+                                         y_breaks = seq(0, 7, 0.5))
+
+model4_sp_propofolCal <- create_spline_plot(model4, "PropofolCal", color = "orange",
+                                            x_limit = c(0, 5500), x_breaks = seq(0, 5500, by = 500),
+                                            y_limit = c(0, 5), y_breaks = seq(0, 5, by = 0.5),
+                                            variable_label = "Propofol Kalorien")
+
+
+# Autosave helpers ####
+
 model_splines <- list(model1_sp_age, model1_sp_bmi, model1_sp_apacheII,
                    model2_sp_age, model2_sp_bmi, model2_sp_apacheII, model2_sp_propofolCal,
                    model3_sp_age, model3_sp_bmi, model3_sp_apacheII,
