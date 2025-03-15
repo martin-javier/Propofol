@@ -1,4 +1,4 @@
-### Create data_long with main.Rmd first
+# Quick Overview of Propofol Variables
 
 
 # overview over Propofol and Propofol Calories
@@ -25,7 +25,7 @@ pat_w_PropofolCals <- data_long %>%
   filter(any(PropofolCal != 0)) %>%
   ungroup()
 # length(unique(pat_w_PropofolCals$CombinedID)) = 6018
-# => die hälfte der Patienten hat überhaupt einmal Propofol bekommen
+# => half of all patients ever took propofol
 
 cals_overview_no0s <- pat_w_PropofolCals %>%
   group_by(Study_Day) %>%
@@ -40,17 +40,16 @@ cals_overview_no0s <- pat_w_PropofolCals %>%
 
 ggplot(binary_overview, aes(x = Study_Day, y = PercentOnMedication)) +
   geom_line() + geom_point() +
-  labs(title = "Percentage of Patients Receiving Propofol Over Time",
-       x = "Study Day", y = "Percentage (%)") +
+  labs(title = "Patienten mit Propofol-Einnahme",
+       x = "Beobachtungstag", y = "Prozentsatz (in %)") +
   scale_x_continuous(breaks = seq(1, 11, by = 1)) +
   scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
   theme_bw()
 
-# this makes litte sense
 ggplot(cals_overview, aes(x = Study_Day, y = AverageCals)) +
   geom_line() + geom_point() +
-  labs(title = "Average Calories Over Time", x = "Study Day",
-       y = "Average Calories") +
+  labs(title = "Durchschnittliche durch Propofol aufgenommene Kalorien",
+       x = "Beobachtungstag", y = "Durchschnittliche Kalorien (in kcal)") +
   scale_x_continuous(breaks = seq(1, 11, by = 1)) +
   theme_bw()
 

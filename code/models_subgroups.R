@@ -1,4 +1,7 @@
-# Aufsummerte Daten (Vorgabe Hartl) ####
+# Subgroup Models on split dataset and also with interaction term (below)
+
+
+# Summed Data ####
 
 
 ## Alter > 65 Jahre ####
@@ -861,7 +864,7 @@ saveRDS(model_disc_male_propCals_70pct,
 
 
 
-# Manual PED als Datenbasis ####
+# Manual PED ####
 
 
 ## Alter > 65 Jahre ####

@@ -1,4 +1,4 @@
-# Modell Vorgabe Prof. Hartl ####
+# Cox-Models fit on summed data from day 0-7
 
 ## Patient Died ####
 # prepare data

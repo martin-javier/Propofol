@@ -139,17 +139,28 @@ generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
 # Creates Forest Plots ####
 
 model1_frst <- generate_forest_plot(model1, "Forest Plot der Hazard Ratios (Event = Tod)")
+
 model2_frst <- generate_forest_plot(model2, "Forest Plot der Hazard Ratios (Event = Tod)") # No difference here (PropCals as spline)
+
 model3_frst <- generate_forest_plot(model3, "Forest Plot der Hazard Ratios (Event = Entlassung)")
+
 model4_frst <- generate_forest_plot(model4, "Forest Plot der Hazard Ratios (Event = Entlassung)")
-model5_frst_whole <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen
-                                          (Event = Tod)", subgroup = FALSE)
-model6_frst_whole <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen
-                                          (Event = Entlassung)", subgroup = FALSE)
-model5_frst_interactions <- generate_forest_plot(model5, "Forest Plot der Hazard Ratios für Subgruppen
-                                                 (Event = Tod)", subgroup = TRUE)
-model6_frst_interactions <- generate_forest_plot(model6, "Forest Plot der Hazard Ratios für Subgruppen
-                                                 (Event = Entlassung)", subgroup = TRUE)
+
+model5_frst_whole <- generate_forest_plot(
+  model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)", subgroup = FALSE
+  )
+
+model6_frst_whole <- generate_forest_plot(
+  model6, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)", subgroup = FALSE
+  )
+
+model5_frst_interactions <- generate_forest_plot(
+  model5, "Forest Plot der Hazard Ratios für Subgruppen (Event = Tod)", subgroup = TRUE
+  )
+
+model6_frst_interactions <- generate_forest_plot(
+  model6, "Forest Plot der Hazard Ratios für Subgruppen (Event = Entlassung)", subgroup = TRUE
+  )
 
 
 # Autosave helpers ####

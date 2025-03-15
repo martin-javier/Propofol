@@ -1,4 +1,6 @@
-# Berechnung der Modellgüte für Discharged Modelle
+# Model Comparision based on AIC for subgroup models
+
+# Calculation of model fit for Discharge models
 scores <- list(
   older65_propDays_calsAbove16_disc = AIC(model_disc_older65_propDays_calsAbove16),
   older65_propDays_calsAbove70pct_disc = AIC(model_disc_older65_propDays_calsAbove70pct),
@@ -21,7 +23,7 @@ scores <- list(
   female_propCals_calsAbove70pct_disc = AIC(model_disc_female_propCals_calsAbove70pct)
 )
 
-# Beste Modelle auswählen
+# Selecting the best models
 best_older65_propDays_disc <- ifelse(
   which.min(c(scores$older65_propDays_calsAbove16_disc, scores$older65_propDays_calsAbove70pct_disc)) == 1,
   "model_disc_older65_propDays_calsAbove16_disc",
@@ -66,23 +68,23 @@ best_female_propCals_disc <- ifelse(
   "model_disc_female_propCals_calsAbove70pct_disc"
 )
 
-# Ergebnisse anzeigen
-cat("Bestes Modell für ältere Patienten (>65 Jahre, Propofol-Tage):", best_older65_propDays_disc, "\n")
-cat("Bestes Modell für ältere Patienten (>65 Jahre, Propofol-Kalorien):", best_older65_propCals_disc, "\n")
+# Display results
+cat("Best model for older patients (>65 years, Propofol days):", best_older65_propDays_disc, "\n")
+cat("Best model for older patients (>65 years, Propofol calories):", best_older65_propCals_disc, "\n")
 
-cat("Bestes Modell für jüngere Patienten (<66 Jahre, Propofol-Tage):", best_younger66_propDays_disc, "\n")
-cat("Bestes Modell für jüngere Patienten (<66 Jahre, Propofol-Kalorien):", best_younger66_propCals_disc, "\n")
+cat("Best model for younger patients (<66 years, Propofol days):", best_younger66_propDays_disc, "\n")
+cat("Best model for younger patients (<66 years, Propofol calories):", best_younger66_propCals_disc, "\n")
 
-cat("Bestes Modell für männliche Patienten (Propofol-Tage):", best_male_propDays_disc, "\n")
-cat("Bestes Modell für männliche Patienten (Propofol-Kalorien):", best_male_propCals_disc, "\n")
+cat("Best model for male patients (Propofol days):", best_male_propDays_disc, "\n")
+cat("Best model for male patients (Propofol calories):", best_male_propCals_disc, "\n")
 
-cat("Bestes Modell für weibliche Patienten (Propofol-Tage):", best_female_propDays_disc, "\n")
-cat("Bestes Modell für weibliche Patienten (Propofol-Kalorien):", best_female_propCals_disc, "\n")
+cat("Best model for female patients (Propofol days):", best_female_propDays_disc, "\n")
+cat("Best model for female patients (Propofol calories):", best_female_propCals_disc, "\n")
 
-# Bei den Modellnamen Bsp.: "model_disc_female_propCals_calsAbove16_disc" immer _disc am Ende entfernen
+# For model names example: "model_disc_female_propCals_calsAbove16_disc" always remove _disc at the end
 
 
-# Berechnung der Modellgüte für Death Modelle
+# Calculation of model fit for Death models
 scores <- list(
   older65_propDays_calsAbove16_death = AIC(model_death_older65_propDays_calsAbove16),
   older65_propDays_calsAbove70pct_death = AIC(model_death_older65_propDays_calsAbove70pct),
@@ -105,7 +107,7 @@ scores <- list(
   female_propCals_calsAbove70pct_death = AIC(model_death_female_propCals_calsAbove70pct)
 )
 
-# Beste Modelle auswählen
+# Selecting the best models
 best_older65_propDays_death <- ifelse(
   which.min(c(scores$older65_propDays_calsAbove16_death, scores$older65_propDays_calsAbove70pct_death)) == 1,
   "model_death_older65_propDays_calsAbove16_death",
@@ -150,34 +152,33 @@ best_female_propCals_death <- ifelse(
   "model_death_female_propCals_calsAbove70pct_death"
 )
 
-# Ergebnisse anzeigen
-cat("Bestes Modell für ältere Patienten (>65 Jahre, Propofol-Tage):", best_older65_propDays_death, "\n")
-cat("Bestes Modell für ältere Patienten (>65 Jahre, Propofol-Kalorien):", best_older65_propCals_death, "\n")
+# Display results
+cat("Best model for older patients (>65 years, Propofol days):", best_older65_propDays_death, "\n")
+cat("Best model for older patients (>65 years, Propofol calories):", best_older65_propCals_death, "\n")
 
-cat("Bestes Modell für jüngere Patienten (<66 Jahre, Propofol-Tage):", best_younger66_propDays_death, "\n")
-cat("Bestes Modell für jüngere Patienten (<66 Jahre, Propofol-Kalorien):", best_younger66_propCals_death, "\n")
+cat("Best model for younger patients (<66 years, Propofol days):", best_younger66_propDays_death, "\n")
+cat("Best model for younger patients (<66 years, Propofol calories):", best_younger66_propCals_death, "\n")
 
-cat("Bestes Modell für männliche Patienten (Propofol-Tage):", best_male_propDays_death, "\n")
-cat("Bestes Modell für männliche Patienten (Propofol-Kalorien):", best_male_propCals_death, "\n")
+cat("Best model for male patients (Propofol days):", best_male_propDays_death, "\n")
+cat("Best model for male patients (Propofol calories):", best_male_propCals_death, "\n")
 
-cat("Bestes Modell für weibliche Patienten (Propofol-Tage):", best_female_propDays_death, "\n")
-cat("Bestes Modell für weibliche Patienten (Propofol-Kalorien):", best_female_propCals_death, "\n")
+cat("Best model for female patients (Propofol days):", best_female_propDays_death, "\n")
+cat("Best model for female patients (Propofol calories):", best_female_propCals_death, "\n")
 
 
-# Subgruppen
-# Frauen, Death, Propofol/PropofolCal
+# Subgroups
+# Female patients, Death, Propofol/PropofolCal
 summary(model_death_female_propDays_calsAbove16)
 summary(model_death_female_propCals_calsAbove16)
 
-# Frauen, Discharged, Propofol/PropofolCal
+# Female patients, Discharged, Propofol/PropofolCal
 summary(model_disc_female_propDays_calsAbove70pct)
 summary(model_disc_female_propCals_calsAbove16)
 
-# Ältere Patienten über 65, Death, Propofol/PropofolCal
+# Older patients over 65, Death, Propofol/PropofolCal
 summary(model_death_older65_propDays_calsAbove70pct)
 summary(model_death_older65_propCals_calsAbove70pct)
 
-# Ältere Patienten über 65, Discharged, Propofol/PropofolCal
+# Older patients over 65, Discharged, Propofol/PropofolCal
 summary(model_disc_older65_propDays_calsAbove70pct)
 summary(model_disc_older65_propCals_calsAbove70pct)
-

@@ -1,5 +1,7 @@
-## Patient Died ####
+# Models fit on manually created ped
 
+
+## Patient Died ####
 
 ### Propofol Days ####
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
@@ -23,17 +25,6 @@ model_death_propDays_calsAbove16 <- bam(
   offset = offset,
   nthreads = parallel::detectCores()
 )
-
-# Document ICC calculation
-# vcomp <- gam.vcomp(model_death_propDays_calsAbove16)
-# var_between_groups <- vcomp["s(CombinedicuID):icuByDummy", "std.dev"]^2
-# icc <- var_between_groups / (var_between_groups + mean(fitted(model_death_propDays_calsAbove16)))
-# icc
-# This would imply ?% of response variance is explained by group differences (ICUs),
-
-# other option - Likelihood-Ratio-Test:
-# anova(model_death_propDays_calsAbove16, model_death_propDays_calsAbove16_reICU)
-# 2 models needed (1 w/o random effect & 1 with random effect)
 
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_death_propDays_calsAbove70pct <- bam(
@@ -129,7 +120,6 @@ model_disc_propDays_calsAbove16 <- bam(
   nthreads = parallel::detectCores()
 )
 
-
 # with Calorie Variable: Days where Calorie Intake was above 70% of Target
 model_disc_propDays_calsAbove70pct <- bam(
   formula = ped_status ~ s(Age, bs = "ps") +
@@ -198,7 +188,10 @@ model_disc_propCals_calsAbove70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+# Save Models ####
+
+# Patient Died models
 saveRDS(model_death_propDays_calsAbove16,
         "models/manualPED/model_death_propDays_calsAbove16.rds")
 saveRDS(model_death_propDays_calsAbove70pct,
@@ -208,7 +201,7 @@ saveRDS(model_death_propCals_calsAbove16,
 saveRDS(model_death_propCals_calsAbove70pct,
         "models/manualPED/model_death_propCals_calsAbove70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Patient Discharged models
 saveRDS(model_disc_propDays_calsAbove16,
         "models/manualPED/model_disc_propDays_calsAbove16.rds")
 saveRDS(model_disc_propDays_calsAbove70pct,

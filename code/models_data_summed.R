@@ -1,8 +1,6 @@
-# Modell Vorgabe Prof. Hartl ####
+# Models fit on data summed per patient > transformed to ped with pammtools func as_ped()
+## Prof. Hartl requested to only include data from Day 0-7
 
-library(dplyr)
-library(pammtools)
-library(mgcv)
 
 ## Patient Died ####
 # prepare data
@@ -14,7 +12,7 @@ data_death <- data_summed_Day0To7 %>%
 ped_death <- as_ped(
   data = data_death,
   Surv(daysToEvent, PatientDied) ~ .,
-  cut = 0:60, id = "CombinedID" # Zeitintervall für 60 Tage (1 Tag-Schritte)
+  cut = 0:60, id = "CombinedID"
 )
 
 model_death_propDays_16kcal <- bam(
@@ -112,7 +110,7 @@ model_death_propCals_70pct <- bam(
 ped_disc <- as_ped(
   data = data_summed_Day0To7,
   Surv(daysToEvent, PatientDischarged) ~ .,
-  cut = 0:60, id = "CombinedID" # Zeitintervall für 60 Tage (1 Tag-Schritte)
+  cut = 0:60, id = "CombinedID"
 )
 
 model_disc_propDays_16kcal <- bam(
