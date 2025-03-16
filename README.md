@@ -1,5 +1,5 @@
 # Propofol
-Analysis of the Impact of Propofol Administration on the Survival Chances of Critically Ill Patients in the ICU Using Piece-Wise Exponential Additive Mixed Models (PAMMs)
+Analysis of the Impact of Propofol Administration on the Survival Chances of Critically Ill Patients in the ICU Using Piece-Wise Exponential Additive Mixed Models (PAMMs).
 
 To reproduce the results, execute all code chunks in `main.Rmd`. This will generate all relevant plots and models for the project.
 
@@ -19,6 +19,7 @@ Forest and spline plots can be found in `plots\models`. Descriptive overviews of
 
 The session info is provided below:
 
+```r
 > devtools::session_info()
 ─ Session info ─────────────────────────────────────────────────────────────────────────────────────────
  setting  value
@@ -72,3 +73,4 @@ The session info is provided below:
  xfun          0.48    2024-10-03 [1] CRAN (R 4.4.1)
  xtable        1.8-4   2019-04-21 [1] CRAN (R 4.4.2)
  yaml          2.3.10  2024-07-26 [1] CRAN (R 4.4.1)
+ ```
