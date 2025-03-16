@@ -13,55 +13,70 @@ if (!require(rstudioapi)) install.packages("rstudioapi")
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
-Soure all code files
+Initialize Analysis Environment
 
 ```{r}
-# source(source_all.R) => kommt noch
-source("code/install_packages.R") # hier bitte nur packages rein, die wir am Ende auch brauchen werden
-# sonst laden wir am Ende unnötige packages obwohl sie nicht genutzt werden
-```
+# Total duration: ~10 min
+# Setup tasks:
+# 1. Installs/loads required packages
+# 2. Creates essential data frames from already cleaned dataset (see code/preproc for more info)
+# 3. Loads pre-trained models
+# 4. Sources helper functions and plots from code files
 
-Import and manipulate datasets
+start_time <- Sys.time()
+cat("Initializing analysis environment...\n")
 
-```{r}
-source("code/import_and_clean.R")
-data_summed_Day0To11 <- clean_and_summarise_Days0To11()
-data_summed_Day0To7 <- clean_and_summarise_Days0To7()
-data_long <- clean_data()
-manualPED_death <- create_ped_manually(data_long, "death")
-manualPED_disc <- create_ped_manually(data_long, "discharge")
-# ignore NaNs warning - there aren't any in the dataframes
-```
-
-Import all Models
-
-```{r}
-model_files <- list.files("models", pattern = "\\.rds$", full.names = TRUE, recursive = TRUE)
-
-for (file in model_files) {
-  model_name <- tools::file_path_sans_ext(basename(file))
-  assign(model_name, readRDS(file))
-}
+# Error handling
+tryCatch(
+  {
+    source("source_all.R")
+    cat("Setup completed successfully in", 
+        round(difftime(Sys.time(), start_time, units = "mins"), 1),
+        "minutes\n")
+  },
+  error = function(e) {
+    stop("Critical setup error: ", e$message, 
+         "\nPlease verify:\n",
+         "1. Presence of source_all.R\n",
+         "2. Package installation permissions\n"
+         )
+  }
+)
 ```
 
 Save all plots
 
 ```{r}
-source("code/plots_descriptive.R")
+# Saves descriptive plots
 for(i in seq_along(desc_plots)) {
   filename <- paste0("plots/descriptive/", desc_plot_names[i], ".png")
   ggsave(filename, plot = desc_plots[[i]], device = "png", width = 18, height = 8.25)
 }
 
-source("code/plots_models.R")
+# Saves Forest plots
 for(i in seq_along(model_plots)) {
   filename <- paste0("plots/models/", model_plot_names[i], ".png")
   ggsave(filename, plot = model_plots[[i]], device = "png", width = 18, height = 8.25)
 }
 
-source("code/plots_splines.R")
+# Saves plots of smooth terms
 for(i in seq_along(model_splines)) {
   filename <- paste0("plots/models/", model_splines_names[i], ".png")
   ggsave(filename, plot = model_splines[[i]], device = "png", width = 18, height = 8.25)
 }
+```
+
+Fit and save all models
+
+```{r}
+# Total Duration: > 12 h
+
+# Models fit on summed data which is transformed with as_ped() from pammtools
+source("code/models_data_summed.R")
+
+# Models fit on manually created PED
+source("code/models_manualPED.R")
+
+# All Subgroup models
+source("code/models_subgroups.R")
 ```

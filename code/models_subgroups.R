@@ -1,10 +1,11 @@
 # Subgroup Models on split dataset and also with interaction term (below)
+# interaction only done for manualPED since results are same for summed data > as_ped()
 
 
 # Summed Data ####
 
 
-## Alter > 65 Jahre ####
+## Age > 65 Years ####
 
 ### Patient Died ####
 
@@ -210,7 +211,10 @@ model_disc_older65_propCals_70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_older65_propDays_16kcal,
         "models/subgroups/model_death_older65_propDays_16kcal.rds")
 saveRDS(model_death_older65_propDays_70pct,
@@ -220,7 +224,7 @@ saveRDS(model_death_older65_propCals_16kcal,
 saveRDS(model_death_older65_propCals_70pct,
         "models/subgroups/model_death_older65_propCals_70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_older65_propDays_16kcal,
         "models/subgroups/model_disc_older65_propDays_16kcal.rds")
 saveRDS(model_disc_older65_propDays_70pct,
@@ -232,7 +236,7 @@ saveRDS(model_disc_older65_propCals_70pct,
 
 
 
-## Alter <= 65 Jahre ####
+## Age <= 65 years ####
 
 ### Patient Died ####
 
@@ -426,7 +430,10 @@ model_disc_younger66_propCals_70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_younger66_propDays_16kcal,
         "models/subgroups/model_death_younger66_propDays_16kcal.rds")
 saveRDS(model_death_younger66_propDays_70pct,
@@ -436,7 +443,7 @@ saveRDS(model_death_younger66_propCals_16kcal,
 saveRDS(model_death_younger66_propCals_70pct,
         "models/subgroups/model_death_younger66_propCals_70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_younger66_propDays_16kcal,
         "models/subgroups/model_disc_younger66_propDays_16kcal.rds")
 saveRDS(model_disc_younger66_propDays_70pct,
@@ -448,7 +455,7 @@ saveRDS(model_disc_younger66_propCals_70pct,
 
 
 
-## Weibliche Patienten ####
+## Female Patients ####
 
 ### Patient Died ####
 
@@ -634,7 +641,10 @@ model_disc_female_propCals_70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_female_propDays_16kcal,
         "models/subgroups/model_death_female_propDays_16kcal.rds")
 saveRDS(model_death_female_propDays_70pct,
@@ -644,7 +654,7 @@ saveRDS(model_death_female_propCals_16kcal,
 saveRDS(model_death_female_propCals_70pct,
         "models/subgroups/model_death_female_propCals_70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_female_propDays_16kcal,
         "models/subgroups/model_disc_female_propDays_16kcal.rds")
 saveRDS(model_disc_female_propDays_70pct,
@@ -656,7 +666,7 @@ saveRDS(model_disc_female_propCals_70pct,
 
 
 
-## Männliche Patienten ####
+## Male Patients ####
 
 ### Patient Died ####
 
@@ -842,7 +852,9 @@ model_disc_male_propCals_70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_male_propDays_16kcal,
         "models/subgroups/model_death_male_propDays_16kcal.rds")
 saveRDS(model_death_male_propDays_70pct,
@@ -852,7 +864,7 @@ saveRDS(model_death_male_propCals_16kcal,
 saveRDS(model_death_male_propCals_70pct,
         "models/subgroups/model_death_male_propCals_70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_male_propDays_16kcal,
         "models/subgroups/model_disc_male_propDays_16kcal.rds")
 saveRDS(model_disc_male_propDays_70pct,
@@ -867,7 +879,7 @@ saveRDS(model_disc_male_propCals_70pct,
 # Manual PED ####
 
 
-## Alter > 65 Jahre ####
+## Age > 65 years ####
 
 ### Patient Died ####
 
@@ -1061,7 +1073,10 @@ model_disc_older65_propCals_calsAbove70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_older65_propDays_calsAbove16,
         "models/subgroups/manualPED/model_death_older65_propDays_calsAbove16.rds")
 saveRDS(model_death_older65_propDays_calsAbove70pct,
@@ -1071,7 +1086,7 @@ saveRDS(model_death_older65_propCals_calsAbove16,
 saveRDS(model_death_older65_propCals_calsAbove70pct,
         "models/subgroups/manualPED/model_death_older65_propCals_calsAbove70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_older65_propDays_calsAbove16,
         "models/subgroups/manualPED/model_disc_older65_propDays_calsAbove16.rds")
 saveRDS(model_disc_older65_propDays_calsAbove70pct,
@@ -1083,7 +1098,7 @@ saveRDS(model_disc_older65_propCals_calsAbove70pct,
 
 
 
-## Alter <= 65 Jahre ####
+## Age <= 65 years ####
 
 ### Patient Died ####
 
@@ -1277,7 +1292,10 @@ model_disc_younger66_propCals_calsAbove70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_younger66_propDays_calsAbove16,
         "models/subgroups/manualPED/model_death_younger66_propDays_calsAbove16.rds")
 saveRDS(model_death_younger66_propDays_calsAbove70pct,
@@ -1287,7 +1305,7 @@ saveRDS(model_death_younger66_propCals_calsAbove16,
 saveRDS(model_death_younger66_propCals_calsAbove70pct,
         "models/subgroups/manualPED/model_death_younger66_propCals_calsAbove70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_younger66_propDays_calsAbove16,
         "models/subgroups/manualPED/model_disc_younger66_propDays_calsAbove16.rds")
 saveRDS(model_disc_younger66_propDays_calsAbove70pct,
@@ -1299,7 +1317,7 @@ saveRDS(model_disc_younger66_propCals_calsAbove70pct,
 
 
 
-## Weibliche Patienten ####
+## Female Patients ####
 
 ### Patient Died ####
 
@@ -1485,7 +1503,10 @@ model_disc_female_propCals_calsAbove70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_female_propDays_calsAbove16,
         "models/subgroups/manualPED/model_death_female_propDays_calsAbove16.rds")
 saveRDS(model_death_female_propDays_calsAbove70pct,
@@ -1495,7 +1516,7 @@ saveRDS(model_death_female_propCals_calsAbove16,
 saveRDS(model_death_female_propCals_calsAbove70pct,
         "models/subgroups/manualPED/model_death_female_propCals_calsAbove70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_female_propDays_calsAbove16,
         "models/subgroups/manualPED/model_disc_female_propDays_calsAbove16.rds")
 saveRDS(model_disc_female_propDays_calsAbove70pct,
@@ -1507,7 +1528,7 @@ saveRDS(model_disc_female_propCals_calsAbove70pct,
 
 
 
-## Männliche Patienten ####
+## Male Patients ####
 
 ### Patient Died ####
 
@@ -1693,7 +1714,10 @@ model_disc_male_propCals_calsAbove70pct <- bam(
   nthreads = parallel::detectCores()
 )
 
-# Modelle für "Patient Died"
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_male_propDays_calsAbove16,
         "models/subgroups/manualPED/model_death_male_propDays_calsAbove16.rds")
 saveRDS(model_death_male_propDays_calsAbove70pct,
@@ -1703,7 +1727,7 @@ saveRDS(model_death_male_propCals_calsAbove16,
 saveRDS(model_death_male_propCals_calsAbove70pct,
         "models/subgroups/manualPED/model_death_male_propCals_calsAbove70pct.rds")
 
-# Modelle für "Patient Discharged"
+# Models with Response Discharge
 saveRDS(model_disc_male_propDays_calsAbove16,
         "models/subgroups/manualPED/model_disc_male_propDays_calsAbove16.rds")
 saveRDS(model_disc_male_propDays_calsAbove70pct,
@@ -1745,10 +1769,85 @@ model_death_subgrp_int_propDays_calsAbove16 <- bam(
   nthreads = parallel::detectCores()
 )
 
-##############################
-# hier noch restliche einfügen
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
+model_death_subgrp_int_propDays_calsAbove70pct <- bam(
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_death,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
+
+
+#### Propofol Cals ####
+
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
+model_death_subgrp_int_propCals_calsAbove16 <- bam(
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV + 
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    s(PropofolCal, bs = "ps") + 
+    CalsAbove16kcalPerKG + 
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_death,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
+
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
+model_death_subgrp_int_propCals_calsAbove70pct <- bam(
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    s(PropofolCal, bs = "ps") +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_death,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
+
 
 ### Patient Discharged ####
+
+#### Propofol Days ####
 
 # with Calorie Variable: Days where Calories were above 16 kcal/kg
 model_disc_subgrp_int_propDays_calsAbove16 <- bam(
@@ -1774,11 +1873,100 @@ model_disc_subgrp_int_propDays_calsAbove16 <- bam(
   nthreads = parallel::detectCores()
 )
 
-##############################
-# hier noch restliche einfügen
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
+model_disc_subgrp_int_propDays_calsAbove70pct <- bam(
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    Propofol +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_disc,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
 
+
+#### Propofol Cals ####
+
+# with Calorie Variable: Days where Calories were above 16 kcal/kg
+model_disc_subgrp_int_propCals_calsAbove16 <- bam(
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV + 
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    s(PropofolCal, bs = "ps") + 
+    CalsAbove16kcalPerKG + 
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_disc,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
+
+# with Calorie Variable: Days where Calorie Intake was above 70% of Target
+model_disc_subgrp_int_propCals_calsAbove70pct <- bam(
+  formula = ped_status ~ s(Age, bs = "ps") +
+    s(BMI, bs = "ps") +
+    s(ApacheIIScore, bs = "ps") +
+    inMV +
+    ParenteralNut +
+    OralIntake +
+    factor(Sex) +
+    factor(Year) +
+    factor(AdmCatID) +
+    factor(LeadAdmDiag) +
+    s(PropofolCal, bs = "ps") +
+    CalsPercentageAbove70 +
+    ProteinBelow0.8GperKG +
+    AgeKat:Propofol +
+    Sex:Propofol +
+    s(CombinedicuID, bs = "re"),
+  data = manualPED_disc,
+  family = poisson(),
+  offset = offset,
+  nthreads = parallel::detectCores()
+)
+
+
+### Save Models ####
+
+# Models with Response Death
 saveRDS(model_death_subgrp_int_propDays_calsAbove16,
         "models/subgroups/interaction/model_death_subgrp_int_propDays_calsAbove16.rds")
+saveRDS(model_death_subgrp_int_propDays_calsAbove70pct,
+        "models/subgroups/interaction/model_death_subgrp_int_propDays_calsAbove70pct.rds")
+saveRDS(model_death_subgrp_int_propCals_calsAbove16,
+        "models/subgroups/interaction/model_death_subgrp_int_propCals_calsAbove16.rds")
+saveRDS(model_death_subgrp_int_propCals_calsAbove70pct,
+        "models/subgroups/interaction/model_death_subgrp_int_propCals_calsAbove70pct.rds")
 
+# Models with Response Discharge
 saveRDS(model_disc_subgrp_int_propDays_calsAbove16,
         "models/subgroups/interaction/model_disc_subgrp_int_propDays_calsAbove16.rds")
+saveRDS(model_disc_subgrp_int_propDays_calsAbove70pct,
+        "models/subgroups/interaction/model_disc_subgrp_int_propDays_calsAbove70pct.rds")
+saveRDS(model_disc_subgrp_int_propCals_calsAbove16,
+        "models/subgroups/interaction/model_disc_subgrp_int_propCals_calsAbove16.rds")
+saveRDS(model_disc_subgrp_int_propCals_calsAbove70pct,
+        "models/subgroups/interaction/model_disc_subgrp_int_propCals_calsAbove70pct.rds")

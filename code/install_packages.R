@@ -1,9 +1,8 @@
+# Installs (if not yet installed) and loads required packages
+
 # List of required packages
 required_packages <- c("tidyverse", "dplyr", "pammtools", "ggplot2", "pammtools", "survival",
-                       "checkmate", "mgcv", "ggthemes", "survminer", "broom")
-
-# survminer für ggsurvplot() und cmprsk für plot mit Sterbe- und Entlassungsratio
-# survival für coxph usw.
+                       "checkmate", "mgcv", "ggthemes", "survminer", "broom", "parallel")
 
 # Install packages if not already installed
 for (package in required_packages) {
@@ -12,5 +11,5 @@ for (package in required_packages) {
   }
 }
 
-# Load packages using lapply
+# Load packages
 lapply(required_packages, library, character.only = TRUE)
