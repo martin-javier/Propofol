@@ -30,7 +30,7 @@ cat("Initializing analysis environment...\n")
 tryCatch(
   {
     source("source_all.R")
-    cat("Setup completed successfully in", 
+    cat("\nSetup completed successfully in", 
         round(difftime(Sys.time(), start_time, units = "mins"), 1),
         "minutes\n")
   },
