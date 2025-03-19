@@ -90,8 +90,7 @@ generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
     ci_upper = exp(coef_values + 1.96 * se)
   )
   
-  results <- left_join(results, model_tidy %>% select(term, p.value),
-                       by = c("variable" = "term"))
+  results <- left_join(results, model_tidy %>% select(term, p.value), by = c("variable" = "term"))
   results <- results %>%
     mutate(significance = case_when(
       p.value < 0.001 ~ "***",
@@ -114,22 +113,22 @@ generate_forest_plot <- function(model, plot_title, subgroup = FALSE) {
   
   # Create the forest plot
   ggplot(results, aes(x = variable, y = coef_exp, ymin = ci_lower, ymax = ci_upper)) +
-    geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +
-    geom_hline(yintercept = 1, linetype = "solid", color = "black") +  # Horizontal line at 1
-    scale_color_identity(guide = "none") +
-    geom_text(aes(y = ci_upper + 0.05, label = significance), size = 6, color = "black") +
+    geom_pointrange(aes(color = ifelse(coef_exp < 1, "red", "steelblue"))) +  # Farbliche Unterscheidung
+    geom_hline(yintercept = 1, linetype = "solid", color = "black") +  # Horizontale Linie bei 1
+    scale_color_identity(guide = "none") +  # Keine Legende für Farben
+    geom_text(aes(y = ci_upper + 0.05, label = significance), size = 6, color = "black") +  # Signifikanz hinzufügen
     coord_flip() +
     scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5)) + 
     scale_x_discrete(labels = renamed_labels[names(renamed_labels) %in% plot_data$data$variable]) +
     ylab(expression("Hazard Ratio " * exp(hat(beta)))) +
     ggtitle(plot_title) +
     theme(
-      axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 18),
-      axis.title.x = element_text(hjust = 0.39, margin = margin(t = 20), size = 22), 
-      axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 15, angle = 0),
+      axis.text.x = element_text(angle = 0, hjust = 0.5, margin = margin(t = 5), size = 22.5),
+      axis.title.x = element_text(hjust = 0.39, margin = margin(t = 20), size = 25), 
+      axis.text.y = element_text(hjust = 1, margin = margin(r = 10), size = 20, angle = 0),
       axis.title.y = element_blank(),
       title = element_text(color = "black"),
-      plot.title = element_text(size = 28, color = "black", face = "bold", hjust = 0.5), 
+      plot.title = element_text(size = 25, color = "black", face = "bold", hjust = 0.1), 
       plot.subtitle = element_text(size = 17, color = "black", face = "italic"),
       plot.background = element_rect(fill = "white", color = NA)
     )
